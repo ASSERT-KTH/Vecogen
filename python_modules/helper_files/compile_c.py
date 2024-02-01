@@ -21,10 +21,15 @@ def compile_c(path_to_c_file):
     # Run the gcc compiler on the C file
     result = subprocess.Popen(["gcc", path_to_c_file, "-o", path_to_executable], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Return the result
-    if result == 0:
-        return True, path_to_executable, result
+    # Capture the command prompt output
+    stdout, stderr = result.communicate()
+    print(stdout)
+    print(stderr)
+
+    # Return the result and command prompt output
+    if result.returncode == 0:
+        return True, path_to_executable, stdout.decode("utf-8")
     else:
-        return False, None, result
+        return False, None, stderr.decode("utf-8")
     
 __all__ = ["compile_c"]
