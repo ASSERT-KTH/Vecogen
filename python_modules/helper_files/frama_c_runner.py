@@ -21,3 +21,6 @@ def run_frama_c_wpc(file_name):
 
     # Run the Frama-C weakest precondition plugin on the C file
     subprocess.call(["python3", path_to_frama_c_wpc, path_to_c_file])
+
+
+__all__ = ["run_frama_c_wpc"]

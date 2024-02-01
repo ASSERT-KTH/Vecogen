@@ -1,68 +1,58 @@
-#include <stdio.h>
+/* Method binary_search() performs a binary-search for element x in array a[]
+   of n elements. If a match is found, the corresponding index is returned;
+   otherwise -1 is returned. */
 
-// Precondition: a is a sorted array of length n
-int binary_search(int arr[], int target_value, int n)
+/*@
+  // Does array a[] contain x between its indices s and e?
+  predicate contains(int *a, integer s, integer e, int x) =
+    \exists integer i; s <= i <= e && a[i] == x;
+ */
+
+/*@
+  requires \valid_read(a + (0..n-1));
+  requires n > 0;
+
+  // To specify the sorted order, if we instead use the predicate
+  // (\forall int i; 0 <= i <= n-2 ==> a[i] <= a[i+1]), the provers
+  // like cvc4 and alt-ergo are not able to prove this method.
+  requires \forall int i, j; 0 <= i < j <= n-1 ==> a[i] <= a[j];
+
+  ensures contains(a, 0, n-1, x) ==> a[\result] == x;
+  ensures !contains(a, 0, n-1, x) ==> \result == -1;
+ */
+int binary_search(int a[], int n, int x)
 {
-    int left = 0;      // Get the left most index of the array
-    int right = n - 1; // Get the right most index of the array
+    int s, e;
+    /* e can become -1, so using signed int */
 
-    // While there are still numbers in the range between (l, r)
-    while (left <= right)
+    s = 0;
+    e = n - 1;
+
+    /*@
+      loop assigns s, e;
+      loop invariant (s == e+1) || (s <= e && 0 <= s <= n-1 && 0 <= e <= n-1);
+      loop invariant !contains(a, 0, s-1, x) && !contains(a, e+1, n-1, x);
+      loop invariant contains(a, 0, n-1, x) ==> contains(a, s, e, x);
+      loop variant e-s+1;
+     */
+    while (s <= e)
     {
-        // Calculate the new index by taking the average, and then converting to an int
-        int m = (left + right) / 2;
+        int m = s + (e - s) / 2;
 
-        // Print the value of the indices
-        printf("left: %d, right: %d, m: %d with value %d \n", left, right, m, arr[m]);
+        if (a[m] == x)
+            return m;
 
-        if (arr[m] < target_value)
+        if (a[m] < x)
         {
-            // The value is in the right half of the array
-            left = m + 1;
-        }
-        else if (arr[m] > target_value)
-        {
-            right = m - 1;
+            //@assert !contains(a, s, m, x);
+            s = m + 1;
         }
         else
         {
-            return m;
+            //@assert !contains(a, m, e, x);
+            e = m - 1;
         }
     }
+
     return -1;
-}
-
-int main(void)
-{
-    // Create the array to be sorted, numbers 1 to 100
-    int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-                 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-                 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-                 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-                 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
-                 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-                 81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
-                 91, 92, 93, 94, 95, 96, 97, 98, 99, 100};
-
-    // Get the size of the array
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    // The target value
-    int target_value = 1;
-
-    // Get the index of the target value
-    int result = binary_search(arr, target_value, n);
-
-    // Print the result
-    if (result == -1)
-    {
-        printf("Element is not present in array");
-    }
-    else
-    {
-        printf("Element is present at index %d", result);
-    }
-    return 0;
 }

@@ -1,6 +1,6 @@
 import sys
 import os
-from verify_file import list_files_in_directory
+from verify_file import list_files_in_directory, verify_files
 
 def hello_world():
     print("Hello world!")
@@ -23,9 +23,42 @@ def list_files():
     # Call the function
     list_files_in_directory(directory)
 
+def verify_file():
+    # Make sure a directory is given as second argument
+    if len(sys.argv) < 3:
+        print("Please insert a directory as second argument")
+        sys.exit()
+    
+    # Make sure the second argument is a directory
+    if not os.path.isdir("../"+sys.argv[2]):
+        print(f"Please insert a directory as second argument, {sys.argv[2]} is not a directory")
+        sys.exit()
+
+    # Make sure a C file is given as third argument
+    if len(sys.argv) < 4 and not sys.argv[3].endswith(".c"):
+        print("Please insert a C file as third argument")
+        sys.exit()
+    
+    # Make sure a h file is given as fourth argument
+    print(sys.argv)
+    if len(sys.argv) < 5 and not sys.argv[4].endswith(".h"):
+        print("Please insert a h file as fourth argument")
+        sys.exit()
+
+    # Get the directory from the second argument
+    directory = sys.argv[2]
+
+    # Make sure the directory exists
+    if not os.path.exists("../"+directory):
+        print(f"Directory {directory} does not exist")
+        sys.exit()
+
+    # Call the function
+    verify_files(directory, sys.argv[3], sys.argv[4])
+
 if __name__ == "__main__":
     # Implemented functions
-    imp_functions = ["hello_world", "list_files"]
+    imp_functions = ["hello_world", "list_files", "verify_file"]
 
     # Get the user input argument
     if len(sys.argv) > 1:
