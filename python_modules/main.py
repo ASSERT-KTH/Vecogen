@@ -38,12 +38,6 @@ def verify_file():
     if len(sys.argv) < 4 and not sys.argv[3].endswith(".c"):
         print("Please insert a C file as third argument")
         sys.exit()
-    
-    # Make sure a h file is given as fourth argument
-    print(sys.argv)
-    if len(sys.argv) < 5 and not sys.argv[4].endswith(".h"):
-        print("Please insert a h file as fourth argument")
-        sys.exit()
 
     # Get the directory from the second argument
     directory = sys.argv[2]
@@ -54,7 +48,7 @@ def verify_file():
         sys.exit()
 
     # Call the function
-    verify_files(directory, sys.argv[3], sys.argv[4])
+    verify_files(directory, sys.argv[3])
 
 if __name__ == "__main__":
     # Implemented functions
