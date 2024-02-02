@@ -63,42 +63,38 @@ def verify(args):
         check_file(args.directory, args.c_file, args.header_file)
 
 def verify_dir(args):
-    # Make sure a directory is given as second argument
-    if len(sys.argv) < 3:
-        print("Please insert a directory as second argument")
+    # Make sure the directory is given in the arguments
+    if not args.directory:
+        print("Please insert a directory using the -d or --directory option")
         sys.exit()
-
-    # Make sure the second argument is a directory
-    if not os.path.isdir("../"+sys.argv[2]):
-        print(f"Please insert a directory as second argument, {sys.argv[2]} is not a directory")
+    # Make sure the directory exists
+    if not os.path.isdir("../"+args.directory):
+        print(f"Please insert a valid directory, {args.directory} is not a directory")
         sys.exit()
+    else:
+        # Get the files in the directory
+        files = list_files_directory(args.directory)
 
-    # Get the directory from the second argument
-    directory = sys.argv[2]
+        # Get the C and header file
+        c_file = None
+        h_file = None
 
-    # Get the files in the directory
-    files = list_files_directory(directory)
+        for file in files:
+            if file.endswith(".c"):
+                c_file = file
+            if file.endswith(".h"):
+                h_file = file
 
-    # Get the C and header file
-    c_file = None
-    h_file = None
+        # Check that the C and header file exist
+        if c_file is None:
+            print("No C file found in the directory")
+            sys.exit()
+        if h_file is None:
+            print("No header file found in the directory")
+            sys.exit()
 
-    for file in files:
-        if file.endswith(".c"):
-            c_file = file
-        if file.endswith(".h"):
-            h_file = file
-
-    # Check that the C and header file exist
-    if c_file is None:
-        print("No C file found in the directory")
-        sys.exit()
-    if h_file is None:
-        print("No header file found in the directory")
-        sys.exit()
-
-    # Call the function
-    check_file(directory, c_file, h_file)
+        # Call the function
+        check_file(args.directory, c_file, h_file)
 
 if __name__ == "__main__":
     args = parseArguments()
