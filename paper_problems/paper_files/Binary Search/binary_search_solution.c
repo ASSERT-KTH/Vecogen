@@ -17,38 +17,39 @@
 
   ensures contains(arr, 0, n-1, x) ==> arr[\result] == x;
   ensures !contains(arr, 0, n-1, x) ==> \result == -1;
+  assigns \nothing;
  */
-int binary_search(int a[], int n, int x)
+int binary_search(int arr[], int n, int x)
 {
-    int s, e;
-    /* e can become -1, so using signed int */
+    int l, r;
+    /* r can become -1, so using signed int */
 
-    s = 0;
-    e = n - 1;
+    l = 0;
+    r = n - 1;
 
     /*@
-      loop assigns s, e;
-      loop invariant (s == e+1) || (s <= e && 0 <= s <= n-1 && 0 <= e <= n-1);
-      loop invariant !contains(a, 0, s-1, x) && !contains(a, e+1, n-1, x);
-      loop invariant contains(a, 0, n-1, x) ==> contains(a, s, e, x);
-      loop variant e-s+1;
+      loop assigns l, r;
+      loop invariant (l == r+1) || (l <= r && 0 <= l <= n-1 && 0 <= r <= n-1);
+      loop invariant !contains(arr, 0, l-1, x) && !contains(arr, r+1, n-1, x);
+      loop invariant contains(arr, 0, n-1, x) ==> contains(arr, l, r, x);
+      loop variant r-l+1;
      */
-    while (s <= e)
+    while (l <= r)
     {
-        int m = s + (e - s) / 2;
+        int m = l + (r - l) / 2;
 
-        if (a[m] == x)
+        if (arr[m] == x)
             return m;
 
-        if (a[m] < x)
+        if (arr[m] < x)
         {
-            //@assert !contains(a, s, m, x);
-            s = m + 1;
+            //@assert !contains(arr, l, m, x);
+            l = m + 1;
         }
         else
         {
-            //@assert !contains(a, m, e, x);
-            e = m - 1;
+            //@assert !contains(arr, m, r, x);
+            r = m - 1;
         }
     }
 
