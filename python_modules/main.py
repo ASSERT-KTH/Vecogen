@@ -1,6 +1,7 @@
 import sys
 import os
-from verify_file import list_files_in_directory, verify_files
+from helper_files.list_files import list_files_directory
+from helper_files.check_file import check_file
 
 def hello_world():
     print("Hello world!")
@@ -21,9 +22,9 @@ def list_files():
         sys.exit()
 
     # Call the function
-    list_files_in_directory(directory)
+    list_files_directory(directory)
 
-def verify_file():
+def verify():
     # Make sure a directory is given as second argument
     if len(sys.argv) < 3:
         print("Please insert a directory as second argument")
@@ -48,11 +49,11 @@ def verify_file():
         sys.exit()
 
     # Call the function
-    verify_files(directory, sys.argv[3])
+    check_file(directory, sys.argv[3])
 
 if __name__ == "__main__":
     # Implemented functions
-    imp_functions = ["hello_world", "list_files", "verify_file"]
+    imp_functions = ["hello_world", "list_files", "verify"]
 
     # Get the user input argument
     if len(sys.argv) > 1:
@@ -67,5 +68,3 @@ if __name__ == "__main__":
         globals()[user_input]()
     else:
         print("Invalid implemented function, please insert one of the following: ", imp_functions)
-
-
