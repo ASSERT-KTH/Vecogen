@@ -1,7 +1,7 @@
 import os
 ## Helper function to list all the files in a given directory
 # @param directory The directory to list the files in
-# @return None
+# @return The list of files in the directory
 
 # Function to list all the files in a given directory
 def list_files_directory(directory):
@@ -12,6 +12,6 @@ def list_files_directory(directory):
     files = os.listdir(path_to_directory)
 
     # Return the list of files
-    print(files)
+    return files
 
 __all__ = ["list_files_directory"]

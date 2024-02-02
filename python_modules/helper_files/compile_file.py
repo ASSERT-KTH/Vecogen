@@ -20,7 +20,7 @@ def compile_c(path_to_c_file):
     path_to_executable = os.path.join(tmp_path, f"{file_name}")
 
     # Run the gcc compiler on the C file
-    result = subprocess.Popen(["gcc", path_to_c_file, "-o", path_to_executable], 
+    result = subprocess.Popen(["gcc", path_to_c_file, "-o", path_to_executable],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Capture the command prompt output
@@ -30,7 +30,6 @@ def compile_c(path_to_c_file):
     if result.returncode == 0:
         return True, path_to_executable, stdout.decode("utf-8")
     else:
-        print(f"Compilation of file {file_name} Error: {stderr.decode('utf-8')}")
         return False, None, stderr.decode("utf-8")
 
 __all__ = ["compile_c"]
