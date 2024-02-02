@@ -10,7 +10,10 @@ from helper_files.verify_file import verify_file
 # @return None
 
 # Checks a file in a given directory
-def check_file(directory, file_name_c, file_name_h):
+def check_file(args, file_name_c, file_name_h):
+    # Get the directory from the args
+    directory = args.directory
+
     # Get the path to the file
     path_to_directory = os.path.join(os.getcwd(), "..", directory)
     path_to_c_file = os.path.join(path_to_directory, file_name_c)
@@ -24,7 +27,7 @@ def check_file(directory, file_name_c, file_name_h):
     print(f"File {file_name_c} exists, starting to compile...")
 
     # Compile the file
-    result, path_to_executable, output = compile_c(path_to_c_file)
+    result, _, output = compile_c(path_to_c_file)
     if result is False:
         print(f"Compilation of file {file_name_c} Error: {output}")
         sys.exit()
@@ -34,4 +37,4 @@ def check_file(directory, file_name_c, file_name_h):
     print(f"File {file_name_c} will be verified...")
 
     # Verify the file
-    result, result_of_verification = verify_file(path_to_c_file, path_to_h_file)
+    result, _ = verify_file(args, path_to_c_file, path_to_h_file)

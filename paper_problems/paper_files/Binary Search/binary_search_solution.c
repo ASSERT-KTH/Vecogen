@@ -1,24 +1,22 @@
-/* Method binary_search() performs a binary-search for element x in array a[]
-   of n elements. If a match is found, the corresponding index is returned;
-   otherwise -1 is returned. */
+/* Method binary_search() looks for an integer x in a sorted array arr[] of size n.
+    If x is found, the method returns the index of x in arr[];
+    otherwise, it returns -1. */
 
 /*@
-  // Does array a[] contain x between its indices s and e?
-  predicate contains(int *a, integer s, integer e, int x) =
-    \exists integer i; s <= i <= e && a[i] == x;
+  // Predicate that checks if array arr[] contain x (between indices l and r)
+  predicate contains(int *arr, integer l, integer r, int x) =
+    \exists integer i; l <= i <= r && arr[i] == x;
  */
 
 /*@
-  requires \valid_read(a + (0..n-1));
+  requires \valid_read(arr + (0..n-1));
   requires n > 0;
 
-  // To specify the sorted order, if we instead use the predicate
-  // (\forall int i; 0 <= i <= n-2 ==> a[i] <= a[i+1]), the provers
-  // like cvc4 and alt-ergo are not able to prove this method.
-  requires \forall int i, j; 0 <= i < j <= n-1 ==> a[i] <= a[j];
+  // Predicate that has corted order
+  requires \forall int i, j; 0 <= i < j <= n-1 ==> arr[i] <= arr[j];
 
-  ensures contains(a, 0, n-1, x) ==> a[\result] == x;
-  ensures !contains(a, 0, n-1, x) ==> \result == -1;
+  ensures contains(arr, 0, n-1, x) ==> arr[\result] == x;
+  ensures !contains(arr, 0, n-1, x) ==> \result == -1;
  */
 int binary_search(int a[], int n, int x)
 {

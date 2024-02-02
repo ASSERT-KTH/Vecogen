@@ -30,3 +30,5 @@ python main.py function
 - 'verify'      : Verifies the given .c and .h file 
 - 'list_dir'    : Lists the files given in a directory
 
+## TODO:
+- Automatically detect solvers
