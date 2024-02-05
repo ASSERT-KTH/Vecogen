@@ -2,11 +2,8 @@
 ### It outputs the results to the console of the user
 ### It is called from the main.py file
 
-import sys
 import os
 import subprocess
-import time
-import json
 
 # Function to run the Frama-C weakest precondition plugin on a C file
 def run_frama_c_wpc(file_name):

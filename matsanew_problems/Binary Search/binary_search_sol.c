@@ -1,4 +1,3 @@
-
 /* Method binary_search() performs a binary-search for element x in array a[]
    of n elements. If a match is found, the corresponding index is returned;
    otherwise -1 is returned. */

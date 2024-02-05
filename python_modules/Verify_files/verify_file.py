@@ -17,7 +17,7 @@ def verify_file(args, path_to_c_file, path_to_h_file):
         print("Not implemented yet")
     if (args.solver == "alt-ergo"):
         # Create the prompt that is used for frama c
-        prompt = f'frama-c -wp "{path_to_c_file}" "{path_to_h_file}" -wp-prover alt-ergo -wp-steps {args.wp_steps} -wp-timeout {args.wp_timeout}'
+        prompt = f'frama-c -wp "{path_to_c_file}" -wp-prover alt-ergo -wp-steps {args.wp_steps} -wp-timeout {args.wp_timeout} -wp-rte'
         # Call a subroutine to use Frama-C to verify the C file
         result = subprocess.Popen(prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         # Capture the command prompt output

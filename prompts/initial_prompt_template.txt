@@ -2,7 +2,7 @@ Act as an experienced software engineer that works as a coder and implements saf
  The specifications are given in the ACSL language and the program code will be verified using the framework Frama-C. Frama-C with its WP plugin works with external provers like Alt-Ergo and CVC4 to automatically prove these specified properties. The WP plugin internally works based on the Weakest Precondition calculus. In addition to proving the specified properties, we will also be checking for other issues like overflows via another Frama-C plugin called RTE (by using option -wp-rte).
 
 You must adhere to the following rules:
-1. Only give the output code
+1. Append the code to the specification in the header file
 2. The output code must be written in C
 3. You can add invariants and assertions for loops if these improve the verification process
 4. Give comments for difficult functions
