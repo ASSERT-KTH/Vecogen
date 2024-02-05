@@ -37,13 +37,7 @@
   assigns a[i], a[j];
   ensures swap_at_indices{Pre, Post}(a, i, j);
  */
-static void swap(int a[], int i, int j)
-{
-  int t;
-  t = a[i];
-  a[i] = a[j];
-  a[j] = t;
-}
+static void swap(int a[], int i, int j);
 
 /*@
   requires n >= 1;
@@ -52,50 +46,4 @@ static void swap(int a[], int i, int j)
   ensures sorted(a, n);
   ensures permutation{Pre, Post}(a, n);
  */
-void selection_sort(int a[], int n)
-{
-  int i;
-
-  i = 0;
-
-  /*@
-    loop assigns i, a[0..n-1];
-    loop invariant P: \forall integer k; i-1 >= 0 && i <= k <= n-1 ==>
-                      a[i-1] <= a[k];
-    loop invariant Q: sorted(a, i);
-    loop invariant 0 <= i <= n-1;
-    loop invariant permutation{Pre, LoopCurrent}(a, n);
-    loop variant n-i;
-   */
-  while (i < n - 1)
-  {
-    int min = i;
-    int j = i + 1;
-
-    /*@
-      loop assigns min, j;
-      loop invariant \forall integer k; i <= k <= j-1 ==> a[min] <= a[k];
-      loop invariant i+1 <= j <= n;
-      loop invariant i <= min <= n-1;
-      loop variant n-j;
-     */
-    while (j < n)
-    {
-      if (a[j] < a[min])
-        min = j;
-
-      j = j + 1;
-    }
-
-    if (min != i)
-    {
-      swap(a, i, min);
-      //@assert swap_in_array{LoopCurrent, Here}(a, n, i, min);
-    }
-
-    i++;
-  }
-
-  /* P and Q hold with (i = n-1) */
-  /* Now a[n-1] must be among the largest, so a[0:n-1] is sorted */
-}
+void selection_sort(int a[], int n);
