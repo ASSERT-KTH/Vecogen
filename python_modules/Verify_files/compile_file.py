@@ -12,7 +12,6 @@ def compile_c(path_to_c_file):
 
     # Create the output directory if it does not exist
     if not os.path.exists(tmp_path):
-        print("make")
         os.makedirs(tmp_path)
 
     # Set the path to the executable file
@@ -20,7 +19,7 @@ def compile_c(path_to_c_file):
     path_to_executable = os.path.join(tmp_path, f"{file_name}")
 
     # Run the gcc compiler on the C file
-    result = subprocess.Popen(["gcc", path_to_c_file, "-o", path_to_executable],
+    result = subprocess.Popen(["gcc", path_to_c_file, "-o", path_to_executable, "-c"],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Capture the command prompt output

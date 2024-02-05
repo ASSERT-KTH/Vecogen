@@ -8,7 +8,7 @@ Act as an experienced software engineer that works as a coder and implements saf
 3. You can add invariants and assertions for loops if these improve the verification process
 4. Give comments for difficult functions
 5. Use the parameters defined in the specification
-6. Use the specification listen in the header file given below
+6. Use the specification listed in the header file given below
 
 The header file  containing a description and a formal specification
 

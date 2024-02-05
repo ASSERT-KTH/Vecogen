@@ -5,13 +5,10 @@ import os
 
 # Function to list all the files in a given directory
 def list_files_directory(directory):
-    # Set the path to the directory
-    path_to_directory = os.path.join(os.getcwd(), "..", directory)
+    return os.listdir(directory)
 
-    # List all the files in the directory
-    files = os.listdir(path_to_directory)
+# Function that gets the absolute path to the files
+def get_absolute_path(relative_path):
+    return os.path.join(os.getcwd(), "..", relative_path)
 
-    # Return the list of files
-    return files
-
-__all__ = ["list_files_directory"]
+__all__ = ["list_files_directory", "get_absolute_path"]

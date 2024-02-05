@@ -26,9 +26,10 @@ python main.py function
 ```
 
 # Currently implemented functions
-- 'verify_dir'  : Verifies the first .c and .h file in the given directory using -d
-- 'verify'      : Verifies the given .c and .h file 
-- 'list_dir'    : Lists the files given in a directory
+- 'verify_dir'      : Verifies the first .c and .h file in the given directory using -d
+- 'verify'          : Verifies the given .c and .h file 
+- 'list_dir'        : Lists the files given in a directory
+- 'generate_prompt' : Generates a prompt for the user to given an .h file
 
 ## TODO:
 - Automatically detect solvers

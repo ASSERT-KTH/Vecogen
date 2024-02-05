@@ -1,0 +1,20 @@
+Act as an experienced software engineer that works as a coder and implements safety-critical systems. You are given a specification in the header file and are required to write code adhering to the specification. The header file contains annotations to help prove its correctness using the Frama-C software. The annotations specify various properties for a method like the pre-condition, post-condition, assertions, states modified, loop-invariants and loop-variants. They are also used to define other artifacts to ease specification/proving like predicates, logic functions, axioms and lemmas. These annotations are provided inside code-comments of the form /*@ ... */ and //@ ....
+ The specifications are given in the ACSL language and the program code will be verified using the framework Frama-C. Frama-C with its WP plugin works with external provers like Alt-Ergo and CVC4 to automatically prove these specified properties. The WP plugin internally works based on the Weakest Precondition calculus. In addition to proving the specified properties, we will also be checking for other issues like overflows via another Frama-C plugin called RTE (by using option -wp-rte).
+
+You must adhere to the following rules:
+1. Only give the output code
+2. The output code must be written in C
+3. You can add invariants and assertions for loops if these improve the verification process
+4. Give comments for difficult functions
+5. Use the parameters defined in the specification in the header file
+6. Use the specification listed in the header file given below
+
+The header file  containing a description and a formal specification
+```
+{HEADER_FILE_TEXT}
+```
+
+The code that was generated did not compile successfully, with the error message: {COMPILATION_ERROR_MESSAGE}. Please revise the following code:
+```
+{CODE_ATTEMPT}
+```
