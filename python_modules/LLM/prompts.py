@@ -14,10 +14,13 @@ def initial_prompt(header_file_path):
     # Get the template for the prompt
     with open(template_path, "r") as template:
         prompt_template = template.read()
+
+    header_file_name = header_file_path.split("/")[-1]
     
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
-        "HEADER_FILE_TEXT": header_text
+        "HEADER_FILE_TEXT": header_text,
+        "HEADER_FILE_NAME": header_file_name
     }
     
     # Apply the map to the template
@@ -39,12 +42,15 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message):
     # Get the template for the prompt
     with open(template_path, "r") as template:
         prompt_template = template.read()
+
+    header_file_name = header_file_path.split("/")[-1]
     
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
         "HEADER_FILE_TEXT": header_text,
         "CODE_ATTEMPT": previous_attempt,
-        "COMPILATION_ERROR_MESSAGE": error_message
+        "COMPILATION_ERROR_MESSAGE": error_message,
+        "HEADER_FILE_NAME": header_file_name
     }
     
     # Apply the map to the template
@@ -62,12 +68,15 @@ def verification_error_prompt(header_file_path, previous_attempt, error_message)
     # Get the template for the prompt
     with open(template_path, "r") as template:
         prompt_template = template.read()
+
+    header_file_name = header_file_path.split("/")[-1]
     
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
         "HEADER_FILE_TEXT": header_text,
         "CODE_ATTEMPT": previous_attempt,
-        "VERIFICATION_ERROR_MESSAGE": error_message
+        "VERIFICATION_ERROR_MESSAGE": error_message,
+        "HEADER_FILE_NAME": header_file_name
     }
     
     # Apply the map to the template

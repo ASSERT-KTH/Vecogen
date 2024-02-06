@@ -9,7 +9,7 @@ You must adhere to the following rules:
 5. Use the parameters defined in the specification in the header file
 6. Use the specification listed in the header file given below
 
-The header file  containing a description and a formal specification
+The header file called {HEADER_FILE_NAME} containing a description and a formal specification
 
 ```
 {HEADER_FILE_TEXT}

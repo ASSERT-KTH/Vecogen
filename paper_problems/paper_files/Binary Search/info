@@ -10,7 +10,7 @@ Act as an experienced software engineer that works as a coder and implements saf
 5. Use the parameters defined in the specification
 6. Use the specification listed in the header file given below
 
-The header file  containing a description and a formal specification
+The header file containing a description and a formal specification
 
 ```
 /* Method binary_search() looks for an integer x in a sorted array arr[] of size n.

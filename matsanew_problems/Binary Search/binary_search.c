@@ -1,60 +1,39 @@
-#include <limits.h>
+#include <stddef.h>
 
-/*@
-  // Predicate that checks if the subarray arr[l..r] is sorted in ascending order
-  predicate is_sorted(int *arr, integer l, integer r) =
-    \forall integer i, j; l <= i < j <= r ==> arr[i] <= arr[j];
-*/
+/*@ predicate contains(int *a, integer s, integer e, int x) =
+  \exists integer i; s <= i <= e && a[i] == x;
+ */
 
-/*@
-  // Lemma stating that if a subarray is sorted and contains an element,
-  // then it indeed contains that element
-  lemma sorted_contains_implies_contains:
-    \forall int *arr, integer l, r, x;
-    is_sorted(arr, l, r) && contains(arr, l, r, x) ==> \exists integer i; l <= i <= r && arr[i] == x;
-*/
+/*@ requires \valid_read(a + (0..n-1));
+  requires n > 0;
+  requires \forall int i, j; 0 <= i < j <= n-1 ==> a[i] <= a[j];
+  ensures contains(a, 0, n-1, x) ==> a[\result] == x;
+  ensures !contains(a, 0, n-1, x) ==> \result == -1;
+ */
+int binary_search(int a[], int n, int x) {
+    int s = 0;
+    int e = n - 1;
 
-/*@
-  // Lemma stating that if a subarray is sorted and does not contain an element,
-  // then it indeed does not contain that element
-  lemma sorted_not_contains_implies_not_contains:
-    \forall int *arr, integer l, r, x;
-    is_sorted(arr, l, r) && !contains(arr, l, r, x) ==> \forall integer i; l <= i <= r ==> arr[i] != x;
-*/
-
-int binary_search(int arr[], int n, int x)
-{
-    /*@
-      loop invariant 0 <= low <= high <= n - 1;
-      loop invariant is_sorted(arr, 0, low - 1);
-      loop invariant is_sorted(arr, high + 1, n - 1);
-      loop invariant \forall integer k; 0 <= k < low ==> arr[k] < x;
-      loop invariant \forall integer k; high < k <= n - 1 ==> arr[k] > x;
-      loop assigns low, high;
-      loop variant high - low;
+    /*@ loop assigns s, e;
+      loop invariant (s == e+1) || (s <= e && 0 <= s <= n-1 && 0 <= e <= n-1);
+      loop invariant !contains(a, 0, s-1, x) && !contains(a, e+1, n-1, x);
+      loop invariant contains(a, 0, n-1, x) ==> contains(a, s, e, x);
+      loop variant e-s+1;
      */
-    int low = 0;
-    int high = n - 1;
+    while (s <= e) {
+        int m = s + (e - s) / 2;
+        int val = a[m];
 
-    while (low <= high)
-    {
-        int mid = low + (high - low) / 2;
-
-        if (arr[mid] == x)
-        {
-            //@ assert contains(arr, 0, n-1, x);
-            return mid;
-        }
-        else if (arr[mid] < x)
-        {
-            low = mid + 1;
-        }
-        else
-        {
-            high = mid - 1;
+        if (val == x)
+            return m;
+        else if (val < x) {
+            s = m + 1;
+            //@assert !contains(a, s, m, x);
+        } else {
+            e = m - 1;
+            //@assert !contains(a, m, e, x);
         }
     }
 
-    //@ assert !contains(arr, 0, n-1, x);
     return -1;
 }
