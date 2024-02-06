@@ -10,7 +10,7 @@
   ensures contains(a, 0, n-1, x) ==> a[\result] == x;
   ensures !contains(a, 0, n-1, x) ==> \result == -1;
  */
-int binary_search(int a[], int n, int x) {
+int binary_search(const int *a, size_t n, int x) {
     int s = 0;
     int e = n - 1;
 

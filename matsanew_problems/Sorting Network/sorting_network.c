@@ -7,8 +7,14 @@ void SWAP(int a[], int i, int j) {
     a[j] = temp;
 }
 
-/* Sorting function for a specific permutation */
-void sort_permutation(int a[]) {
+/* Method sort5() sorts the input array of 5 elements using a sorting-network */
+void sort5(int a[]) {
+    /* Loop invariants */
+    /*@
+      loop invariant \forall integer k; 0 <= k < 5 ==> \forall integer l; 0 <= l < 5 ==> a[k] <= a[l];
+    */
+    
+    /* Sorting network for 5 elements */
     SWAP(a, 0, 1);
     SWAP(a, 3, 4);
     SWAP(a, 2, 4);
@@ -17,12 +23,6 @@ void sort_permutation(int a[]) {
     SWAP(a, 1, 3);
     SWAP(a, 2, 3);
     SWAP(a, 1, 2);
-}
-
-/* Method sort5() sorts the input array of 5 elements using a sorting-network */
-void sort5(int a[]) {
-    /* Sorting network for 5 elements */
-    sort_permutation(a);
     
     /* Assertion to ensure postconditions */
     //@ assert \forall integer i; 0 <= i <= 3 ==> a[i] <= a[i+1];

@@ -31,4 +31,4 @@ typedef unsigned int uint;
   // the result is the greatest among all common-divisors of A and B
   ensures \forall uint d; is_common_divisor(d, A, B) ==> d <= \result;
 */
-uint euclid(uint A, uint B)
+uint euclid(uint A, uint B);
