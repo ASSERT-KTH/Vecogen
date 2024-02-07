@@ -4,6 +4,7 @@
 import sys
 import os
 from helper_files.list_files import get_absolute_path
+from Frama_C.solvers import solvers
 
 # Function to check if a directory is given in the arguments
 def require_directory(args):
@@ -53,4 +54,17 @@ def require_c_file(args):
     # Make sure the C file exists
     if not os.path.isfile(args.c_file):
         print(f"Please insert a valid C file, {old_c_file} is not a file")
+        sys.exit()
+        
+# Function that checks if the solvers are present
+def require_solver(args):
+    # Get the solvers
+    available_solvers = solvers()
+    
+    # If no solver is present then use all the solvers available    
+    if args.solver is None:
+        args.solver = ",".join(available_solvers)
+    # If the solver is not available then exit
+    elif args.solver not in available_solvers:
+        print(f"The solver {args.solver} is not available, please use one of the following solvers: {available_solvers}")
         sys.exit()

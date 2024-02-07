@@ -2,7 +2,7 @@ import sys
 import os
 import argparse
 from helper_files.list_files import list_files_directory
-from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file
+from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file, require_solver
 from Verify_files.check_file import check_file
 from Frama_C.solvers import solvers
 from LLM.prompts import initial_prompt
@@ -18,9 +18,10 @@ def verify(args):
     # Make sure the header and C file are given in the arguments
     require_header_file(args)
     require_c_file(args)
+    require_solver(args)
     
     # Verify the file
-    check_file(args, args.c_file, args.header_file)
+    # check_file(args, args.c_file, args.header_file)
         
 # Function to verify a C file and a header file in a directory
 def verify_dir(args):
@@ -70,7 +71,7 @@ def parse_arguments(functions_list):
     parser.add_argument("-he", "--header_file", help="The header file to use", type=str)
     parser.add_argument("-wpt", "--wp-timeout", help="The timeout to use for the wp-prover", type=int, default=90)
     parser.add_argument("-wps", "--wp-steps", help="The steps to use for the wp-prover", type=int, default=1500)
-    parser.add_argument("-solver", "--solver", help="The solver to use for the formal verification", 
+    parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", 
                         type=str)
     
     # Print the version of the tool
@@ -87,7 +88,6 @@ if __name__ == "__main__":
         "verify": verify,
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
-        "detect_solvers": detect_solvers
     }
     
     # Get a list of the functions
