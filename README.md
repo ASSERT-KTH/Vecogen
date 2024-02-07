@@ -2,8 +2,10 @@ A project that uses Large Language Models (LLMs) to generate formally verified c
 
 ## Pre-requisites
 - Python 3.6 or higher
+- Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
 - Frama-c (https://frama-c.com/)
 - Why3 (https://why3.lri.fr/)
+- .env folder with a GPT API key, "API_KEY_GPT = {key}" 
 
 # Solvers 
 - alt-ergo (https://alt-ergo.lri.fr/)
@@ -30,6 +32,7 @@ python main.py function
 - 'verify'          : Verifies the given .c and .h file. 
 - 'list_dir'        : Lists the files given in a directory, where the directory is described by the -d flag
 - 'generate_prompt' : Generates a prompt for the user to given an .h file
+- 'generate_code"   : Generates the code for the given .h file using Large Language models. Requires the API key to be set.
 
 # Existing flags
 - '-c' : The .c file
@@ -40,3 +43,4 @@ python main.py function
 - '-wpt': The timeout for the wp solvers
 - '-wps': The maximum amount of steps for the wp solvers
 - '-sd' : The smoke detector option for the solvers. Checks consistency of the solvers
+- '-iter': The amount of iterations for the code generation

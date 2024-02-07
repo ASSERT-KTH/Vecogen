@@ -1,10 +1,12 @@
 import sys
 import os
+from dotenv import load_dotenv
 import argparse
 from helper_files.list_files import list_files_directory
-from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file, require_solver
+from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file, require_solver, require_api_key_gpt
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
+from LLM.pipeline import generate_code as generate_code_pipeline
 
 # Function to list the files in a directory
 def list_files(args):
@@ -20,7 +22,7 @@ def verify(args):
     require_solver(args)
     
     # Verify the file
-    check_file(args, args.c_file, args.header_file)
+    check_file(args)
         
 # Function to verify a C file and a header file in a directory
 def verify_dir(args):
@@ -60,6 +62,12 @@ def generate_initial_prompt(args):
     require_header_file(args)
     print(initial_prompt(args.header_file))
 
+# Function that uses the code generation pipeline based on a header file
+def generate_code(args):
+    require_header_file(args)
+    require_api_key_gpt()
+    generate_code_pipeline(args)
+    
 # Function to parse arguments
 def parse_arguments(functions_list):
     # Create argument parser
@@ -77,6 +85,7 @@ def parse_arguments(functions_list):
     parser.add_argument("-wps", "--wp_steps", help="The steps to use for the wp-prover", type=int, default=1500)
     parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", type=str)
     parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the formal verification", type=bool, action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("-iter", "--iterations", help="The number of iterations to use for the code generation", type=int, default=1)
     
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
@@ -92,7 +101,11 @@ if __name__ == "__main__":
         "verify": verify,
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
+        "generate_code": generate_code,
     }
+    
+    # Load the environment variables
+    load_dotenv()
     
     # Get a list of the functions
     args = parse_arguments(list(switcher.keys()))

@@ -68,3 +68,11 @@ def require_solver(args):
     elif args.solver not in available_solvers:
         print(f"The solver {args.solver} is not available, please use one of the following solvers: {available_solvers}")
         sys.exit()
+        
+# Function that checks if the API key for GPT is set
+def require_api_key_gpt():
+    API_KEY_GPT = os.getenv("API_KEY_GPT")
+    
+    if API_KEY_GPT is None:
+        print("API key not set")
+        sys.exit()
