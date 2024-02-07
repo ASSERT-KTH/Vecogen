@@ -71,7 +71,7 @@ def parse_arguments(functions_list):
     parser.add_argument("-wpt", "--wp-timeout", help="The timeout to use for the wp-prover", type=int, default=90)
     parser.add_argument("-wps", "--wp-steps", help="The steps to use for the wp-prover", type=int, default=1500)
     parser.add_argument("-solver", "--solver", help="The solver to use for the formal verification", 
-                        type=str, choices=solvers, default="alt-ergo")
+                        type=str)
     
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
@@ -86,7 +86,8 @@ if __name__ == "__main__":
         "list_files": list_files,
         "verify": verify,
         "verify_dir": verify_dir,
-        "generate_prompt": generate_initial_prompt
+        "generate_prompt": generate_initial_prompt,
+        "detect_solvers": detect_solvers
     }
     
     # Get a list of the functions

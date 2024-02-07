@@ -30,6 +30,3 @@ python main.py function
 - 'verify'          : Verifies the given .c and .h file 
 - 'list_dir'        : Lists the files given in a directory
 - 'generate_prompt' : Generates a prompt for the user to given an .h file
-
-## TODO:
-- Automatically detect solvers

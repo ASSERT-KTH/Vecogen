@@ -1,4 +1,3 @@
-import os
 import sys
 from Verify_files.compile_file import compile_c
 from Verify_files.verify_file import verify_file

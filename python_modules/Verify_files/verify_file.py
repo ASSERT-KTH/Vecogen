@@ -10,7 +10,6 @@ import subprocess
 
 # Function that uses Frama-C to verify a C file
 def verify_file(args, path_to_c_file, path_to_h_file):
-    # For each of the solver types we have different functionalities
     if (args.solver == "z3"):
         print("Not implemented yet")
     if (args.solver == "cvc4"):
