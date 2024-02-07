@@ -71,7 +71,7 @@ def require_solver(args):
         
 # Function that checks if the API key for GPT is set
 def require_api_key_gpt():
-    API_KEY_GPT = os.getenv("API_KEY_GPT")
+    API_KEY_GPT = os.getenv("OPENAI_API_KEY")
     
     if API_KEY_GPT is None:
         print("API key not set")

@@ -5,7 +5,7 @@ A project that uses Large Language Models (LLMs) to generate formally verified c
 - Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
 - Frama-c (https://frama-c.com/)
 - Why3 (https://why3.lri.fr/)
-- .env folder with a GPT API key, "API_KEY_GPT = {key}" 
+- .env folder with a OPENAI API key, "OPENAI_API_KEY = {key}" 
 
 # Solvers 
 - alt-ergo (https://alt-ergo.lri.fr/)
@@ -44,3 +44,5 @@ python main.py function
 - '-wps': The maximum amount of steps for the wp solvers
 - '-sd' : The smoke detector option for the solvers. Checks consistency of the solvers
 - '-iter': The amount of iterations for the code generation
+- '-temp': The temperature for the code generation
+- '-mt': The maximum amount of tokens for the code generation

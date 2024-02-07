@@ -81,3 +81,10 @@ def verification_error_prompt(header_file_path, previous_attempt, error_message)
     
     # Apply the map to the template
     return prompt_template.format(**prompt_replacement_mapping)
+
+## Function that seperates the prompt into a user and assistant prompt
+# @param prompt the prompt to seperate
+# @return the user and assistant prompt
+def seperate_prompt(prompt):
+    # Split the prompt into the user and assistant prompt
+    return prompt.split("-----END_ASSISTANT_INFORMATION-----")

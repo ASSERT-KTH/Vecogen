@@ -86,6 +86,8 @@ def parse_arguments(functions_list):
     parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", type=str)
     parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the formal verification", type=bool, action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("-iter", "--iterations", help="The number of iterations to use for the code generation", type=int, default=1)
+    parser.add_argument('-temp', '--temperature', help="The temperature to use for the code generation", type=float, default=0.7)
+    parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code generation", type=int, default=2048)
     
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
