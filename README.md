@@ -26,7 +26,17 @@ python main.py function
 ```
 
 # Currently implemented functions
-- 'verify_dir'      : Verifies the first .c and .h file. This requires the user to provide the .c file using the -c flag, and the header file using the -he flag. You can also incorporate specific solvers using the -s flag. The solvers available depend on the currently installed solvers. By default all solvers are being used.
-- 'verify'          : Verifies the given .c and .h file. This requires the user to provide the .c file using the -c flag, and the header file using the -he flag. You can also incorporate specific solvers using the -s flag. The solvers available depend on the currently installed solvers. By default all solvers are used.
+- 'verify_dir'      : Verifies the first .c and .h file. 
+- 'verify'          : Verifies the given .c and .h file. 
 - 'list_dir'        : Lists the files given in a directory, where the directory is described by the -d flag
 - 'generate_prompt' : Generates a prompt for the user to given an .h file
+
+# Existing flags
+- '-c' : The .c file
+- '-he': The .h file
+- '-d' : The directory
+- '-s' : The solvers to be used
+- '-p' : The prompt to be used
+- '-wpt': The timeout for the wp solvers
+- '-wps': The maximum amount of steps for the wp solvers
+- '-sd' : The smoke detector option for the solvers. Checks consistency of the solvers

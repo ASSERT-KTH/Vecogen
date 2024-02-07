@@ -4,7 +4,6 @@ import argparse
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file, require_solver
 from Verify_files.check_file import check_file
-from Frama_C.solvers import solvers
 from LLM.prompts import initial_prompt
 
 # Function to list the files in a directory
@@ -21,11 +20,12 @@ def verify(args):
     require_solver(args)
     
     # Verify the file
-    # check_file(args, args.c_file, args.header_file)
+    check_file(args, args.c_file, args.header_file)
         
 # Function to verify a C file and a header file in a directory
 def verify_dir(args):
-    require_directory(args)
+    require_directory_exists(args)
+    require_solver(args)
 
     # Get the files in the directory
     files = list_files_directory(args.directory)
@@ -47,6 +47,10 @@ def verify_dir(args):
     if h_file is None:
         print("No header file found in the directory")
         sys.exit()
+        
+    # Get the paths to the files
+    c_file = os.path.join(args.directory, c_file)
+    h_file = os.path.join(args.directory, h_file)
 
     # Call the function
     check_file(args, c_file, h_file)
@@ -69,10 +73,10 @@ def parse_arguments(functions_list):
     parser.add_argument("-d", "--directory", help="The directory to use", type=str)
     parser.add_argument("-c", "--c_file", help="The C file to use", type=str)
     parser.add_argument("-he", "--header_file", help="The header file to use", type=str)
-    parser.add_argument("-wpt", "--wp-timeout", help="The timeout to use for the wp-prover", type=int, default=90)
-    parser.add_argument("-wps", "--wp-steps", help="The steps to use for the wp-prover", type=int, default=1500)
-    parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", 
-                        type=str)
+    parser.add_argument("-wpt", "--wp_timeout", help="The timeout to use for the wp-prover", type=int, default=90)
+    parser.add_argument("-wps", "--wp_steps", help="The steps to use for the wp-prover", type=int, default=1500)
+    parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", type=str)
+    parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the formal verification", type=bool, action=argparse.BooleanOptionalAction, default=False)
     
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
