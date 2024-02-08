@@ -1,5 +1,6 @@
 from openai import OpenAI
 from LLM.prompts import seperate_prompt
+from helper_files.list_files import list_files_directory
 
 ## Function that makes a request to the GPT-3.5 Turbo API
 def make_gpt_request(args, prompt):
@@ -23,6 +24,5 @@ def make_gpt_request(args, prompt):
         max_tokens=max_tokens,
         frequency_penalty=frequency_penalty
     )
-    
     # Return the response
-    return response
+    return response.choices[0].message.content

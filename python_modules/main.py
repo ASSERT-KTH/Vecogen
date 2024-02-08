@@ -55,7 +55,7 @@ def verify_dir(args):
     h_file = os.path.join(args.directory, h_file)
 
     # Call the function
-    check_file(args, c_file, h_file)
+    check_file(args)
         
 # Function that generates a prompt for the user
 def generate_initial_prompt(args):
@@ -64,6 +64,7 @@ def generate_initial_prompt(args):
 
 # Function that uses the code generation pipeline based on a header file
 def generate_code(args):
+    require_solver(args)
     require_header_file(args)
     require_api_key_gpt()
     generate_code_pipeline(args)
@@ -86,8 +87,9 @@ def parse_arguments(functions_list):
     parser.add_argument("-s", "--solver", help="The solver to use for the formal verification", type=str)
     parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the formal verification", type=bool, action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("-iter", "--iterations", help="The number of iterations to use for the code generation", type=int, default=1)
-    parser.add_argument('-temp', '--temperature', help="The temperature to use for the code generation", type=float, default=0.7)
+    parser.add_argument('-temp', '--temperature', help="The temperature to use for the code generation", type=float, default=0)
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code generation", type=int, default=2048)
+    parser.add_argument('-o', '--output_path', help="The output path to use for the code generation", type=str, default="tmp")
     
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')

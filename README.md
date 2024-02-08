@@ -46,3 +46,4 @@ python main.py function
 - '-iter': The amount of iterations for the code generation
 - '-temp': The temperature for the code generation
 - '-mt': The maximum amount of tokens for the code generation
+- '-o': The output path for the generated code

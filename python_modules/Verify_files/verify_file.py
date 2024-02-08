@@ -27,14 +27,23 @@ def verify_file(args, path_to_c_file, path_to_h_file):
     stdout_str = stdout.decode("utf-8")
     stderr_str = stderr.decode("utf-8")
 
-    # Print the output of the verification
-    print(stdout_str)
-    print(stderr_str)
+    # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
+    verified_goals = stdout_str.split("Proved goals:")[1].split("/")[0].strip()
+    total_goals = stdout_str.split("Proved goals:")[1].split("/")[1].strip()
+    total_goals = total_goals.split("\n")[0].strip()
+    print(f"Verified goals: {verified_goals} of {total_goals}")
+
+    # Get the amount of timeouts by querying for "Timeouts: 3 / 22"
+    if "Timeout" in stdout_str:
+        total_timeouts = stdout_str.split("Timeout:")[1]
+        total_timeouts = total_timeouts.split("\n")[0].strip()
+        print(f"Timeouts: {total_timeouts} of {total_goals}")
+
 
     # Return the result and command prompt output
     if result.returncode == 0:
-        return True, stdout.decode("utf-8")
+        return True, stdout_str
     else:
-        return False, stderr.decode("utf-8")
+        return False, stderr_str
 
 __all__ = ["verify_file"]
