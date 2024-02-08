@@ -47,3 +47,4 @@ python main.py function
 - '-temp': The temperature for the code generation
 - '-mt': The maximum amount of tokens for the code generation
 - '-o': The output path for the generated code
+- '-debug': The debug option that prints the output of the solvers

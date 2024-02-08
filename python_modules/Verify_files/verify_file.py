@@ -1,5 +1,5 @@
 import subprocess
-
+import re
 
 ## Helper function that uses Frama-C to verify a C file
 # @param args The arguments given to the program
@@ -37,8 +37,19 @@ def verify_file(args, path_to_c_file, path_to_h_file):
     if "Timeout" in stdout_str:
         total_timeouts = stdout_str.split("Timeout:")[1]
         total_timeouts = total_timeouts.split("\n")[0].strip()
-        print(f"Timeouts: {total_timeouts} of {total_goals}")
+        print(f"Timeouts: {total_timeouts} of {total_goals}\n")
 
+        # Print the lines that caused the timeouts
+        print("Lines that caused timeouts:")
+        for line in stdout_str.split("\n"):
+            if "Goal" in line  and "*" not in line:
+                # Remove the path from the line, thus remove everything between / and /
+                pattern = r'\(file\s+\/.*?\/tmp\/'
+                line_without_path = re.sub(pattern, '(file ', line)
+                print(line_without_path)
+    # If the debug is enabled, print the output of the command prompt
+    if args.debug:
+        print(stdout_str, stderr_str)
 
     # Return the result and command prompt output
     if result.returncode == 0:
