@@ -48,3 +48,4 @@ python main.py function
 - '-mt': The maximum amount of tokens for the code generation
 - '-o': The output path for the generated code
 - '-debug': The debug option that prints the output of the solvers
+- '-model': The model to be used for the code generation

@@ -1,5 +1,5 @@
 import os
-from LLM.prompts import initial_prompt
+from LLM.prompts import initial_prompt, verification_error_prompt
 from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import get_absolute_path
 from Verify_files.check_file import check_file
@@ -9,12 +9,20 @@ from Verify_files.check_file import check_file
 def generate_code(args):
     header_file = args.header_file
     
-    # Generate the initial prompt
-    prompt = initial_prompt(header_file)
-    
+    # Generate the initial prompt and check its size
+    prompt = initial_prompt(header_file, args.model_name, args.max_tokens)
+
+    # Put the prompt into a file for debugging
+    with open("prompt.txt", "w") as f:
+        f.write(prompt)
+        f.write("\n" * 10)
+
+    # Boolean that indicates if the code has been verified
+    verified = False
+
     # Loop that iteratively prompts and checks the code
     i = 0
-    while (i < args.iterations):
+    while (i < args.iterations and not verified):
         print("-" * 50)
         print(f"Iteration {i+1} of {args.iterations}, generating code...")
         print("-" * 50)
@@ -41,7 +49,13 @@ def generate_code(args):
         args.c_file = output_path
 
         # Check the file
-        print(check_file(args))
+        verified, output = check_file(args)
+
+        # Create a new prompt based on the output
+        prompt = verification_error_prompt(header_file, code, output, args.model_name, args.max_tokens)
+        with open("prompt.txt", "a") as f:
+            f.write(prompt)
+            f.write("\n" * 5)
 
         i += 1
         

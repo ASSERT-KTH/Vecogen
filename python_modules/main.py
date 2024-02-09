@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import argparse
 from helper_files.list_files import list_files_directory
-from helper_files.verify_input import require_directory, require_directory_exists, require_header_file, require_c_file, require_solver, require_api_key_gpt
+from helper_files.verify_input import require_directory_exists, require_header_file, require_c_file, require_solver, require_api_key_gpt
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
 from LLM.pipeline import generate_code as generate_code_pipeline
@@ -17,7 +17,6 @@ def list_files(args):
 # Function to verify a C file and a header file
 def verify(args):
     # Make sure the header and C file are given in the arguments
-    require_header_file(args)
     require_c_file(args)
     require_solver(args)
     
@@ -60,7 +59,7 @@ def verify_dir(args):
 # Function that generates a prompt for the user
 def generate_initial_prompt(args):
     require_header_file(args)
-    print(initial_prompt(args.header_file))
+    print(initial_prompt(args.header_file, args.model_name, args.max_tokens))
 
 # Function that uses the code generation pipeline based on a header file
 def generate_code(args):
@@ -91,6 +90,7 @@ def parse_arguments(functions_list):
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code generation", type=str, default="tmp")
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information to the console", type=bool, action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument('-model', '--model_name', help="The model name to use for the code generation", type=str, default="gpt-3.5-turbo")
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')

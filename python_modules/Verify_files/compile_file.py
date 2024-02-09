@@ -27,8 +27,8 @@ def compile_c(path_to_c_file):
 
     # Return the result and command prompt output
     if result.returncode == 0:
-        return True, path_to_executable, stdout.decode("utf-8")
+        return True, stdout.decode("utf-8")
     else:
-        return False, None, stderr.decode("utf-8")
+        return False, stderr.decode("utf-8")
 
 __all__ = ["compile_c"]

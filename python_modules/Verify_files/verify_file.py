@@ -9,7 +9,7 @@ import re
 # @return The result of the verification
 
 # Function that uses Frama-C to verify a C file
-def verify_file(args, path_to_c_file, path_to_h_file):
+def verify_file(args, path_to_c_file):
     # Create the prompt that is used for frama c
     prompt = f'frama-c  -wp "{path_to_c_file}"                                  \
                         -wp-prover {args.solver}                                \
@@ -27,6 +27,15 @@ def verify_file(args, path_to_c_file, path_to_h_file):
     stdout_str = stdout.decode("utf-8")
     stderr_str = stderr.decode("utf-8")
 
+    # See if there was an error in the command prompt
+    with open("errors.txt", "a") as f:
+        f.write(stdout_str)
+        f.write("\n" * 5)
+
+    # If there was a fatal error, return False and the output
+    if "fatal error" in stdout_str:
+        return False, stdout_str
+
     # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
     verified_goals = stdout_str.split("Proved goals:")[1].split("/")[0].strip()
     total_goals = stdout_str.split("Proved goals:")[1].split("/")[1].strip()
@@ -37,23 +46,30 @@ def verify_file(args, path_to_c_file, path_to_h_file):
     if "Timeout" in stdout_str:
         total_timeouts = stdout_str.split("Timeout:")[1]
         total_timeouts = total_timeouts.split("\n")[0].strip()
-        print(f"Timeouts: {total_timeouts} of {total_goals}\n")
 
-        # Print the lines that caused the timeouts
-        print("Lines that caused timeouts:")
+        # A string that contains the information about timeouts
+        timeout_string = f"Timeouts: {total_timeouts} of {total_goals}\n"
+
+        # Add the lines that caused the timeouts
+        timeout_string += "Lines that caused timeouts:\n"
+
+        # Get the lines that caused timeouts
         for line in stdout_str.split("\n"):
             if "Goal" in line  and "*" not in line:
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
-                print(line_without_path)
+                timeout_string += line_without_path + "\n"
+
     # If the debug is enabled, print the output of the command prompt
     if args.debug:
         print(stdout_str, stderr_str)
 
     # Return the result and command prompt output
-    if result.returncode == 0:
-        return True, stdout_str
+    if verified_goals == total_goals and "Timeout" not in stdout_str:
+        return True, "All goals verified successfully"
+    elif "Timeout" in stdout_str:
+        return False, timeout_string
     else:
         return False, stderr_str
 
