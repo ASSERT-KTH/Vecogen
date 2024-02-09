@@ -10,12 +10,12 @@ from helper_files.verify_input import require_directory_exists, require_header_f
     require_c_file, require_solver, require_api_key_gpt
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
-from LLM.pipeline import generate_code as generate_code_pipeline
+from LLM.pipeline import generate_code as generate_code_pipeline, improve_code as improve_code_pipeline
 
 def list_files(args):
     """List the files in a directory"""
     require_directory_exists(args)
-    
+
     print(list_files_directory(args.directory))
 
 def verify(args):
@@ -72,6 +72,13 @@ def generate_code(args):
     require_api_key_gpt()
     generate_code_pipeline(args)
 
+def impprove_code(args):
+    """ Generate code using the pipeline and the LLM model. Continue to generate code"""
+    require_solver(args)
+    require_header_file(args)
+    require_api_key_gpt()
+    improve_code_pipeline(args)
+
 def parse_arguments(functions_list):
     """Parse the arguments given to the tool"""
     # Create argument parser
@@ -123,6 +130,7 @@ if __name__ == "__main__":
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
+        "improve_code": impprove_code,
     }
 
     # Load the environment variables

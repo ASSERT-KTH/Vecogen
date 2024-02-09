@@ -29,7 +29,7 @@ def solvers():
         solvers_list = solvers_list.split("[partial_prover]")[1:]
 
         # Use a regular expression to find the solvers
-        for i in range(len(solvers)):
+        for i in range(len(solvers_list)):
             match = re.search(r'name = "(.*?)"', solvers_list[i])
             if match:
                 solver_names.append(match.group(1))

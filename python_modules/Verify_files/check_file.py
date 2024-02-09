@@ -10,7 +10,7 @@ def check_file(args):
     Returns:
         True if the C file verified successfully, False otherwise
         If the file did not verify, the output of the verification"""
-    # Get juts the name of the C and the header file
+    # Get just the name of the C and the header file
     file_name_c = args.c_file.split("/")[-1]
     file_name_h = args.header_file.split("/")[-1]
 

@@ -18,9 +18,11 @@ def generate_code(args):
     prompt = initial_prompt(header_file, args.model_name, args.max_tokens)
 
     # Put the prompt into a file for debugging
-    with open("prompt.txt", "w", encoding="utf-8") as f:
-        f.write(prompt)
-        f.write("\n" * 10)
+    if args.debug:
+        # Put the prompt into a file for debugging
+        with open("prompt.txt", "a", encoding="utf-8") as f:
+            f.write(prompt)
+            f.write("\n" * 10)
 
     # Boolean that indicates if the code has been verified
     verified = False
@@ -47,13 +49,11 @@ def generate_code(args):
         # Output the code to tmp.c
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(code)
+            args.c_file = output_path
 
         print("Code has been generated, verifying...")
 
         # Verify the code
-        args.c_file = output_path
-
-        # Check the file
         verified, output = check_file(args)
 
         # Create a new prompt based on the output
@@ -65,4 +65,60 @@ def generate_code(args):
 
         i += 1
 
-__all__ = ["generate_code"]
+def improve_code(args):
+    """Function that continues a code generation process
+    Args:
+        args: The arguments given to the program
+    Returns:
+        None"""
+
+    # Get the header file and the C code
+    header_file = args.header_file
+    output_path = get_absolute_path(args.output_path + "/tmp.c")
+    c_code = open(output_path, "r", encoding="utf-8").read()
+    args.c_file = output_path
+
+    # Check the code that has been generated
+    verified, output = check_file(args)
+
+    # While the code has not been verified, continue to generate code
+    i = 0
+    while (not verified and i < args.iterations):
+        print("-" * 50)
+        print(f"Iteration {i+1} of {args.iterations}, generating code...")
+        print("-" * 50)
+
+        # Generate the prompt
+        prompt = verification_error_prompt(header_file, c_code, output, 
+                                           args.model_name, args.max_tokens)
+
+        if args.debug:
+            # Put the prompt into a file for debugging
+            with open("prompt.txt", "a", encoding="utf-8") as f:
+                f.write(prompt)
+                f.write("\n" * 10)
+
+        # Get the output from the GPT-3.5 model
+        response_gpt = make_gpt_request(args, prompt)
+
+        # Get the code in triple backticks
+        code = response_gpt.split("```")[1]
+
+        # Remove everything before the first newline
+        code = code.split("\n", 1)[1]
+
+        # Get the output path
+        output_path = get_absolute_path(args.output_path + "/tmp.c")
+
+        # Output the code to tmp.c
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(code)
+
+        print("Code has been generated, verifying...")
+
+        # Verify the code
+        verified, output = check_file(args)
+
+        i += 1
+
+__all__ = ["generate_code", "improve_code"]
