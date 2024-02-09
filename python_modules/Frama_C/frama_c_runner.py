@@ -1,12 +1,14 @@
-### This file runs the Frama-C weakest precondition plugin on a C file
-### It outputs the results to the console of the user
-### It is called from the main.py file
+"""This module contains a function to run the Frama-C weakest precondition plugin on a C file"""
 
 import os
 import subprocess
 
-# Function to run the Frama-C weakest precondition plugin on a C file
 def run_frama_c_wpc(file_name):
+    """Run the Frama-C weakest precondition plugin on a C file
+    Args:
+        file_name: The name of the C file to run the plugin on
+    Returns:
+        None"""
     # Get the current working directory
     cwd = os.getcwd()
 

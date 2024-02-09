@@ -1,15 +1,15 @@
+"""This module is used to verify a C file using Frama-C"""
 import subprocess
 import re
 
-## Helper function that uses Frama-C to verify a C file
-# @param args The arguments given to the program
-# @param path_to_c_file The path to the C file to verify
-# @param path_to_h_file The path to the header file to verify
-# @return True if the C file verified successfully, False otherwise
-# @return The result of the verification
-
-# Function that uses Frama-C to verify a C file
 def verify_file(args, path_to_c_file):
+    """Verify a C file using Frama-C
+    Args:
+        args: The arguments given to the program
+        path_to_c_file: The path to the C file to verify
+    Returns:
+        True if the C file verified successfully, False otherwise
+        If the file did not verify, the output of the verification"""
     # Create the prompt that is used for frama c
     prompt = f'frama-c  -wp "{path_to_c_file}"                                  \
                         -wp-prover {args.solver}                                \
@@ -28,7 +28,7 @@ def verify_file(args, path_to_c_file):
     stderr_str = stderr.decode("utf-8")
 
     # See if there was an error in the command prompt
-    with open("errors.txt", "a") as f:
+    with open("errors.txt", "a", encoding="utf-8") as f:
         f.write(stdout_str)
         f.write("\n" * 5)
 

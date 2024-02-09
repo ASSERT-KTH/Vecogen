@@ -1,14 +1,21 @@
+""" This module contains helper functions to list all the files in a given directory 
+    and to get the absolute path to the files"""
 import os
-## Helper function to list all the files in a given directory
-# @param directory The directory to list the files in
-# @return The list of files in the directory
 
-# Function to list all the files in a given directory
 def list_files_directory(directory):
+    """List all the files in a given directory
+    Args:
+        directory: The directory to list the files from
+    Returns:
+        List of files in the directory"""
     return os.listdir(directory)
 
-# Function that gets the absolute path to the files
 def get_absolute_path(relative_path):
+    """Get the absolute path to a file
+    Args:
+        relative_path: The relative path to the file
+    Returns:
+        The absolute path to the file"""
     return os.path.join(os.getcwd(), "..", relative_path)
 
 __all__ = ["list_files_directory", "get_absolute_path"]

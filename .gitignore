@@ -3,3 +3,4 @@ __pycache__/
 tmp/*
 .env
 errors.txt
+requirements.txt

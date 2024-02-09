@@ -1,12 +1,15 @@
+""" This module contains a function to compile a C file using the gcc compiler"""
 import subprocess
 import os
 
-## Helper function that tries to compile a C file
-# @param file_name The name of the C file to compile
-# @return True if the C file compiled successfully, False otherwise
-# @return The path to the executable file if the C file compiled successfully, None otherwise
-
 def compile_c(path_to_c_file):
+    """Compile a C file using the gcc compiler
+    Args:
+        path_to_c_file: The path to the C file
+    Returns:
+        True if the C file compiled successfully, False otherwise
+        The output of the compiler"""
+
     # Have the output of the gcc compiler go to the /tmp folder
     tmp_path = os.path.join(os.getcwd(), "../tmp")
 

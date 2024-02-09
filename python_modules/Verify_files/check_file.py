@@ -1,15 +1,15 @@
+""" This module is used to check a C file in a given directory"""
 import sys
 from Verify_files.compile_file import compile_c
 from Verify_files.verify_file import verify_file
 
-## Helper function that checks a C file in a given directory
-# @param directory The directory to check the C file in
-# @param file_name_c The name of the C file to check
-# @param file_name_h The name of the header file to check
-# @return True if the C file verified successfully, False otherwise
-
-# Checks a file in a given directory
 def check_file(args):
+    """Check a C file in a given directory
+    Args:
+        args: The arguments given to the program
+    Returns:
+        True if the C file verified successfully, False otherwise
+        If the file did not verify, the output of the verification"""
     # Get juts the name of the C and the header file
     file_name_c = args.c_file.split("/")[-1]
     file_name_h = args.header_file.split("/")[-1]
