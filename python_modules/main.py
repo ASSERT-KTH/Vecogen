@@ -63,7 +63,10 @@ def verify_dir(args):
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
     require_header_file(args)
-    print(initial_prompt(args.header_file, args.model_name, args.max_tokens))
+    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name, args.max_tokens)
+
+    # filter out the -----END_ASSISTANT_INFORMATION-----  from the prompt
+    print(initial_prompt_unfiltered.replace("-----END_ASSISTANT_INFORMATION-----", ""))
 
 def generate_code(args):
     """ Generate code using the pipeline and the LLM model"""
