@@ -1,0 +1,35 @@
+SYSTEM:
+You are an expert AI assistant that implements functions for formally specified problems in the safety-critical domain. You are given a specification in the ACSL language and are asked to create the code in C will be formally verified using the tool Frama-C. You are very good at writing verifiable
+correct code in terms of preconditions and postconditions of methods, and at finding the
+appropriate loop invariants for the pre/postconditions to hold
+————————————————————————————————————————————————————————————————————————
+TASK:
+Write a method in C
+AI ASSISTANT:
+Step 1: Determine the method’s formal specification.
+Step 2: Determine the preconditions.
+Step 3: Determine the postconditions.
+Step 4: Write the code, its formal specification, and the verification annotations that help the
+In this case:
+```dafny
+method ContainsZ(s: string) returns (result: bool)
+ensures result <==> (exists i :: 0 <= i < |s| && (s[i] == 'z' || s[i] == 'Z'))
+{
+result := false;
+for i := 0 to |s|
+invariant 0 <= i <= |s|
+invariant result <==> (exists k :: 0 <= k < i && (s[k] == 'z' || s[k] == 'Z'))
+{
+if s[i] == 'z' || s[i] == 'Z' {
+result := true;
+break;
+}
+}
+}
+```
+————————————————————————————————————————————————————————————————————————
+//Four more semantically similar few-shot example TASKS
+————————————————————————————————————————————————————————————————————————
+TASK:
+Write a method in Dafny to find maximum run of uppercase characters in the given string.
+AI ASSISTANT:

@@ -2,6 +2,8 @@
 import subprocess
 import re
 import random
+from helper_files.get_line_in_code import get_line_in_code
+from helper_files.debug import debug_to_file
 
 def verify_file(args, path_to_c_file):
     """Verify a C file using Frama-C
@@ -29,19 +31,18 @@ def verify_file(args, path_to_c_file):
     stderr_str = stderr.decode("utf-8")
 
     # See if there was an error in the command prompt
-    with open("errors.txt", "a", encoding="utf-8") as f:
-        f.write(stdout_str)
-        f.write("\n" * 5)
+    if args.debug:
+        debug_to_file(args, "../tmp/", "errors", stderr_str)
 
     # If the debug is enabled, print the output of the command prompt
     if args.debug:
         print(stdout_str, stderr_str)
 
     # Get the error cause and the strategy to solve the error
-    return get_error_cause_and_strategy(stdout_str)
+    return get_error_cause_and_strategy(stdout_str, path_to_c_file)
 
 causes = ["Timeout", "Syntax Error", "Fatal Error", "Valid"]
-def get_error_cause_and_strategy(output: str):
+def get_error_cause_and_strategy(output: str, file_path: str):
     """ Looks at a string that has the output of the verication. It returns the causes
     of the errors. Within the output also a strategy is given to solve the error.
     Args:
@@ -51,6 +52,8 @@ def get_error_cause_and_strategy(output: str):
 
     # Check if the output has a syntax error
     if "Syntax error" in output or "syntax error" in output:
+        # Remove the lines with [kernel] in the output
+        output = re.sub(r'\[kernel\].*?\n', '', output)
         return False, [f"There is a syntax error in the file, please check \
             the file with this output in mind: {output}"]
     # Check if the output has a fatal error
@@ -83,13 +86,23 @@ def get_error_cause_and_strategy(output: str):
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
-                timeout_string += line_without_path + "\n"
+                
+                # Get the line of code that caused the timeout, which comes after "line .."
+                line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
+                code_line = get_line_in_code(file_path, line_number)
+                
+                # Replace everything in the brackets with the code in the line
+                line_without_path = re.sub(r'\([^)]*\)', code_line, "(" + line_without_path + ")")
+                
+                # Add the line in the file
+                timeout_string += line_without_path
 
         # Get a random strategy to solve the problem
-        possible_strategies = ["Try to simplify the code",
-                               "Try to split the code into smaller parts", 
-                               "Try to add invariants to the code",
-                               "Try to add assertions within the code",]
+        possible_strategies = ["Simplify the code",
+                               "Add invariants to the code",
+                               "Make the invariants stronger",
+                               "Remove an invariant",
+                               "Add assertions within the code. Use the defined predicates and put the assertions as deep as possible.",]
 
         return False, [f"The verification timed out. The following lines caused the \
                 timeouts: {timeout_string}. Please try to solve the problem with the following \

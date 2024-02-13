@@ -1,15 +1,12 @@
-Act as an experienced software engineer that is asked to create an implementation for formally specified problems in the safety-critical domain. You are given a specification in the ACSL language and the created code will be formally verified using the tool Frama-C.
-
------END_ASSISTANT_INFORMATION----- 
-
+You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. You are given a specification in the ACSL language and are asked to create the code in C will be formally verified using the tool Frama-C.
+-----END_ASSISTANT_INFORMATION-----
 You must adhere to the following rules:
-1. You can add loop invariants and assertions for loops if these improve the verification process
-2. Use the predicates and parameters defined in given specification
+1. Add loop invariants and assertions for loops if these improve the verification process
+2. Use the predicates defined in the specification
 3. Do not change the specification
 
-The specification is given in {HEADER_FILE_NAME} which contains a description and a formal specification
-
-```C
+You are given the following specification and problem description. You must return the code in the following format:
+```c
 {HEADER_FILE_TEXT}
-// Append your code here 
+    // Append your code here
 ```

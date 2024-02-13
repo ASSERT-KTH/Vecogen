@@ -2,19 +2,14 @@ Act as an experienced software engineer that is asked to create an implementatio
 
 -----END_ASSISTANT_INFORMATION-----
 
-You are asked to write C code adhering to the formal specifications, such that is able to be formally verified. 
-
 You must adhere to the following rules:
 1. Add loop invariants and assertions for loops if these improve the verification process
-2. Use the predicates defined in the specification
+2. Use the predicates defined in
 3. Do not change the specification
 
 The specification is given in {HEADER_FILE_NAME} which contains a description and a formal specification
+
 ```
 {HEADER_FILE_TEXT}
-```
-
-The code that was generated did not complete the verification process, with the error message: {VERIFICATION_ERROR_MESSAGE}. Please revise the following code:
-```
-{CODE_ATTEMPT}
+// Append your code here
 ```

@@ -3,4 +3,6 @@ __pycache__/
 tmp/*
 .env
 errors.txt
-requirements.txt
+prompt.txt
+python_modules/prompt.txt
+output_gpt.txt
