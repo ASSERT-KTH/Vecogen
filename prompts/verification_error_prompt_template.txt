@@ -14,7 +14,7 @@ The specification is given in {HEADER_FILE_NAME} which contains a description an
 {HEADER_FILE_TEXT}
 ```
 
-The code that was generated did not complete the verification process, with the error message: {VERIFICATION_ERROR_MESSAGE}. Please revise the following code:
+The code that was generated did not complete the verification process, with the error message: {VERIFICATION_ERROR_MESSAGE}. Please change the following code:
 ```
 {CODE_ATTEMPT}
 ```
