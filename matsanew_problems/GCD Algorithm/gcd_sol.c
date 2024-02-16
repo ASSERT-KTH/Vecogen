@@ -33,34 +33,33 @@ typedef unsigned int uint;
 */
 uint euclid(uint A, uint B)
 {
-    uint a, b;
+  uint a, b;
 
-    a = A;
-    b = B;
+  a = A;
+  b = B;
 
-    /*@
-      loop assigns a, b;
-      loop invariant a > 0 && b > 0;
-      loop invariant \forall uint d;
-                     is_common_divisor(d, a, b) <==> is_common_divisor(d, A, B);
-      loop variant a+b;
-     */
-    while (a != b)
+  /*@
+    loop assigns a, b;
+    loop invariant a > 0 && b > 0;
+    loop invariant \forall uint d;
+                   is_common_divisor(d, a, b) <==> is_common_divisor(d, A, B);
+    loop variant a+b;
+   */
+  while (a != b)
+  {
+    if (a > b)
     {
-    L1:
-        if (a > b)
-        {
-            a = a - b;
-            /*@assert \forall uint d; is_common_divisor(d, \at(a, L1), \at(b, L1)) <==>
-                      is_common_divisor(d, a, b); */
-        }
-        else
-        {
-            b = b - a;
-            /*@assert \forall uint d; is_common_divisor(d, \at(a, L1), \at(b, L1)) <==>
-                      is_common_divisor(d, a, b); */
-        }
+      a = a - b;
+      /*@assert \forall uint d; is_common_divisor(d, \at(a, L1), \at(b, L1)) <==>
+                is_common_divisor(d, a, b); */
     }
+    else
+    {
+      b = b - a;
+      /*@assert \forall uint d; is_common_divisor(d, \at(a, L1), \at(b, L1)) <==>
+                is_common_divisor(d, a, b); */
+    }
+  }
 
-    return a;
+  return a;
 }

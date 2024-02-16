@@ -1,4 +1,36 @@
-#include "selection_sort.h"
+/* Method selection_sort() sorts the array a[] of n elements using
+   Selection Sort algorithm. */
+
+/*@
+  predicate sorted(int *a, integer n) =
+    \forall integer i; 0 <= i <= n-2 ==> a[i] <= a[i+1];
+
+  predicate swap_at_indices{L1, L2}(int *a, integer i, integer j) =
+    \at(a[i], L1) == \at(a[j], L2) && \at(a[i], L2) == \at(a[j], L1);
+
+  // array a[] (of n elements) at labels L1 and L2 differs only by a swap at indices
+  // i and j
+  predicate swap_in_array{L1, L2}(int *a, integer n, integer i, integer j) =
+    swap_at_indices{L1, L2}(a, i, j) &&
+    \forall integer k; (0 <= k <= n-1 && k!=i && k!=j) ==>
+    \at(a[k], L1) == \at(a[k], L2);
+
+  // define how array a[] (of n elements) at label L1 is a permutation of it at
+  // label L2
+  inductive permutation{L1, L2}(int *a, integer n)
+  {
+    case reflexive{L1}:
+      \forall int *a, integer n; permutation{L1, L1}(a, n);
+
+    case swap{L1, L2}:
+      \forall int *a, integer n, i, j; 0 <= i < j <= n-1 &&
+      swap_in_array{L1, L2}(a, n, i, j) ==> permutation{L1, L2}(a, n);
+
+    case transitive{L1, L2, L3}:
+      \forall int *a, integer n; permutation{L1, L2}(a, n) &&
+      permutation{L2, L3}(a, n) ==> permutation{L1, L3}(a, n);
+  }
+ */
 
 /*@
   requires \valid(a+i) && \valid(a+j);
@@ -7,9 +39,9 @@
  */
 static void swap(int a[], int i, int j)
 {
-    int temp = a[i];
-    a[i] = a[j];
-    a[j] = temp;
+  int temp = a[i];
+  a[i] = a[j];
+  a[j] = temp;
 }
 
 /*@
@@ -21,29 +53,40 @@ static void swap(int a[], int i, int j)
  */
 void selection_sort(int a[], int n)
 {
+  /*@
+    loop invariant 0 <= i <= n;
+    loop invariant sorted(a, i);
+    loop invariant \forall integer k; 0 <= k < i ==> \forall integer l; i <= l < n ==> a[k] <= a[l];
+    loop invariant permutation{Pre, Here}(a, n);
+    loop assigns i, a[0..n-1];
+    loop variant n-i;
+  */
+  for (int i = 0; i < n - 1; i++)
+  {
+    int min_index = i;
     /*@
-      loop invariant 0 <= i <= n;
-      loop invariant \forall integer k, l; 0 <= k < i <= l < n ==> a[k] <= a[l];
-      loop assigns i, a[0..n-1];
-      loop variant n - i;
+      loop invariant i+1 <= j <= n;
+      loop invariant \forall integer k; i <= k < j ==> a[min_index] <= a[k];
+      loop invariant i <= min_index < j;
+      loop assigns j, min_index;
+      loop variant n-j;
     */
-    for (int i = 0; i < n - 1; ++i) {
-        int min_index = i;
-        /*@
-          loop invariant i <= j < n;
-          loop invariant min_index == i || (\forall integer k; i <= k < j ==> a[k] >= a[min_index]);
-          loop assigns j, min_index;
-          loop variant n - j;
-        */
-        for (int j = i + 1; j < n; ++j) {
-            //@ assert i < j <= n; // Assertion to ensure the index relationship is correct
-            //@ assert min_index == i || a[min_index] <= a[j]; // Assertion to ensure the minimum index is correct
-            if (a[j] < a[min_index]) {
-                min_index = j;
-            }
-        }
-        swap(a, i, min_index);
-        //@ assert sorted(a, i + 1); // Assertion to ensure partial array is sorted after each iteration
+    for (int j = i + 1; j < n; j++)
+    {
+      if (a[j] < a[min_index])
+      {
+        min_index = j;
+      }
     }
-    //@ assert sorted(a, n); // Assertion to ensure the entire array is sorted at the end
+    if (min_index != i)
+    {
+      // Before swapping, we capture the state for verification.
+      //@ ghost L1: ;
+      swap(a, i, min_index);
+      //@ ghost L2: ;
+      //@ assert swap_in_array{L1, L2}(a, n, i, min_index);
+      //@ assert permutation{Pre, Here}(a, n);
+    }
+  }
+  //@ assert sorted(a, n);
 }

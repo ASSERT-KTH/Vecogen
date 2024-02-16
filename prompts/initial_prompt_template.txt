@@ -8,5 +8,4 @@ You must adhere to the following rules:
 You are given the following specification and problem description. You must return the code in the following format:
 ```c
 {HEADER_FILE_TEXT}
-    // Append your code here
 ```

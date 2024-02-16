@@ -31,6 +31,7 @@ typedef unsigned long ulong;
  */
 ulong fib_recur(int n);
 
+/* Iterative implementation of Fibonacci */
 /*@
   requires 1 <= n <= 93;
   assigns \nothing;

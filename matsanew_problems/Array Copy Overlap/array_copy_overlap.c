@@ -12,6 +12,10 @@
  */
 void copy(char d[], char s[], int n)
 {
+
+  if (d == s || n == 0)
+    return;
+
   if (d < s)
   {
     // Forward copy

@@ -1,33 +1,45 @@
-#include "gcd.h"
+typedef unsigned int uint;
 
-uint euclid(uint A, uint B) {
+/*@
+  predicate is_common_divisor(uint d, uint a, uint b) = a % d == 0 && b % d == 0;
+
+  lemma order_a_b:
+    \forall uint a, b, d; is_common_divisor(d, a, b) <==> is_common_divisor(d, b, a);
+
+  lemma divides_itself:
+    \forall uint a; a > 0 ==> is_common_divisor(a, a, a);
+
+  axiomatic axm {
+    axiom subtraction:
+      \forall uint a, b, d; a >= b ==>
+      (is_common_divisor(d, a, b) <==> is_common_divisor(d, a - b, b));
+  }
+ */
+
+/*@
+  requires A > 0 && B > 0;
+  assigns \nothing;
+  ensures is_common_divisor(\result, A, B);
+  ensures \forall uint d; is_common_divisor(d, A, B) ==> d <= \result;
+*/
+uint euclid(uint A, uint B)
+{
     /*@
       loop invariant A > 0 && B > 0;
-      loop invariant A <= Loop_Entry_A && B <= Loop_Entry_B;
+      loop invariant \forall uint d; is_common_divisor(d, \at(A, Pre), \at(B, Pre)) ==> is_common_divisor(d, A, B);
       loop assigns A, B;
-      loop variant A + B; // Loop variant
-      */
+      loop variant A + B;
+    */
+    while (A != B)
     {
-        //@ ghost uint Loop_Entry_A = A;
-        //@ ghost uint Loop_Entry_B = B;
-    }
-
-    while (A != B) {
-        // Assertion: A and B remain positive throughout the loop
-        //@ assert A > 0 && B > 0;
-
-        // Assertion: A and B are non-increasing during each loop iteration
-        //@ assert A <= Loop_Entry_A && B <= Loop_Entry_B;
-
-        if (A > B) {
+        if (A > B)
+        {
             A = A - B;
-        } else {
+        }
+        else
+        {
             B = B - A;
         }
     }
-
-    // Assertion: At loop termination, A and B are equal
-    //@ assert A == B;
-
-    return A; // or B, as they are equal at this point
+    return A;
 }

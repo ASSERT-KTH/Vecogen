@@ -2,7 +2,7 @@
 import subprocess
 import re
 import random
-from helper_files.get_line_in_code import get_line_in_code
+from helper_files.change_header import get_line_in_code
 from helper_files.debug import debug_to_file
 
 def verify_file(args, path_to_c_file):

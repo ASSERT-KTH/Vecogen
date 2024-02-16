@@ -1,12 +1,10 @@
-/* Method occurs() counts the number of times x occurs in array a[] of n elements. */
+#include <stddef.h>
 
 typedef unsigned int uint;
 
 /*@
   axiomatic axm
   {
-    // Define the logical-function count() as returning the number of occurences of x
-    // among first n elements of array a[].
     logic uint count(int *a, uint n, int x)
       reads a[0..n-1];
 
@@ -26,24 +24,19 @@ typedef unsigned int uint;
  */
 uint occurs(int *a, uint n, int x)
 {
-    uint i, c;
-
-    i = 0;
-    c = 0;
-
-    /*@
-      loop assigns i, c;
-      loop invariant c == count(a, i, x);
-      loop invariant 0 <= i <= n;
-      loop variant n - i;
-     */
-    while (i < n)
+  uint count = 0;
+  /*@
+    loop invariant 0 <= i <= n;
+    loop invariant count == count(a, i, x);
+    loop assigns i, count;
+    loop variant n - i;
+   */
+  for (uint i = 0; i < n; i++)
+  {
+    if (a[i] == x)
     {
-        if (a[i] == x)
-            c = c + 1;
-
-        i = i + 1;
+      count++;
     }
-
-    return c;
+  }
+  return count;
 }

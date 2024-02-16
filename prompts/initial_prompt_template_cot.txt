@@ -4,6 +4,24 @@ correct code in terms of preconditions and postconditions of methods, and at fin
 appropriate loop invariants for the pre/postconditions to hold
 ————————————————————————————————————————————————————————————————————————
 TASK:
+Write a method in Dafny that matches a word containing ’z’.
+AI ASSISTANT:
+Step 1: Determine the method’s signature.
+In this case:
+{METHODS}
+Step 2: Determine the preconditions.
+In this case:
+{PRECONDITIONS PER METHOD}
+Step 3: Determine the postconditions.
+In this case:
+- The result is true if the input string contains the character ’z’ or ’Z’
+- The result is false if the input string does not contain the character ’z’ or ’Z’
+Step 4: Write the code, its formal specification, and the verification annotations that help the
+solver prove the postconditions.
+In this case:
+
+
+TASK:
 Write a method in C
 AI ASSISTANT:
 Step 1: Determine the method’s formal specification.
