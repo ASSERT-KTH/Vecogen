@@ -54,12 +54,12 @@ def get_error_cause_and_strategy(output: str, file_path: str):
     if "Syntax error" in output or "syntax error" in output:
         # Remove the lines with [kernel] in the output
         output = re.sub(r'\[kernel\].*?\n', '', output)
-        return False, [f"There is a syntax error in the file, please check \
-            the file with this output in mind: {output}"]
+        return False, [("There is a syntax error in the code. The following output was generated:\n"
+                        f"{output}")]
     # Check if the output has a fatal error
     elif "fatal error" in output:
-        return False, [f"There is a fatal error in the file, please check \
-            the file with this output in mind: {output}"]
+        return False, [("There is a fatal error in the code. The following output was generated:\n"
+                        f"{output}")]
     # Check if the output has a timeout
     elif "Timeout" in output:
         # We filter the timeouts in the output to make it more readable
@@ -75,10 +75,10 @@ def get_error_cause_and_strategy(output: str, file_path: str):
         total_timeouts = total_timeouts.split("\n")[0].strip()
 
         # A string that contains the information about timeouts
-        timeout_string = f"Timeouts: {total_timeouts} of {total_goals}\n"
-
-        # Add the lines that caused the timeouts
-        timeout_string += "Lines that caused timeouts:\n"
+        timeout_string = (
+            f"The verification timed out. Timeouts: {total_timeouts} of {total_goals}.\n"
+            " The following lines caused the timeouts:\n"
+        )
 
         # Get the lines that caused timeouts
         for line in output.split("\n"):
@@ -86,27 +86,30 @@ def get_error_cause_and_strategy(output: str, file_path: str):
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
-                
+
                 # Get the line of code that caused the timeout, which comes after "line .."
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
                 code_line = get_line_in_code(file_path, line_number)
-                
+
                 # Replace everything in the brackets with the code in the line
                 line_without_path = re.sub(r'\([^)]*\)', code_line, "(" + line_without_path + ")")
-                
+
                 # Add the line in the file
                 timeout_string += line_without_path
 
         # Get a random strategy to solve the problem
-        possible_strategies = ["Simplify the code",
-                               "Add invariants to the code",
-                               "Make the invariants stronger",
-                               "Remove an invariant",
-                               "Add assertions within the code. Use the defined predicates and put the assertions as deep as possible.",]
+        # possible_strategies = [
+        #     "Simplify the code",
+        #     "Add invariants to the code",
+        #     "Make the invariants stronger",
+        #     "Remove an invariant",
+        #     "Add assertions within the code. "  +
+        #     " Use the defined predicates and put the assertions as deep as possible.",
+        #     ]
+        possible_strategies = ["Improve the code"]
 
-        return False, [f"The verification timed out. The following lines caused the \
-                timeouts: {timeout_string}. Please try to solve the problem with the following \
-                strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}"]
+        return False, [f"{timeout_string}. Please try to solve the problem with the following" + 
+        f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}"]
 
     # Otherwise the file is valid
     else:
