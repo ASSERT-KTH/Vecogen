@@ -1,6 +1,5 @@
 """Module for helper files that are used for debugging"""
 import os
-import sys
 
 def clear_debug(args, folder_name):
     """Clear the debugging folders
@@ -12,6 +11,8 @@ def clear_debug(args, folder_name):
             os.remove(folder_name + "/errors.txt")
         if os.path.exists(folder_name + "/output_gpt.txt"):
             os.remove(folder_name + "/output_gpt.txt")
+        if os.path.exists(folder_name + "/output.txt"):
+            os.remove(folder_name + "/output.txt")
         if os.path.exists(folder_name + "/prompt.txt"):
             os.remove(folder_name + "/prompt.txt")
 
@@ -27,7 +28,7 @@ def debug_to_file(args, folder_name, file_name, text):
             os.makedirs(folder_name)
         
         # Write the text to the file
-        with open(folder_name + f"{file_name}.txt", "a") as file:
+        with open(folder_name + f"/{file_name}.txt", "a", encoding="utf-8") as file:
             file.write(text + "\n")
     
     

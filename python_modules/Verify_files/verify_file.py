@@ -50,7 +50,8 @@ def get_error_cause_and_strategy(output: str, file_path: str):
     # Check if the output has a syntax error
     if "Syntax error" in output or "syntax error" in output:
         # Remove the lines with [kernel] in the output
-        output = re.sub(r'\[kernel\][^\n]*\n', '', output)
+        output = re.sub(r'\[kernel\].*?\n', '', output)
+
         return False, [("There is a syntax error in the code. The following output was generated:\n"
                         f"{output}")]
     # Check if the output has a fatal error
@@ -59,8 +60,6 @@ def get_error_cause_and_strategy(output: str, file_path: str):
                         f"{output}")]
     # Check if the output has a timeout
     elif "Timeout" in output:
-        # We filter the timeouts in the output to make it more readable
-
         # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
@@ -88,25 +87,20 @@ def get_error_cause_and_strategy(output: str, file_path: str):
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
                 code_line = get_line_in_code(file_path, line_number)
 
-                # Replace everything in the brackets with the code in the line
-                line_without_path = re.sub(r'\([^)]*\)', code_line, "(" + line_without_path + ")")
-
                 # Add the line in the file
-                timeout_string += line_without_path
-
+                timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
         # Get a random strategy to solve the problem
-        # possible_strategies = [
-        #     "Simplify the code",
-        #     "Add invariants to the code",
-        #     "Make the invariants stronger",
-        #     "Remove an invariant",
-        #     "Add assertions within the code. "  +
-        #     " Use the defined predicates and put the assertions as deep as possible.",
-        #     ]
-        possible_strategies = ["Improve the code"]
+        possible_strategies = [
+            "Simplify the code",
+            "Add invariants to the code",
+            "Make the invariants stronger",
+            "Remove an invariant",
+            "Add assertions within the code. "  +
+            " Use the defined predicates and put the assertions as deep as possible.",
+            ]
 
-        return False, [f"{timeout_string}. Please try to solve the problem with the following" +
-        f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}"]
+        return False, (f"{timeout_string}. Please try to solve the problem with the following" +
+        f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}")
 
     # Otherwise the file is valid
     else:

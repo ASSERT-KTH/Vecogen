@@ -33,7 +33,6 @@ python main.py function
 - 'list_dir'        : Lists the files given in a directory, where the directory is described by the -d flag
 - 'generate_prompt' : Generates a prompt for the user to given an .h file
 - 'generate_code"   : Generates the code for the given .h file using Large Language models. Requires the API key to be set.
-- 'clear'           : Clears all debug files
 
 # Existing flags
 - '-c' : The .c file

@@ -84,7 +84,7 @@ def require_solver(args):
     # Get the solvers
     available_solvers = solvers()
 
-    # If no solver is present then use all the solvers available    
+    # If no solver is present then use all the solvers available
     if args.solver is None:
         args.solver = ",".join(available_solvers)
     # If the solver is not available then exit

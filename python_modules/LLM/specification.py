@@ -5,7 +5,8 @@ from helper_files.analyse_specification import get_functions
 def add_specification_to_code(header_file_path: str, code):
     """Add the specification to the code. It makes sure to remove an existing specification
     Args:
-        
+        header_file_path: The path to the header file
+        code: The code to add the specification to
     Returns:
         None"""
     # Get the specification code from the header file path

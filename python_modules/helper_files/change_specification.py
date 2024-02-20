@@ -9,6 +9,7 @@ def get_line_in_code(file_path, line_number):
         The line in the file"""
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
+
     return lines[line_number - 1]
 
 def add_line_in_code(code, line_number, text):

@@ -80,7 +80,8 @@ def generate_code(args):
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
-    clear_debug(args, "tmp")
+    require_output_path(args)
+    clear_debug(args, args.output_path)
 
 def parse_arguments(functions_list):
     """Parse the arguments given to the tool"""
@@ -111,15 +112,17 @@ def parse_arguments(functions_list):
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
                         generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
-                        generation", type=str, default="tmp/")
+                        generation", type=str, default="tmp")
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
                         to the console", type=bool, action=argparse.BooleanOptionalAction, \
                         default=False)
     parser.add_argument('-model', '--model_name', help="The model name to use for the \
                         code generation", type=str, default="gpt-3.5-turbo")
     parser.add_argument('-improve', '--improve', help="Starts from the existing code and \
-            improves the code instead of generating from scratch", default=False, 
+            improves the code instead of generating from scratch", default=False,
             action=argparse.BooleanOptionalAction, type=bool)
+    parser.add_argument('-clear', '--clear', help="Clears the debugging folders",
+                        default=False, action=argparse.BooleanOptionalAction, type=bool)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
@@ -136,7 +139,6 @@ if __name__ == "__main__":
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
-        'clear': clear,
     }
 
     # Load the environment variables
@@ -144,6 +146,10 @@ if __name__ == "__main__":
 
     # Get a list of the functions
     arguments = parse_arguments(list(switcher.keys()))
+
+    # Clear the debugging folders if the clear argument is given
+    if arguments.clear:
+        clear(arguments)
 
     # Get the function from switcher dictionary
     switcher.get(arguments.function, lambda: "Invalid function")(arguments)
