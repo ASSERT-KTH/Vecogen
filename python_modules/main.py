@@ -7,7 +7,7 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt
+    require_c_file, require_solver, require_api_key_gpt, require_output_path
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -74,13 +74,14 @@ def generate_code(args):
     require_solver(args)
     require_header_file(args)
     require_api_key_gpt()
+    require_output_path(args)
     generate_code_pipeline(args)
-    
+
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
     clear_debug(args, "tmp")
-    
+
 def parse_arguments(functions_list):
     """Parse the arguments given to the tool"""
     # Create argument parser
@@ -110,14 +111,15 @@ def parse_arguments(functions_list):
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
                         generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
-                        generation", type=str, default="tmp")
+                        generation", type=str, default="tmp/")
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
                         to the console", type=bool, action=argparse.BooleanOptionalAction, \
                         default=False)
     parser.add_argument('-model', '--model_name', help="The model name to use for the \
                         code generation", type=str, default="gpt-3.5-turbo")
     parser.add_argument('-improve', '--improve', help="Starts from the existing code and \
-            improves the code instead of generating from scratch", default=False, action=argparse.BooleanOptionalAction, type=bool)
+            improves the code instead of generating from scratch", default=False, 
+            action=argparse.BooleanOptionalAction, type=bool)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')

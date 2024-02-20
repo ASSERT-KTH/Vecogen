@@ -6,11 +6,12 @@ You must adhere to the following rules:
 3. Do not change the specification
 
 You are given the following specification and problem description. You must return the code in the following format:
-```
+```C
 {HEADER_FILE_TEXT}
 ```
 
-The code that was generated did not compile successfully, the error message is: {COMPILATION_ERROR_MESSAGE}. Please revise the following code:
-```
+The code that was generated did not compile successfully, the error message is: {COMPILATION_ERROR_MESSAGE}.
+Please change the following code:
+```C
 {CODE_ATTEMPT}
 ```

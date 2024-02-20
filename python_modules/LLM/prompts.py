@@ -1,8 +1,8 @@
 """ This module contains the functions that generate prompts for the OPENAI models"""
 import os
 from GPT.check_tokens import num_tokens_from_string
-from helper_files.analyze_header import get_functions
-from helper_files.change_header import add_line_in_code
+from helper_files.analyse_specification import get_functions
+from helper_files.change_specification import add_line_in_code
 
 def initial_prompt(header_file_path, model, max_token_size):
     """Function that generates a prompt based on a header file
@@ -26,14 +26,15 @@ def initial_prompt(header_file_path, model, max_token_size):
         prompt_template = template.read()
 
     # Get the functions from the header file
-    functions = get_functions(header_file_path)
+    with open(header_file_path, 'r', encoding='utf-8') as file:
+        functions = get_functions(file.readlines())
 
     # For each function, add a line with "  // TODO: ADD CODE HERE"
     # We iterate backwards to avoid changing the line numbers
     for (line_number, _) in functions[::-1]:
         header_text = add_line_in_code(header_text, line_number + 1, 
                                        "  // TODO: ADD CODE HERE\n")
-        
+
     header_file_name = header_file_path.split("/")[-1]
 
     # Mapping that replaces the text in the template

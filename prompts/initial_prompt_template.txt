@@ -6,6 +6,6 @@ You must adhere to the following rules:
 3. Do not change the specification
 
 You are given the following specification and problem description. You must return the code in the following format:
-```c
+```C
 {HEADER_FILE_TEXT}
 ```

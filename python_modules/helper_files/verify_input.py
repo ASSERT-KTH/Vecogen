@@ -104,3 +104,10 @@ def require_api_key_gpt():
     if API_KEY_GPT is None:
         print("API key not set")
         sys.exit()
+
+def require_output_path(args):
+    """Function to check if the output path is set"""
+    if not args.output_path:
+        print("Please insert an output path using the -o or --output_path option")
+        sys.exit()
+    args.output_path = get_absolute_path(args.output_path)

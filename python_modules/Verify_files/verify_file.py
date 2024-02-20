@@ -2,7 +2,7 @@
 import subprocess
 import re
 import random
-from helper_files.change_header import get_line_in_code
+from helper_files.change_specification import get_line_in_code
 from helper_files.debug import debug_to_file
 
 def verify_file(args, path_to_c_file):
@@ -33,10 +33,7 @@ def verify_file(args, path_to_c_file):
     # See if there was an error in the command prompt
     if args.debug:
         debug_to_file(args, "../tmp/", "errors", stderr_str)
-
-    # If the debug is enabled, print the output of the command prompt
-    if args.debug:
-        print(stdout_str, stderr_str)
+        debug_to_file(args, "../tmp/", "output", stdout_str)
 
     # Get the error cause and the strategy to solve the error
     return get_error_cause_and_strategy(stdout_str, path_to_c_file)
@@ -53,7 +50,7 @@ def get_error_cause_and_strategy(output: str, file_path: str):
     # Check if the output has a syntax error
     if "Syntax error" in output or "syntax error" in output:
         # Remove the lines with [kernel] in the output
-        output = re.sub(r'\[kernel\].*?\n', '', output)
+        output = re.sub(r'\[kernel\][^\n]*\n', '', output)
         return False, [("There is a syntax error in the code. The following output was generated:\n"
                         f"{output}")]
     # Check if the output has a fatal error
@@ -108,7 +105,7 @@ def get_error_cause_and_strategy(output: str, file_path: str):
         #     ]
         possible_strategies = ["Improve the code"]
 
-        return False, [f"{timeout_string}. Please try to solve the problem with the following" + 
+        return False, [f"{timeout_string}. Please try to solve the problem with the following" +
         f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}"]
 
     # Otherwise the file is valid
