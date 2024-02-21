@@ -6,3 +6,5 @@ errors.txt
 prompt.txt
 python_modules/prompt.txt
 output_gpt.txt
+.vscode/
+```
