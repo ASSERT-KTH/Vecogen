@@ -4,7 +4,8 @@
 typedef unsigned int uint;
 
 /*@
-  // is the element a[m] the maximum among indices 0 to e?
+  // is the element a[m] the maximum among indices
+    0 to e?
   predicate is_max(int *a, integer e, integer m) =
     \forall integer i; 0 <= i <= e ==> a[i] <= a[m];
  */
