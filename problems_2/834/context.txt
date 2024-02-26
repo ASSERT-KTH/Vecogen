@@ -26,3 +26,5 @@ Output
 
 Note
 In the first sample it is necessary that at least 14% of 10 people came to the demonstration. As the number of people should be integer, then at least two people should come. There is only one wizard living in the city and he is going to come. That isn't enough, so he needs to create one clone. In the second sample 10 people should come to the demonstration. The city has 10 wizards. They will all come to the demonstration, so nobody has to create any clones.
+
+https://codeforces.com/problemset/problem/168/A

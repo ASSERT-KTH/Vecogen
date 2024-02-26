@@ -20,3 +20,5 @@ Output
 
 Note
 The possible positions in the first sample are: 2 and 3 (if we number the positions starting with 1). In the second sample they are 3, 4 and 5.
+
+https://codeforces.com/problemset/problem/124/A
