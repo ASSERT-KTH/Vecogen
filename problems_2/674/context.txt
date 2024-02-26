@@ -20,3 +20,5 @@ NO
 
 Note
 In the first case the program contains only one instruction — " H ", which prints " Hello, World! ". In the second case none of the program characters are language instructions.
+
+https://codeforces.com/problemset/problem/133/A

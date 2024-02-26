@@ -11,3 +11,5 @@ Input
 
 Output
 13
+
+https://codeforces.com/problemset/problem/171/B
