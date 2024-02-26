@@ -26,3 +26,5 @@ Input
 
 Output
 79
+
+https://codeforces.com/problemset/problem/678/D

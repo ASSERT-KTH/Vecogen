@@ -17,3 +17,5 @@ Input
 
 Output
 2 Note
+
+https://codeforces.com/problemset/problem/690/A1
