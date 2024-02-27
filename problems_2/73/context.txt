@@ -20,3 +20,5 @@ Output
 
 Note
 Polar bears use the Gregorian calendar. It is the most common calendar and you likely use it too. You can read about it on Wikipedia if you want to – https://en.wikipedia.org/wiki/Gregorian_calendar . The week starts with Monday. In the first sample Limak wants to save one candy on each Thursday (the 4-th day of the week). There are 52 Thursdays in the 2016. Thus, he will save 52 candies in total. In the second sample Limak wants to save one candy on the 30-th day of each month. There is the 30-th day in exactly 11 months in the 2016 — all months but February. It means that Limak will save 11 candies in total.
+
+https://codeforces.com/problemset/problem/611/A

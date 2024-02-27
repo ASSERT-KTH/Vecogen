@@ -20,3 +20,5 @@ Output
 
 Note
 The first sample is shown on the picture in the problem statement. One of the optimal routes is: house first shop second shop house. In the second sample one of the optimal routes is: house first shop house second shop house.
+
+https://codeforces.com/problemset/problem/599/A

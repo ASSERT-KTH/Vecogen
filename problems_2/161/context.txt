@@ -26,3 +26,5 @@ Output
 
 Note
 The first example is illustrated by the picture in the statements.
+
+https://codeforces.com/problemset/problem/659/A

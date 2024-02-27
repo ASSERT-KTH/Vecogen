@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample Luke should stay exactly in the middle of the segment, that is at coordinates [2;4] , as the presses move with the same speed. In the second sample he needs to occupy the position . In this case both presses move to his edges at the same time.
+
+https://codeforces.com/problemset/problem/624/A

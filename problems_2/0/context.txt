@@ -26,3 +26,5 @@ Output
 
 Note
 In the first sample Vasya can first put on one pair of different socks, after that he has two red socks left to wear on the second day.
+
+https://codeforces.com/problemset/problem/581/A

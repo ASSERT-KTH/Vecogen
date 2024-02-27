@@ -20,3 +20,5 @@ Output
 
 Note
 One of the possible solutions for the first sample is shown on the picture above.
+
+https://codeforces.com/problemset/problem/592/B

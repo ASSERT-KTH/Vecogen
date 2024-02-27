@@ -11,3 +11,5 @@ Input
 
 Output
 25
+
+https://codeforces.com/problemset/problem/630/A

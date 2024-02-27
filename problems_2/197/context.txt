@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample the digit at position 3 is ' 3 ', as both integers 1 and 2 consist on one digit. In the second sample, the digit at position 11 is ' 0 ', it belongs to the integer 10 .
+
+https://codeforces.com/problemset/problem/672/A

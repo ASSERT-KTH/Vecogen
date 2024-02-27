@@ -3,11 +3,9 @@
 */
 
 /*@
-    requires
-
-    assigns \nothing;
-    ensures
-        \result == 52 || \result == 53;
-
+    requires \valid_read(src) && \valid(out);
+    requires \separated(src, out);
+    requires \strlen(src) >= 0;
+    result
 */
-int problem(input);
+void problem(const char *src, int *out);

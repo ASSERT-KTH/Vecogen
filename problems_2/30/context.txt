@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample the speeds of the impulses are equal, so both of their meetings occur exactly in the middle of the corridor.
+
+https://codeforces.com/problemset/problem/591/A

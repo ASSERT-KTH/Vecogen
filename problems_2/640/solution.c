@@ -19,3 +19,17 @@ int problem(int n, int a, int b)
 {
     return n - a <= b ? n - a : b + 1;
 }
+
+int problem(int n, int a, int b)
+{
+    if (a + b == n)
+    {
+        return a + 1;
+    }
+    else if (a + b < n)
+    {
+        return b + 1;
+    }
+    else
+        return n - a;
+}

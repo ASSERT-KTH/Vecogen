@@ -1,8 +1,9 @@
 {
     "files.associations": {
         "*.rmd": "markdown",
+        "stdio.h": "c",
         "a.h": "c",
         "math.h": "c",
-        "stdio.h": "c"
+        "xlocale": "c"
     }
 }

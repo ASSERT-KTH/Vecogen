@@ -3,8 +3,9 @@
 */
 
 /*@
+    requires \valid(out);
     requires 1 <= n <= 1000000000;
-    assigns \nothing;
-    ensures \result == (2 * n + 1) / 3;
+    assigns *out;
+    ensures *out == (2 * n + 1) / 3;
 */
-int problem(int n);
+void problem(int n, int *out);

@@ -32,3 +32,5 @@ Output
 
 Note
 In the first sample, Artem can only give 1 stone to Masha. In the second sample, Atrem can give Masha 1 or 2 stones, though he can't give her 1 stone two times. In the third sample, Atrem can first give Masha 2 stones, a then 1 more stone. In the fourth sample, Atrem can first give Masha 1 stone, then 2 stones, and finally 1 stone again.
+
+https://codeforces.com/problemset/problem/669/A

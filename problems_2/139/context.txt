@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample there are only four houses on the street, two houses at each side. House 2 will be the last at Vasya's right. The second sample corresponds to picture with n = 8 . House 5 is the one before last at Vasya's left.
+
+https://codeforces.com/problemset/problem/638/A

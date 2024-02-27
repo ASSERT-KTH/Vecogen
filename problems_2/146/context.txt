@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample, the Mischievous Mess Makers can swap the cows in the stalls 1 and 5 during the first minute, then the cows in stalls 2 and 4 during the second minute. This reverses the arrangement of cows, giving us a total messiness of 10 . In the second sample, there is only one cow, so the maximum possible messiness is 0 .
+
+https://codeforces.com/problemset/problem/645/B

@@ -3,15 +3,17 @@
 */
 
 /*@
+    requires \valid(out);
     requires 1 <= n <= 100;
     requires 1 <= a <= n;
     requires -100 <= b <= 100;
-    assigns \nothing;
-    behavior b_greater_than_0:
-        assumes b > 0;
-        ensures \result == (a + b - 1) % n + 1;
-    behavior b_less_than_0:
-        assumes b < 0;
-        ensures \result == (a + n + b - 1) % n + 1;
+    assigns *out;
+    ensures 1 <= *out <= n;
+    behavior a_plus_b_mod_n_equals_0:
+        assumes ((a + ((b % n) + n) % n) % n) == 0;
+        ensures *out == n;
+    behavior a_plus_b_mod_n_not_equals_0:
+        assumes ((a + ((b % n) + n) % n) % n) != 0;
+        ensures *out == (a + ((b % n) + n) % n) % n;
 */
-int problem(int n, int a, int b);
+void problem(int n, int a, int b, int *out);

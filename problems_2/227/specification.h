@@ -3,11 +3,12 @@
 */
 
 /*@
+    requires \valid(out);
     requires 1 <= A <= 1000000000;
     requires 1 <= B <= 1000000000;
     requires 1 <= x <= 1000000000;
     requires 1 <= n <= 1000000000000000000;
-    assigns \nothing;
-    ensures \result == g ( n ) ( x ) % 1000000007;
+    assigns *out;
+    ensures *out == g ( n ) ( x ) % 1000000007;
 */
-int problem(int A, int B, long long n, int x);
+int problem(int A, int B, long long n, int x, int *out);

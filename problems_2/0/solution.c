@@ -4,62 +4,35 @@
 
 /* Computation of the maximal number of days when hhe can dress fashionable and wear different socks */
 /*@
-    requires a >= 0 &&  a<= 1;
-    requires b >= 0 &&  b <= 100;
-    assigns \nothing;
+    requires \valid(out_1) && \valid(out_2) && \separated(out_1, out_2);
+    requires 1 <= a <= 100;
+    requires 1 <= b <= 100;
+    assigns *out_1, *out_2;
     behavior has_more_red:
         assumes a > b;
-        ensures \result == b;
+        ensures *out_1 == b && *out_2 == (a - b) / 2;
     behavior has_more_blue:
         assumes b > a;
-        ensures \result == a;
+        ensures *out_1 == a && *out_2 == (b - a) / 2;
     behavior equal_socks:
         assumes a == b;
-        ensures \result == a;
+        ensures *out_1 == a && *out_2 == 0;
 */
-int maximum_days_socks(int a, int b)
+void problem(int a, int b, int *out_1, int *out_2)
 {
     if (a > b)
     {
-        return b;
+        *out_1 = b;
+        *out_2 = (a - b) / 2;
     }
     else if (b > a)
     {
-        return a;
+        *out_1 = a;
+        *out_2 = (b - a) / 2;
     }
     else
     {
-        return a;
-    }
-}
-
-/* Computation of the maximal number of days where he can wear the same socks until he either uns out of socks or cannot make a single pair from the socks he has got*/
-/*@
-    requires a >= 0 &&  a<= 1;
-    requires b >= 0 &&  b <= 100;
-    assigns \nothing;
-    behavior has_more_red:
-        assumes a > b;
-        ensures \result == (a - b) / 2;
-    behavior has_more_blue:
-        assumes b > a;
-        ensures \result == (b - a) / 2;
-    behavior equal_socks:
-        assumes a == b;
-        ensures \result == 0;
-*/
-int days_remaining_sock(int a, int b)
-{
-    if (a > b)
-    {
-        return (a - b) / 2;
-    }
-    else if (b > a)
-    {
-        return (b - a) / 2;
-    }
-    else
-    {
-        return 0;
+        *out_1 = a;
+        *out_2 = 0;
     }
 }
