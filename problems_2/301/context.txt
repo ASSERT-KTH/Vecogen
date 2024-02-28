@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample, friends should meet at the point 4 . Thus, the first friend has to travel the distance of 3 (from the point 7 to the point 4 ), the second friend also has to travel the distance of 3 (from the point 1 to the point 4 ), while the third friend should not go anywhere because he lives at the point 4 .
+
+https://codeforces.com/problemset/problem/723/A

@@ -3,12 +3,13 @@
 */
 
 /*@
+    requires \valid(out);
     requires 1 <= n <= 10000;
     requires 1 <= l <= 1000000000;
-    requires 1 <= v1 <= v2 <= 1000000000;
+    requires 1 <= v1 < v2 <= 1000000000;
     requires 1 <= k <= n;
-    assigns \nothing;
-    ensures \result >= 0;
+    assigns *out;
+    ensures *out >= 0;
 
 */
-float problem(int n, int l, int v1, int v2, int k);
+void problem(int n, int l, int v1, int v2, int k, int *out);

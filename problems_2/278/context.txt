@@ -11,3 +11,5 @@ e4
 
 Output
 8
+
+https://codeforces.com/problemset/problem/710/A

@@ -20,3 +20,5 @@ Output
 
 Note
 In the first sample we should immediately put all five pupils to the bus. The speed of the bus equals 2 and the distance is equal to 10 , so the pupils will reach the place of excursion in time 10 / 2 = 5 .
+
+https://codeforces.com/problemset/problem/700/A

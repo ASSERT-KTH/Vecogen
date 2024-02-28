@@ -3,33 +3,20 @@
 */
 
 /*@
+    requires \valid(out);
     requires 0 <= n <= 100;
     requires 0 <= a < n;
     requires 0 <= b < n;
-    assigns \nothing;
+    assigns *out;
     behavior a_plus_b_less_than_n:
         assumes a + b < n;
-        ensures \result == b + 1;
+        ensures *out == b + 1;
     behavior a_plus_b_greater_than_n:
         assumes a + b >= n;
-        ensures \result == n - a;
+        ensures *out == n - a;
 */
 
-int problem(int n, int a, int b)
+void problem(int n, int a, int b, int *out)
 {
-    return n - a <= b ? n - a : b + 1;
-}
-
-int problem(int n, int a, int b)
-{
-    if (a + b == n)
-    {
-        return a + 1;
-    }
-    else if (a + b < n)
-    {
-        return b + 1;
-    }
-    else
-        return n - a;
+    *out = n - a <= b ? n - a : b + 1;
 }

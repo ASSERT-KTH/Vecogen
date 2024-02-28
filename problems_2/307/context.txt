@@ -26,3 +26,5 @@ YES
 
 Note
 In the second sample, one can consider February 1 and March 1 of year 2015. Both these days were Sundays. In the third sample, one can consider July 1 and August 1 of year 2017. First of these two days is Saturday, while the second one is Tuesday.
+
+https://codeforces.com/problemset/problem/724/A

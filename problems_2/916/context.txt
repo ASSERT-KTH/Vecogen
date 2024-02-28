@@ -26,3 +26,5 @@ Output
 
 Note
 In the first sample a grown-up rides with two children and pays two rubles. In the second sample there are only children in the bus, so the situation is impossible. In the third sample there are two cases: Each of the two grown-ups rides with one children and pays one ruble for the tickets. In this case the passengers pay two rubles in total. One of the grown-ups ride with two children's and pays two rubles, the another one rides alone and pays one ruble for himself. So, they pay three rubles in total.
+
+https://codeforces.com/problemset/problem/190/A

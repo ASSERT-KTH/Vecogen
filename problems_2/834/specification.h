@@ -3,16 +3,17 @@ Some country is populated by wizards. They want to organize a demonstration. The
  */
 
 /*@
+    requires \valid(out);
     requires 1 <= x <= 10000;
     requires 1 <= y <= 10000;
     requires 1 <= n <= 10000;
     requires  x <= n;
-    \assigns \nothing;
+    assigns *out;
     behavior zero_clones:
         assumes (n * y + 99) / 100 - x <= 0;
-        ensures \result == 0;
+        ensures *out == 0;
     behavior positive_clones:
         assumes (n * y + 99) / 100 - x > 0;
-        ensures \result == (n * y + 99) / 100 - x;
+        ensures *out == (n * y + 99) / 100 - x;
 */
 int problem(int n, int x, int y);

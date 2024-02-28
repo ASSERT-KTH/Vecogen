@@ -26,3 +26,5 @@ Output
 
 Note
 In the first example Nikolay can use 1 lemon, 2 apples and 4 pears, so the answer is 1 + 2 + 4 = 7 . In the second example Nikolay can use 3 lemons, 6 apples and 12 pears, so the answer is 3 + 6 + 12 = 21 . In the third example Nikolay don't have enough pears to cook any compote, so the answer is 0 .
+
+https://codeforces.com/problemset/problem/746/A

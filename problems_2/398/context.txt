@@ -29,3 +29,5 @@ Output
 
 Note
 The first and the second samples are shown on the picture. The green place corresponds to Santa Claus' place in the first example, the blue place corresponds to Santa Claus' place in the second example. In the third sample there are two lanes with four desks in each, and Santa Claus has the fourth place. Thus, his place is in the first lane at the second desk on the right.
+
+https://codeforces.com/problemset/problem/748/A

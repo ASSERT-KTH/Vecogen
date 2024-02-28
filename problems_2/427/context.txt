@@ -26,3 +26,5 @@ Output
 
 Note
 The first example corresponds to the January 2017 shown on the picture in the statements. In the second example 1 -st January is Monday, so the whole month fits into 5 columns. In the third example 1 -st November is Saturday and 5 columns is enough.
+
+https://codeforces.com/problemset/problem/760/A
