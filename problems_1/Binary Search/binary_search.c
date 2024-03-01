@@ -15,34 +15,34 @@
 */
 int binary_search(int a[], int n, int x)
 {
-    int low = 0;
-    int high = n - 1;
+  int low = 0;
+  int high = n - 1;
 
-    /*@
-      loop invariant 0 <= low <= high + 1;
-      loop invariant high <= n - 1;
-      loop invariant \forall integer k; 0 <= k < low ==> a[k] < x;
-      loop invariant \forall integer k; high < k <= n - 1 ==> a[k] > x;
-      loop assigns low, high;
-      loop variant high - low;
-    */
-    while (low <= high)
+  /*@
+    loop invariant 0 <= low <= high + 1;
+    loop invariant high <= n - 1;
+    loop invariant \forall integer k; 0 <= k < low ==> a[k] < x;
+    loop invariant \forall integer k; high < k <= n - 1 ==> a[k] > x;
+    loop assigns low, high;
+    loop variant high - low;
+  */
+  while (low <= high)
+  {
+    int mid = low + (high - low) / 2;
+
+    if (a[mid] == x)
     {
-        int mid = low + (high - low) / 2;
-
-        if (a[mid] == x)
-        {
-            return mid;
-        }
-        else if (a[mid] < x)
-        {
-            low = mid + 1;
-        }
-        else
-        {
-            high = mid - 1;
-        }
+      return mid;
     }
+    else if (a[mid] < x)
+    {
+      low = mid + 1;
+    }
+    else
+    {
+      high = mid - 1;
+    }
+  }
 
-    return -1;
+  return -1;
 }
