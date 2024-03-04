@@ -1,5 +1,12 @@
 #include <stdio.h>
 unsigned long long int m = 1000000007;
+
+/*
+    requires 1 <= x <= 1000000000;
+    requires 1 <= n <= 1000000000;
+    ensurers \result == (x^n) % 1000000007;
+
+*/
 unsigned long long int bigmod(unsigned long long int x, unsigned long long int n)
 {
     if (n == 0)

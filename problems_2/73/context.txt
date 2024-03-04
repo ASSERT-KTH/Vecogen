@@ -4,7 +4,7 @@ Input
 The only line of the input is in one of the following two formats: " x of week " where x ( 1 ≤ x ≤ 7 ) denotes the day of the week. The 1-st day is Monday and the 7-th one is Sunday. " x of month " where x ( 1 ≤ x ≤ 31 ) denotes the day of the month.
 
 Output
-Print one integer — the number of candies Limak will save in the year 2016. Examples
+Print one integer — the number of candies Limak will save in the year 201d6. Examples
 
 Input
 4 of week
