@@ -3,10 +3,12 @@
 */
 
 /*@
-  requires \valid_read(s+(0..)); // The string s must be valid for reading up to its null terminator.
-  ensures \result == 0; // The result should be the length of the string s.
+    requries \valid(out);
+    // If the mode is 0, then it is week, if it is 1, then it is month
+    requires mode == 0 || mode == 1;
+    requires (mode == 0 ==> x >= 1 && x <= 7) && (mode == 1 ==> x >= 1 && x <= 31);
+    assigns *out;
+    ensures *out >= 0;
+
 */
-int my_strlen(const char *s)
-{
-    return 0;
-}
+void my_strlen(int x, int mode, int *out);

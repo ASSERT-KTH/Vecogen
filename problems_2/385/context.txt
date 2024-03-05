@@ -21,4 +21,4 @@ Output
 Note
 In the first example it is profitable for Igor to go by foot and not to wait the tram. Thus, he has to pass 2 meters and it takes 8 seconds in total, because he passes 1 meter per 4 seconds. In the second example Igor can, for example, go towards the point x 2 and get to the point 1 in 6 seconds (because he has to pass 3 meters, but he passes 1 meters per 2 seconds). At that moment the tram will be at the point 1 , so Igor can enter the tram and pass 1 meter in 1 second. Thus, Igor will reach the point x 2 in 7 seconds in total.
 
-https://codeforces.com/problemset/problem/116/A
+https://codeforces.com/problemset/problem/746/C

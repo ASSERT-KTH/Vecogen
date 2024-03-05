@@ -11,16 +11,28 @@
     requires d == 1 || d == -1;
     requires \valid(out);
     assigns *out;
-    behavior x1_lt_x2_and_d_equals_1:
-        assumes x1 < x2 && d == 1;
-        ensures *out == \min((x2 - x1) * t2, (x2 - x1) * t1 +( (p <= x1) ? (x1 - p) * t1 : (p <= x2) ? (2 * s - p + x1) * t1 : 0));
-    behavior x1_lt_x2_and_d_not_equals_1:
+    behavior x1_less_than_x2_and_d_equals_1_and_p_less_than_x1:
+        assumes x1 < x2 && d == 1 && p <= x1;
+        ensures *out == \min((x2 - x1) * t2, (x2 - x1) * t1 + (x1 - p) * t1);
+    behavior x1_less_than_x2_and_d_equals_1_and_p_less_than_x2:
+        assumes x1 < x2 && d == 1 && p <= x2;
+        ensures *out == \min((x2 - x1) * t2, (2 * s - p + x2) * t1);
+    behavior x1_less_than_x2_and_d_equals_1_and_p_greater_than_x2:
+        assumes x1 < x2 && d == 1 && p > x2;
+        ensures *out == \min((x2 - x1) * t2, (2 * s - p + x2) * t1);
+    behavior x1_less_than_x2_and_d_not_equals_1:
         assumes x1 < x2 && d == -1;
         ensures *out == \min((x2 - x1) * t2, (x2 - x1) * t1 + (p + x1) * t1);
-    behavior x1_geq_x2_and_d_equals_1:
-        assumes x1 >= x2 && d == 1;
-        ensures *out == \min((x1 - x2) * t2, (x1 - x2) * t1 + ((p >= x1) ? (x1 - p) * t1 : (p >= x2) ? (2 * s + p - x1) * t1 : 0));
-    behavior x1_geq_x2_and_d_not_equals_1:
+    behavior x1_greater_than_x2_and_d_equals_1_and_p_greater_than_x1:
+        assumes x1 >= x2 && d == 1 && p >= x1;
+        ensures *out == \min((x1 - x2) * t2, (x1 - x2) * t1 + (x1 - p) * t1);
+    behavior x1_greater_than_x2_and_d_equals_1_and_p_greater_than_x2:
+        assumes x1 >= x2 && d == 1 && p >= x2;
+        ensures *out == \min((x1 - x2) * t2, (2 * s + p - x2) * t1);
+    behavior x1_greater_than_x2_and_d_equals_1_and_p_less_than_x2:
+        assumes x1 >= x2 && d == 1 && p < x2;
+        ensures *out == \min((x1 - x2) * t2, (2 * s + p - x2) * t1);
+    behavior x1_greater_than_x2_and_d_not_equals_1:
         assumes x1 >= x2 && d == -1;
         ensures *out == \min((x1 - x2) * t2, (x1 - x2) * t1 + (2 * s - p - x1) * t1);
     complete behaviors;
@@ -50,6 +62,10 @@ void tram(long s, long x1, long x2, long t1, long t2, long p, long d, long *out)
             ext = (x1 - p) * t1;
         }
         else if (p <= x2)
+        {
+            ext = (2 * s - p + x1) * t1;
+        }
+        else
         {
             ext = (2 * s - p + x1) * t1;
         }

@@ -18,4 +18,4 @@
     complete behaviors;
     disjoint behaviors;
 */
-void problem(int N, long *out1, long *out2)
+void problem(int N, long *out1, long *out2);
