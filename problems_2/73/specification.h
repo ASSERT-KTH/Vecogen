@@ -3,12 +3,19 @@
 */
 
 /*@
-    requries \valid(out);
+    requires \valid(out);
     // If the mode is 0, then it is week, if it is 1, then it is month
     requires mode == 0 || mode == 1;
     requires (mode == 0 ==> x >= 1 && x <= 7) && (mode == 1 ==> x >= 1 && x <= 31);
     assigns *out;
-    ensures *out >= 0;
+    behavior week:
+        assumes mode == 0;
+        ensures *out == 52 + ((x == 5 || x == 6) ? 1 : 0);
+    behavior month:
+        assumes mode == 1;
+        ensures *out == 12 - ((x > 29) ? 1 : 0) - 4 * ((x > 30) ? 1 : 0);
+    complete behaviors;
+    disjoint behaviors;
 
 */
-void my_strlen(int x, int mode, int *out);
+void problem(int x, int mode, int *out);

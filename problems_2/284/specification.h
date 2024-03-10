@@ -18,5 +18,7 @@
     behavior remainder:
         assumes !(r1 < l2 || l1 > r2);
         ensures *out == \min(r1, r2) - \max(l1, l2) + (\max(l1, l2) <= k <= \min(r1, r2) ? 0 : 1);
-*/
+    complete behaviors;
+    disjoint behaviors;
+    */
 void problem(int l1, int r1, int l2, int r2, int k, int *out_1);

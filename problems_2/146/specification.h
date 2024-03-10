@@ -13,5 +13,7 @@
     behavior k_smaller_than_n_divided_by_two:
         assumes k < n / 2;
         ensures *out ==  k * (2 * n - 1 - 2 * k);
+    complete behaviors;
+    disjoint behaviors;
 */
 void problem(long n, int k, long *out);

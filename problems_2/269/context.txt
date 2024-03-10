@@ -41,3 +41,5 @@ Output
 
 Note
 Illustration for the first sample.
+
+https://codeforces.com/problemset/problem/707/C

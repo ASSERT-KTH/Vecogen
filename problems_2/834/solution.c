@@ -15,6 +15,8 @@ Some country is populated by wizards. They want to organize a demonstration. The
     behavior positive_clones:
         assumes (n * y + 99) / 100 - x > 0;
         ensures *out == (n * y + 99) / 100 - x;
+    complete behaviors;
+    disjoint behaviors;
 */
 void problem(int n, int x, int y, int *out)
 {

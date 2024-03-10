@@ -15,6 +15,8 @@
     behavior a_plus_b_mod_n_not_equals_0:
         assumes ((a + ((b % n) + n) % n) % n) != 0;
         ensures *out == (a + ((b % n) + n) % n) % n;
+    complete behaviors;
+    disjoint behaviors;
 */
 void problem(int n, int a, int b, int *out)
 {

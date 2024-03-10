@@ -17,5 +17,7 @@
     behavior equal_socks:
         assumes a == b;
         ensures *out_1 == a && *out_2 == 0;
+    complete behaviors;
+    disjoint behaviors;
 */
 void problem(int a, int b, int *out_1, int *out_2);

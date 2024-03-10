@@ -7,22 +7,5 @@
     requires  1 <= k <= 250;
     requires 3 * n <= k <= 5 * n ;
     assigns *out;
-    behavior count_leq_0:
-        assumes (k - n) <= 0;
-        ensures *out == 0;
-    behavior count_gt_0:
-        assumes (k - n) > 0;
-        ensures *out == (k - n);
-*/
-void problem(int n, int k, int *out)
-{
-    int num1, num2, count;
-    num1 = n * 2;
-    num2 = k - num1;
-    count = n - num2;
-    if (count <= 0)
-    {
-        count = 0;
-    }
-    *out = count;
-}
+    ensures *out == \max(0, 3 * n- k); */
+void problem(int n, int k, int *out);

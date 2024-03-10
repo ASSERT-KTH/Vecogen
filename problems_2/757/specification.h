@@ -12,20 +12,7 @@
     requires 1 <= nl <= 1000;
     requires 1 <= np <= 1000;
     assigns *out;
-    behavior too_few_drinks:
-        assumes
-            (((k * l) / nl) < (c * d)) && (((k * l) / nl) < (p / np));
-        ensures
-            *out == (((k * l) / nl) / n);
-    behavior too_few_slices:
-        assumes
-            ((c * d) < ((k * l) / nl)) && ((c * d) < (p / np));
-        ensures
-            *out == (c * d) / n;
-    behavior too_few_salt:
-        assumes
-            ((p / np) < ((k * l) / nl)) && ((p / np) < (c * d));
-        ensures
-            *out == ((p / np) / n);
+    ensures *out == \min((k * l) / nl, \min(c * d, p / np)) / n;
+    ensures *out >= 0;
 */
-int problem(int n, int k, int l, int c, int d, int p, int nl, int np);
+void problem(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);

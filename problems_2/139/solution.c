@@ -12,6 +12,8 @@
     behavior a_is_odd:
         assumes a % 2 == 1;
         ensures *out == (a + 1) / 2 ;
+    complete behaviors;
+    disjoint behaviors;
 */
 void problem(int n, int a, int *out)
 {

@@ -7,7 +7,9 @@
     requires 1 <= p <= 500;
     requires 1 <= q <= 500;
     assigns *out;
-    ensures *out == (l / (p + q)) * p;
+
+    // In the code specification the result and the logic variable should differ by 0.0001
+    ensures \abs(((l / (p + q)) * p) - *out)/(\max(1, (l / (p + q)) * p)) <= 0.0001;
 */
 void problem(int l, int p, int q, int *out)
 {

@@ -7,20 +7,7 @@
     requires d2 > 1 && d2 <= 100000000;
     requires d3 > 1 && d3 <= 100000000;
     assigns *out;
-    behavior distance_house_and_shops_equal_to_direct_distance:
-        assumes (d1 + d2) == d3;
-        ensures *out == 2 * d3;
-    behavior distance_house_and_shops_smaller_than_direct_distance:
-        assumes (d1 + d2) < d3;
-        ensures *out == 2 * (d1 + d2);
-    behavior distance_house_and_shops_greater_than_direct_distance_1:
-        assumes (d1 + d2) > d3 && (d1 + d3) < d2;
-        ensures *out == 2 * (d1 + d3);
-    behavior distance_house_and_shops_greater_than_direct_distance_2:
-        assumes (d1 + d2) > d3 && (d2 + d3) < d1;
-        ensures *out == 2 * (d2 + d3);
-    behavior distance_house_and_shops_greater_than_direct_distance_3:
-        assumes (d1 + d2) > d3 && ((d1 + d3) > d2) && ((d2 + d3) > d1);
-        ensures *out == d1 + d2 + d3;
+    // Get the minimum of all four possible paths
+    ensures *out == \min(2 * d1 + 2 * d2, \min(d1 + d2 + d3, \min(2 * d1 + 2 * d3, 2 * d2 + 2 * d3)));
 */
 void problem(int d1, int d2, int d3, int *out);

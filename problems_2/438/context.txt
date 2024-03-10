@@ -12,4 +12,4 @@ Input
 Output
 4
 
-https://vjudge.net/problem/CodeForces-1A
+https://codeforces.com/problemset/problem/1/A

@@ -14,6 +14,7 @@
     behavior a_plus_b_greater_than_n:
         assumes a + b >= n;
         ensures *out == n - a;
+    complete behaviors;
+    disjoint behaviors;
 */
-
 void problem(int n, int a, int b, int *out);

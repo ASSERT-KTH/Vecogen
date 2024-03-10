@@ -3,17 +3,11 @@
 
 /*@
     requires \valid(out);
-    requires    1 <= n <= 50;
-    requires    1 <= k <= 250;
-    requires    2 * n <= k <= 5 * n;
+    requires  1 <= n <= 50;
+    requires  1 <= k <= 250;
+    requires 3 * n <= k <= 5 * n ;
     assigns *out;
-    behavior count_less_equal_0:
-        assumes (3 * n - k) <= 0;
-        ensures *out == 0;
-    behavior count_greater_0:
-        assumes (3 * n - k) > 0;
-        ensures *out == (3 * n - k);
-*/
+    ensures *out == \max(0, 3 * n- k); */
 void problem(int n, int k, int *out)
 {
     if (3 * n - k <= 0)
