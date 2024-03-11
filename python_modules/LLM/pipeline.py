@@ -12,7 +12,7 @@ def generate_code(args):
         args: The arguments given to the program
     Returns:
         None"""
-    
+
     # Create a 3d array to store the results
     results = []
 
@@ -36,9 +36,9 @@ def generate_code(args):
 
         # Get the output path
         prompt = verification_error_prompt(header_file_path, code, output, \
-                    args.model_name, args.max_tokens)
+                    args.model_name, args.max_tokens, args.allowloops)
     else:
-        prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens)
+        prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens, args.allowloops)
 
     # Boolean that indicates if the code has been verified
     verified = False
@@ -100,12 +100,13 @@ def generate_code(args):
         # Check if the code needs to be rebooted
         if not verified and i_reboot == args.reboot:
             print("Code has not been verified, rebooting...")
-            prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens)
+            prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens,
+                                    args.allowloops)
             i_reboot = 0
         else :
             # Create a new prompt based on the output
             prompt = verification_error_prompt(header_file_path, code, output, args.model_name,
-                                            args.max_tokens)
+                                            args.max_tokens, args.allowloops)
 
         i_reboot += 1
         i += 1

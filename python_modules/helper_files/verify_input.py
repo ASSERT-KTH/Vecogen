@@ -127,32 +127,32 @@ def ensure_integers(args):
         args: The arguments given by the user
     Returns:
         None"""
-    
+
     # Ensure that the weakest precondition timeout is a positive integer
-    if args.timeout_wp is not None and args.timeout_wp <= 0:
-        print("The weakest precondition timeout must be a positive integer")
+    if args.wp_timeout is not None and args.wp_timeout <= 0:
+        print("The weakest precondition timeout must be a strictly positive integer")
         sys.exit()
 
     # Ensure that the number of iterations is a positive integer
     if args.iterations is not None and args.iterations <= 0:
-        print("The number of iterations must be a positive integer")
+        print("The number of iterations must be a strictly positive integer")
         sys.exit()
 
     # Ensure that the maximum tokens is a positive integer
     if args.max_tokens is not None and args.max_tokens <= 0:
-        print("The maximum tokens must be a positive integer")
+        print("The maximum tokens must be a strictly positive integer")
         sys.exit()
 
     # Ensure that the temperature is a positive value between 0 and 1
-    if args.temperature is not None and args.temperature <= 0:
-        print("The temperature must be a positive integer")
+    if args.temperature is not None and args.temperature < 0:
+        print("The temperature must be a positive value")
         sys.exit()
     elif args.temperature > 1:
         print("The temperature must be a value between 0 and 1")
         sys.exit()
 
     # Ensure that the weakest precondition steps is a positive integer
-    if args.steps_wp is not None and args.steps_wp <= 0:
+    if args.wp_steps is not None and args.wp_steps <= 0:
         print("The weakest precondition steps must be a positive integer")
         sys.exit()
 

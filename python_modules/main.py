@@ -64,7 +64,8 @@ def verify_dir(args):
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
     require_header_file(args)
-    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name, args.max_tokens)
+    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name, 
+                                               args.max_tokens, args.allowloops)
 
     # filter out the -----END_ASSISTANT_INFORMATION-----  from the prompt
     print(initial_prompt_unfiltered.replace("-----END_ASSISTANT_INFORMATION-----", ""))
@@ -127,6 +128,8 @@ def parse_arguments(functions_list):
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument('-reboot', '--reboot', help="Set the amount of iterations before a \
                         reboot occurs", default= 999999, type=int)
+    parser.add_argument("-al", "--allowloops", help="Allow loops in the generated code",
+                        default=False, action=argparse.BooleanOptionalAction, type=bool)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')

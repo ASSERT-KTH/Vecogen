@@ -4,12 +4,25 @@ from GPT.check_tokens import num_tokens_from_string
 from helper_files.analyse_specification import get_functions
 from helper_files.change_specification import add_line_in_code
 
-def initial_prompt(header_file_path, model, max_token_size):
+def replace_loops(use_loops):
+    """ Function that returns a string based on the use_loops boolean
+    Args:
+        use_loops: Boolean that indicates if the code should use loops
+    Returns:
+        A string that indicates if the code should use loops or not"""
+
+    if use_loops:
+        return "for, while, do-while or recursive loops"
+    else:
+        return "no loops"
+
+def initial_prompt(header_file_path, model, max_token_size, use_loop):
     """Function that generates a prompt based on a header file
     Args:
         header_file_path: The path to the header file
         model: The model to use
         max_token_size: The maximum token size allowed
+        use_loop: Boolean that indicates if the code should use loops
     Returns:
         The prompt as a string"""
 
@@ -32,7 +45,7 @@ def initial_prompt(header_file_path, model, max_token_size):
     # For each function, add a line with "  // TODO: ADD CODE HERE"
     # We iterate backwards to avoid changing the line numbers
     for (line_number, _) in functions[::-1]:
-        header_text = add_line_in_code(header_text, line_number + 1, 
+        header_text = add_line_in_code(header_text, line_number + 1,
                                        "  // TODO: ADD CODE HERE\n")
 
     header_file_name = header_file_path.split("/")[-1]
@@ -40,7 +53,8 @@ def initial_prompt(header_file_path, model, max_token_size):
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
         "HEADER_FILE_TEXT": header_text,
-        "HEADER_FILE_NAME": header_file_name
+        "HEADER_FILE_NAME": header_file_name,
+        "ALLOW_LOOPS": replace_loops(use_loop),
     }
 
     # Apply the map to the template
@@ -54,8 +68,8 @@ def initial_prompt(header_file_path, model, max_token_size):
 
     return prompt_mapped
 
-def compilation_error_prompt(header_file_path, previous_attempt, error_message, 
-                             model, max_token_size):
+def compilation_error_prompt(header_file_path, previous_attempt, error_message,
+                             model, max_token_size, use_loop):
     """Function that generates a prompt based on a compilation error message
     Args:
         header_file_path: The path to the header file
@@ -63,6 +77,7 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
         error_message: The error message from the compilation
         model: The model to use
         max_token_size: The maximum token size allowed
+        use_loop: Boolean that indicates if the code should use loops
     Returns:
         The prompt as a string"""
 
@@ -86,7 +101,8 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
         "HEADER_FILE_TEXT": header_text,
         "CODE_ATTEMPT": previous_attempt,
         "COMPILATION_ERROR_MESSAGE": error_message,
-        "HEADER_FILE_NAME": header_file_name
+        "HEADER_FILE_NAME": header_file_name,
+        "ALLOW_LOOPS": replace_loops(use_loop),
     }
 
     # Apply the map to the template
@@ -101,7 +117,7 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
     return prompt_mapped
 
 def verification_error_prompt(header_file_path, previous_attempt, error_message,
-                              model, max_token_size):
+                              model, max_token_size, use_loop):
     """Function that generates a prompt based on a verification error message
     Args:
         header_file_path: The path to the header file
@@ -132,7 +148,8 @@ def verification_error_prompt(header_file_path, previous_attempt, error_message,
         "HEADER_FILE_TEXT": header_text,
         "CODE_ATTEMPT": previous_attempt,
         "VERIFICATION_ERROR_MESSAGE": error_message,
-        "HEADER_FILE_NAME": header_file_name
+        "HEADER_FILE_NAME": header_file_name,
+        "ALLOW_LOOPS": replace_loops(use_loop),
     }
 
     # Apply the map to the template
