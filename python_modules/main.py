@@ -7,7 +7,7 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt, require_output_path
+    require_c_file, require_solver, require_api_key_gpt, require_output_path, ensure_integers
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -89,7 +89,7 @@ def parse_arguments(functions_list):
     parser = argparse.ArgumentParser()
 
     # Positional mandatory arguments
-    parser.add_argument("function", help="The function to call", type=str, 
+    parser.add_argument("function", help="The function to call", type=str,
                         choices=functions_list)
 
     # Optional arguments
@@ -113,6 +113,8 @@ def parse_arguments(functions_list):
                         generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
                         generation", type=str, default="tmp")
+    parser.add_argument('-output-file', '--output_file', help="The output file to use for the \
+                        code generation", type=str, default="output")
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
                         to the console", type=bool, action=argparse.BooleanOptionalAction, \
                         default=False)
@@ -123,6 +125,8 @@ def parse_arguments(functions_list):
             action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument('-clear', '--clear', help="Clears the debugging folders",
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
+    parser.add_argument('-reboot', '--reboot', help="Set the amount of iterations before a \
+                        reboot occurs", default= 999999, type=int)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
@@ -146,6 +150,9 @@ if __name__ == "__main__":
 
     # Get a list of the functions
     arguments = parse_arguments(list(switcher.keys()))
+
+    # Ensure that the integers are valid
+    ensure_integers(arguments)
 
     # Clear the debugging folders if the clear argument is given
     if arguments.clear:

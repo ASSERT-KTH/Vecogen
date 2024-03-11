@@ -47,6 +47,7 @@ def generate_code(args):
 
     # Loop that iteratively prompts and checks the code
     i = 0
+    i_reboot = 0
     while (i < args.iterations and not verified):
         print("-" * 50)
         print(f"Iteration {i+1} of {args.iterations}, generating code...")
@@ -66,11 +67,10 @@ def generate_code(args):
         code = code.split("\n", 1)[1]
 
         # Get the output path
-        output_path = get_absolute_path(args.output_path + "/tmp.c")
+        output_path = get_absolute_path(f"{args.output_path}/{args.output_file}.c")
 
         # Add the specification
         code = add_specification_to_code(header_file_path, code)
-
 
         # Output the code to tmp.c
         with open(output_path, "w", encoding="utf-8") as f:
@@ -82,11 +82,18 @@ def generate_code(args):
         # Verify the code
         verified, output = check_file(args)
 
-        # Create a new prompt based on the output
-        prompt = verification_error_prompt(header_file_path, code, output, args.model_name, 
-                                           args.max_tokens)
+        # Check if the code needs to be rebooted
+        if not verified and i_reboot < args.reboot:
+            print("Code has not been verified, rebooting...")
+            prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens)
+            i_reboot = 0
+        else :
+            # Create a new prompt based on the output
+            prompt = verification_error_prompt(header_file_path, code, output, args.model_name,
+                                            args.max_tokens)
         debug_to_file(args, args.output_path, "prompt", prompt + "\n" * 10)
 
+        i_reboot += 1
         i += 1
 
 __all__ = ["generate_code"]

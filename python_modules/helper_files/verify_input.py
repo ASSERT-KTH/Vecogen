@@ -106,8 +106,57 @@ def require_api_key_gpt():
         sys.exit()
 
 def require_output_path(args):
-    """Function to check if the output path is set"""
+    """Function to check if the output path is set
+    Args:
+        args: The arguments given by the user
+    Returns:
+        None"""
     if not args.output_path:
         print("Please insert an output path using the -o or --output_path option")
         sys.exit()
+
+    # If the output path already contains .c then remove it
+    if args.output_path.endswith(".c"):
+        args.output_path = args.output_path[:-2]
     args.output_path = get_absolute_path(args.output_path)
+
+def ensure_integers(args):
+    """ Function to ensure that the integers are valid. 
+    Here one can define the minimum and maximum values of the integers
+    Args:
+        args: The arguments given by the user
+    Returns:
+        None"""
+    
+    # Ensure that the weakest precondition timeout is a positive integer
+    if args.timeout_wp is not None and args.timeout_wp <= 0:
+        print("The weakest precondition timeout must be a positive integer")
+        sys.exit()
+
+    # Ensure that the number of iterations is a positive integer
+    if args.iterations is not None and args.iterations <= 0:
+        print("The number of iterations must be a positive integer")
+        sys.exit()
+
+    # Ensure that the maximum tokens is a positive integer
+    if args.max_tokens is not None and args.max_tokens <= 0:
+        print("The maximum tokens must be a positive integer")
+        sys.exit()
+
+    # Ensure that the temperature is a positive value between 0 and 1
+    if args.temperature is not None and args.temperature <= 0:
+        print("The temperature must be a positive integer")
+        sys.exit()
+    elif args.temperature > 1:
+        print("The temperature must be a value between 0 and 1")
+        sys.exit()
+
+    # Ensure that the weakest precondition steps is a positive integer
+    if args.steps_wp is not None and args.steps_wp <= 0:
+        print("The weakest precondition steps must be a positive integer")
+        sys.exit()
+
+    # Ensure that the reboot is a positive integer
+    if args.reboot is not None and args.reboot <= 0:
+        print("The reboot must be a positive integer")
+        sys.exit()

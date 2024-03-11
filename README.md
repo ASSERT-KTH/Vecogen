@@ -51,3 +51,4 @@ python main.py function
 - '-model': The model to be used for the code generation
 - '-improve': The improvement option for the code generation
 - '-clear': The clear option that clears all debug files
+- '-reboot': The amount of iterations before a reboot occurs. A reboot starts from the original prompt.
