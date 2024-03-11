@@ -82,6 +82,7 @@ def get_error_cause_and_strategy(output: str, file_path: str):
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
+                print(line, line_without_path)
 
                 # Get the line of code that caused the timeout, which comes after "line .."
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
@@ -90,17 +91,18 @@ def get_error_cause_and_strategy(output: str, file_path: str):
                 # Add the line in the file
                 timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
         # Get a random strategy to solve the problem
-        possible_strategies = [
-            "Simplify the code",
-            "Add invariants to the code",
-            "Make the invariants stronger",
-            "Remove an invariant",
-            "Add assertions within the code. "  +
-            " Use the defined predicates and put the assertions as deep as possible.",
-            ]
+        # possible_strategies = [
+            # "Simplify the code",
+            # "Add invariants to the code",
+            # "Make the invariants stronger",
+            # "Remove an invariant",
+            # "Add assertions within the code. "  +
+            # " Use the defined predicates and put the assertions as deep as possible.",
+            # ]
+        return False, (f"{timeout_string}. Please try to solve the problem.")
 
-        return False, (f"{timeout_string}. Please try to solve the problem with the following" +
-        f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}")
+        # return False, (f"{timeout_string}. Please try to solve the problem with the following" +
+        # f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}")
 
     # Otherwise the file is valid
     else:

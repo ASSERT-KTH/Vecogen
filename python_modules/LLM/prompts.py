@@ -12,7 +12,9 @@ def replace_loops(use_loops):
         A string that indicates if the code should use loops or not"""
 
     if use_loops:
-        return "for, while, do-while or recursive loops"
+        return "for, while, do-while or recursive loops \n \
+                Add loop invariants and assertions for loops if these \
+                    improve the verification process"
     else:
         return "no loops"
 

@@ -78,6 +78,7 @@ def generate_code(args):
     require_output_path(args)
     generate_code_pipeline(args)
 
+
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
