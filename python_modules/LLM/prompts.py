@@ -18,7 +18,7 @@ def replace_loops(use_loops):
     else:
         return "no loops"
 
-def initial_prompt(header_file_path, model, max_token_size, use_loop):
+def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     """Function that generates a prompt based on a header file
     Args:
         header_file_path: The path to the header file
@@ -29,7 +29,7 @@ def initial_prompt(header_file_path, model, max_token_size, use_loop):
         The prompt as a string"""
 
     # Get the text from the header file
-    with open(os.path.join(os.getcwd(), "..", header_file_path), "r", encoding="utf-8")  \
+    with open(absolute_header_file_path, "r", encoding="utf-8")  \
             as header_file:
         header_text = header_file.read()
 
@@ -41,7 +41,7 @@ def initial_prompt(header_file_path, model, max_token_size, use_loop):
         prompt_template = template.read()
 
     # Get the functions from the header file
-    with open(header_file_path, 'r', encoding='utf-8') as file:
+    with open(absolute_header_file_path, 'r', encoding='utf-8') as file:
         functions = get_functions(file.readlines())
 
     # For each function, add a line with "  // TODO: ADD CODE HERE"
@@ -50,7 +50,7 @@ def initial_prompt(header_file_path, model, max_token_size, use_loop):
         header_text = add_line_in_code(header_text, line_number + 1,
                                        "  // TODO: ADD CODE HERE\n")
 
-    header_file_name = header_file_path.split("/")[-1]
+    header_file_name = absolute_header_file_path.split("/")[-1]
 
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
@@ -70,7 +70,7 @@ def initial_prompt(header_file_path, model, max_token_size, use_loop):
 
     return prompt_mapped
 
-def compilation_error_prompt(header_file_path, previous_attempt, error_message,
+def compilation_error_prompt(absolute_header_path, previous_attempt, error_message,
                              model, max_token_size, use_loop):
     """Function that generates a prompt based on a compilation error message
     Args:
@@ -84,7 +84,7 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
         The prompt as a string"""
 
     # Get the text from the header file
-    with open(os.path.join(os.getcwd(), "..", header_file_path), "r", encoding="utf-8") \
+    with open(absolute_header_path, "r", encoding="utf-8") \
             as header_file:
         header_text = header_file.read()
 
@@ -96,7 +96,7 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
     with open(template_path, "r", encoding="utf-8") as template:
         prompt_template = template.read()
 
-    header_file_name = header_file_path.split("/")[-1]
+    header_file_name = absolute_header_path.split("/")[-1]
 
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {
@@ -118,7 +118,7 @@ def compilation_error_prompt(header_file_path, previous_attempt, error_message,
 
     return prompt_mapped
 
-def verification_error_prompt(header_file_path, previous_attempt, error_message,
+def verification_error_prompt(absolute_header_path, previous_attempt, error_message,
                               model, max_token_size, use_loop):
     """Function that generates a prompt based on a verification error message
     Args:
@@ -131,7 +131,7 @@ def verification_error_prompt(header_file_path, previous_attempt, error_message,
         The prompt as a string"""
 
     # Get the text from the header file
-    with open(os.path.join(os.getcwd(), "..", header_file_path), "r", encoding="utf-8") \
+    with open(absolute_header_path, "r", encoding="utf-8") \
             as header_file:
         header_text = header_file.read()
 
@@ -143,7 +143,7 @@ def verification_error_prompt(header_file_path, previous_attempt, error_message,
     with open(template_path, "r", encoding="utf-8") as template:
         prompt_template = template.read()
 
-    header_file_name = header_file_path.split("/")[-1]
+    header_file_name = absolute_header_path.split("/")[-1]
 
     # Mapping that replaces the text in the template
     prompt_replacement_mapping = {

@@ -44,14 +44,20 @@ def require_header_file(args):
     if not args.header_file:
         print("Please insert a header file using the -he or --header_file option")
         sys.exit()
-
-    # Make the relative path to the absolute path
-    old_header_file = args.header_file
-    args.header_file = get_absolute_path(args.header_file)
+        
+    # See if the header path is relative or absolute
+    if not os.path.isabs(args.header_file):
+        args.relative_header_path = args.header_file
+        args.absolute_header_path = os.path.join(os.getcwd(), args.header_file)
+        args.header_file_name = os.path.basename(args.header_file)
+    else:
+        args.absolute_header_path = args.header_file
+        args.relative_header_path = os.path.relpath(args.header_file)
+        args.header_file_name = os.path.basename(args.header_file)
 
     # Make sure the header file exists
-    if not os.path.isfile(args.header_file):
-        print(f"Please insert a valid header file, {old_header_file} is not a file")
+    if not os.path.isfile(args.absolute_header_path):
+        print(f"Please insert a valid header file, {args.header_file} is not a file")
         sys.exit()	
 
 def require_c_file(args):
@@ -65,13 +71,19 @@ def require_c_file(args):
         print("Please insert a C file using the -c or --c_file option")
         sys.exit()
 
-    # Make the relative path to the absolute path
-    old_c_file = args.c_file
-    args.c_file = get_absolute_path(args.c_file)
-
+    # See if the C path is relative or absolute
+    if not os.path.isabs(args.c_file):
+        args.relative_c_path = args.c_file
+        args.absolute_c_path = os.path.join(os.getcwd(), args.c_file)
+        args.c_file_name = os.path.basename(args.c_file)
+    else:
+        args.absolute_c_path = args.c_file
+        args.relative_c_path = os.path.relpath(args.c_file)
+        args.c_file_name = os.path.basename(args.c_file)
+        
     # Make sure the C file exists
-    if not os.path.isfile(args.c_file):
-        print(f"Please insert a valid C file, {old_c_file} is not a file")
+    if not os.path.isfile(args.absolute_c_path):
+        print(f"Please insert a valid C file, {args.c_file} is not a file")
         sys.exit()
 
 def require_solver(args):
@@ -104,8 +116,8 @@ def require_api_key_gpt():
     if API_KEY_GPT is None:
         print("API key not set")
         sys.exit()
-
-def require_output_path(args):
+        
+def check_output_path(args):
     """Function to check if the output path is set
     Args:
         args: The arguments given by the user
@@ -115,10 +127,14 @@ def require_output_path(args):
         print("Please insert an output path using the -o or --output_path option")
         sys.exit()
 
-    # If the output path already contains .c then remove it
+    # Only do this if the file is not to be updated
     if args.output_path.endswith(".c"):
         args.output_path = args.output_path[:-2]
     args.output_path = get_absolute_path(args.output_path)
+
+    # Check if the output path is a director, if not then createi t 
+    if not os.path.isdir(args.output_path):
+        os.makedirs(args.output_path)
 
 def ensure_integers(args):
     """ Function to ensure that the integers are valid. 

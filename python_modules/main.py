@@ -7,7 +7,8 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt, require_output_path, ensure_integers
+    require_c_file, require_solver, require_api_key_gpt, check_output_path, ensure_integers, \
+    get_absolute_path, require_c_file
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -26,7 +27,7 @@ def verify(args):
     require_solver(args)
 
     # Verify the file
-    check_file(args)
+    check_file(args, args.absolute_c_path, args.absolute_header_path)
 
 def verify_dir(args):
     """Verify a directory""" 
@@ -59,7 +60,7 @@ def verify_dir(args):
     h_file = os.path.join(args.directory, h_file)
 
     # Call the function
-    check_file(args)
+    check_file(args, args.absolute_c_path, args.absolute_header_path)
 
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
@@ -75,21 +76,40 @@ def generate_code(args):
     require_solver(args)
     require_header_file(args)
     require_api_key_gpt()
-    require_output_path(args)
-    generate_code_pipeline(args, args.header_file)
+    check_output_path(args)
+    
+    # ensure that the output path is absolute
+    args.output_path = get_absolute_path(args.output_path)
+    generate_code_pipeline(args)
+
+def improve_code(args):
+    """ Improve existing code using the pipeline and the LLM model """
+    require_solver(args)
+    require_api_key_gpt()
+    require_c_file(args)
+    require_header_file(args)
+    
+    # Set the output path to the path of the file
+    args.output_path = os.path.dirname(args.absolute_c_path)
+    args.output_file = os.path.basename(args.absolute_c_path)
+    generate_code_pipeline(args, improve = True)
+
 
 def generate_folder(args):
     """ Generate code from a folder with folders"""
     require_solver(args)
     require_api_key_gpt()
     require_directory_exists(args)
-    require_output_path(args)
+    check_output_path(args)
+    
+    # ensure that the output path is absolute
+    args.output_path = get_absolute_path(args.output_path)
     generate_code_folder(args)
 
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
-    require_output_path(args)
+    check_output_path(args)
     clear_debug(args, args.output_path)
     
 def parse_arguments(functions_list):
@@ -121,7 +141,7 @@ def parse_arguments(functions_list):
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
                         generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
-                        generation", type=str, default="tmp")
+                        generation", type=str, default="output")
     parser.add_argument('-output-file', '--output_file', help="The output file to use for the \
                         code generation", type=str, default="output")
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
@@ -129,9 +149,6 @@ def parse_arguments(functions_list):
                         default=False)
     parser.add_argument('-model', '--model_name', help="The model name to use for the \
                         code generation", type=str, default="gpt-3.5-turbo")
-    parser.add_argument('-improve', '--improve', help="Starts from the existing code and \
-            improves the code instead of generating from scratch", default=False,
-            action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument('-clear', '--clear', help="Clears the debugging folders",
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument('-reboot', '--reboot', help="Set the amount of iterations before a \
@@ -154,6 +171,7 @@ if __name__ == "__main__":
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
+        "improve_code": improve_code,
         "generate_code_folder": generate_folder
     }
 
@@ -165,6 +183,9 @@ if __name__ == "__main__":
 
     # Ensure that the integers are valid
     ensure_integers(arguments)
+
+    # Always require an output path
+    check_output_path(arguments)
 
     # Clear the debugging folders if the clear argument is given
     if arguments.clear:

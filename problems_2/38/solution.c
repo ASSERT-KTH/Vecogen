@@ -10,5 +10,5 @@
 void problem(int n, long *out)
 {
     long x = n - 2;
-    *out = x * x;
+    *out = (n - 2) * (n - 2);
 }

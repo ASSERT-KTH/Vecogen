@@ -6,33 +6,35 @@ from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import get_absolute_path
 from Verify_files.check_file import check_file
 from helper_files.list_files import list_folders_directory, list_files_directory
+import os
 
-def generate_code(args):
+def generate_code(args, improve = False):
     """Function to iteratively generate code and check it
     Args:
         args: The arguments given to the program
+        improve: Boolean that indicates if the code is improved
     Returns:
-        None"""
+        None
+        
+    Requirements of the arguments:
+    - The output path is absolute
+    """
 
-    # Create a 3d array to store the results
-    results = []
-
-    # Get the paths to the header, the C file and the output
-    output_path = get_absolute_path(args.output_path + "/tmp.c")
-    args.c_file = output_path
+    # Create an array to store the information about the iterations
+    information_iteration = []
 
     # Check if the model continues the code or starts from scratch
-    if args.improve:
+    if improve:
         # Get the code from the c file
         with open(args.c_file, "r", encoding="utf-8") as f:
             code = f.read()
 
         # Write the c code to the output path
-        with open(output_path, "w", encoding="utf-8") as f:
+        with open(f"{args.output_path}/{args.output_file}", "w", encoding="utf-8") as f:
             f.write(code)
 
         # Verify the file
-        verified, output = check_file(args)
+        verified, output, _ = check_file(args.absolute_c_path, args.absolute_header_path, args)
 
         # Get the output path
         prompt = verification_error_prompt(args.header_file, code, output, \
@@ -62,12 +64,12 @@ def generate_code(args):
         code = code.split("\n", 1)[1]
 
         # Get the output path
-        output_path = get_absolute_path(f"{args.output_path}/{args.output_file}.c")
+        output_path = f"{args.output_path}/{args.output_file}"
 
         # Add the specification
-        code = add_specification_to_code(args.header_file, code)
+        code = add_specification_to_code(args.header_file, code, args.improve)
 
-        # Output the code to tmp.c
+        # Output the code to the specified file
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(code)
             args.c_file = output_path
@@ -75,17 +77,17 @@ def generate_code(args):
         print("Code has been generated, verifying...")
 
         # Verify the code
-        verified, output = check_file(args)
+        verified, output, verified_goals = check_file(args.absolute_c_path, args.absolute_header_path, args)
 
         # Extra information
         if i == 0:
-            information = "This was the initial prompt"
+            information = "initial prompt"
         elif i_reboot == 0:
-            information = "The code has been rebooted"
+            information = "rebooted"
         elif verified:
-            information = "The code has been verified"
+            information = "verified"
         else:
-            information = "The code has beeen improved"
+            information = "code improved"
 
         # Create a dict that will contain information about the iteration
         iteration_info = {
@@ -93,10 +95,11 @@ def generate_code(args):
             "prompt": prompt,
             "gpt_output": response_gpt,
             "verified": verified,
+            "verified_goals": verified_goals,
             "info": information,
         }
         
-        results.append(iteration_info)
+        information_iteration.append(iteration_info)
 
         # Check if the code needs to be rebooted
         if not verified and i_reboot == args.reboot:
@@ -114,12 +117,12 @@ def generate_code(args):
 
     # Print the results
     print("Results:")
-    for result in results:
+    for result in information_iteration:
         print(result)
 
     # save the results to a file
     with open(f"{args.output_path}/results.txt", "w", encoding="utf-8") as f:
-        f.write(str(results))
+        f.write(str(information_iteration))
         
 # Function that generates code in a folder
 def generate_code_folder(args):
@@ -127,13 +130,18 @@ def generate_code_folder(args):
     Args:
         args: The arguments given to the program
     Returns:
-        None"""
+        None
+    Requirements of the arguments:
+    - The output path is absolute"""
         
     # Get the folders in the directory
     folders = list_folders_directory(args.directory)
     
+    # Get the base directory of the output
+    base_directory = get_absolute_path(args.output_path)
+    
     # For each folder in the directory
-    for folder in folders:
+    for folder in folders[1:2]:
         # Get the files in the folder
         files = list_files_directory(args.directory + "/" + folder)
         
@@ -143,7 +151,17 @@ def generate_code_folder(args):
     
         # Set the header file
         args.header_file = args.directory + "/" +  args.header_file
-        generate_code(args)
+        
+        # Set the output path
+        args.output_file = "output_gpt3-5.c"
+        args.output_path = base_directory + "/" + folder
+        
+        # Create the output directory if it does not exist yet 
+        if not os.path.exists(args.output_path):
+            os.mkdir(args.output_path)
     
+        # Run the code
+        generate_code(args)
+
     # Get the paths to the header, the C file and the output
 __all__ = ["generate_code", "generate_code_folder"]

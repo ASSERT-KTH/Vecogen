@@ -2,7 +2,7 @@
     in the tool. """
 from helper_files.analyse_specification import get_functions
 
-def add_specification_to_code(header_file_path: str, code):
+def add_specification_to_code(absolute_header_path: str, code, improve):
     """Add the specification to the code. It makes sure to remove an existing specification
     Args:
         header_file_path: The path to the header file
@@ -11,11 +11,16 @@ def add_specification_to_code(header_file_path: str, code):
         None"""
     # Get the specification code from the header file path
     specification_code = ""
-    with open(header_file_path, "r", encoding="utf-8") as f:
+    with open(absolute_header_path, "r", encoding="utf-8") as f:
         specification_code = f.read()
 
     # Replace the last semicolumn in the specification with an opening curly bracket
-    specification_code = specification_code[::-1].replace(";", "{", 1)[::-1]
+    if (improve):
+        specification_code = specification_code[::-1].replace(";", "\n", 1)[::-1]
+    else:
+        specification_code = specification_code[::-1].replace(";", "{\n", 1)[::-1]
+
+    
 
     # Turn the code into a list for each row
     code_split = [x + "\n" for x in code.split("\n")]

@@ -1,20 +1,18 @@
 """This module is used to verify a C file using Frama-C"""
 import subprocess
 import re
-import random
 from helper_files.change_specification import get_line_in_code
 from helper_files.debug import debug_to_file
 
-def verify_file(args, path_to_c_file):
+def verify_file(args):
     """Verify a C file using Frama-C
     Args:
         args: The arguments given to the program
-        path_to_c_file: The path to the C file to verify
     Returns:
         True if the C file verified successfully, False otherwise
         If the file did not verify, the output of the verification"""
     # Create the prompt that is used for frama c
-    prompt = f'frama-c  -wp "{path_to_c_file}"                                  \
+    prompt = f'frama-c  -wp "{args.absolute_c_path}"                            \
                         -wp-prover {args.solver}                                \
                         -wp-steps {args.wp_steps}                               \
                         -wp-timeout {args.wp_timeout}                           \
@@ -36,14 +34,15 @@ def verify_file(args, path_to_c_file):
         debug_to_file(args, "../tmp/", "output", stdout_str)
 
     # Get the error cause and the strategy to solve the error
-    return get_error_cause_and_strategy(stdout_str, path_to_c_file)
+    return get_error_cause_and_strategy(stdout_str, args.absolute_c_path)
 
 causes = ["Timeout", "Syntax Error", "Fatal Error", "Valid"]
-def get_error_cause_and_strategy(output: str, file_path: str):
+def get_error_cause_and_strategy(output: str, absolute_c_path: str):
     """ Looks at a string that has the output of the verication. It returns the causes
     of the errors. Within the output also a strategy is given to solve the error.
     Args:
         output: The output of the verification
+        absolute_c_path: The absolute path of the C file
     Returns:
         A list of the problem and the strategy to solve the problem"""
 
@@ -86,23 +85,12 @@ def get_error_cause_and_strategy(output: str, file_path: str):
 
                 # Get the line of code that caused the timeout, which comes after "line .."
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
-                code_line = get_line_in_code(file_path, line_number)
+                code_line = get_line_in_code(absolute_c_path, line_number)
 
                 # Add the line in the file
                 timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
-        # Get a random strategy to solve the problem
-        # possible_strategies = [
-            # "Simplify the code",
-            # "Add invariants to the code",
-            # "Make the invariants stronger",
-            # "Remove an invariant",
-            # "Add assertions within the code. "  +
-            # " Use the defined predicates and put the assertions as deep as possible.",
-            # ]
-        return False, (f"{timeout_string}. Please try to solve the problem.")
 
-        # return False, (f"{timeout_string}. Please try to solve the problem with the following" +
-        # f"strategy: {possible_strategies[random.randint(0, len(possible_strategies) - 1)]}")
+        return False, (f"{timeout_string}. Please try to solve the problem."), f"{verified_goals} / {total_goals}"
 
     # Otherwise the file is valid
     else:
