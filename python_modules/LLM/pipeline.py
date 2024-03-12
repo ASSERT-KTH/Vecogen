@@ -5,6 +5,7 @@ from LLM.specification import add_specification_to_code
 from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import get_absolute_path
 from Verify_files.check_file import check_file
+from helper_files.list_files import list_folders_directory, list_files_directory
 
 def generate_code(args):
     """Function to iteratively generate code and check it
@@ -17,7 +18,6 @@ def generate_code(args):
     results = []
 
     # Get the paths to the header, the C file and the output
-    header_file_path = args.header_file
     output_path = get_absolute_path(args.output_path + "/tmp.c")
     args.c_file = output_path
 
@@ -35,10 +35,10 @@ def generate_code(args):
         verified, output = check_file(args)
 
         # Get the output path
-        prompt = verification_error_prompt(header_file_path, code, output, \
+        prompt = verification_error_prompt(args.header_file, code, output, \
                     args.model_name, args.max_tokens, args.allowloops)
     else:
-        prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens, args.allowloops)
+        prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
     # Boolean that indicates if the code has been verified
     verified = False
@@ -65,7 +65,7 @@ def generate_code(args):
         output_path = get_absolute_path(f"{args.output_path}/{args.output_file}.c")
 
         # Add the specification
-        code = add_specification_to_code(header_file_path, code)
+        code = add_specification_to_code(args.header_file, code)
 
         # Output the code to tmp.c
         with open(output_path, "w", encoding="utf-8") as f:
@@ -93,19 +93,20 @@ def generate_code(args):
             "prompt": prompt,
             "gpt_output": response_gpt,
             "verified": verified,
-            "info": information
+            "info": information,
         }
+        
         results.append(iteration_info)
 
         # Check if the code needs to be rebooted
         if not verified and i_reboot == args.reboot:
             print("Code has not been verified, rebooting...")
-            prompt = initial_prompt(header_file_path, args.model_name, args.max_tokens,
+            prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
                                     args.allowloops)
             i_reboot = 0
         else :
             # Create a new prompt based on the output
-            prompt = verification_error_prompt(header_file_path, code, output, args.model_name,
+            prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
                                             args.max_tokens, args.allowloops)
 
         i_reboot += 1
@@ -119,5 +120,30 @@ def generate_code(args):
     # save the results to a file
     with open(f"{args.output_path}/results.txt", "w", encoding="utf-8") as f:
         f.write(str(results))
-
-__all__ = ["generate_code"]
+        
+# Function that generates code in a folder
+def generate_code_folder(args):
+    """Function to generate code from a folder with folders
+    Args:
+        args: The arguments given to the program
+    Returns:
+        None"""
+        
+    # Get the folders in the directory
+    folders = list_folders_directory(args.directory)
+    
+    # For each folder in the directory
+    for folder in folders:
+        # Get the files in the folder
+        files = list_files_directory(args.directory + "/" + folder)
+        
+        # Get the first .h file in the folder
+        specification_file = [f for f in files if f.endswith(".h")][0]
+        args.header_file = folder + "/" + specification_file
+    
+        # Set the header file
+        args.header_file = args.directory + "/" +  args.header_file
+        generate_code(args)
+    
+    # Get the paths to the header, the C file and the output
+__all__ = ["generate_code", "generate_code_folder"]

@@ -11,7 +11,7 @@ from helper_files.verify_input import require_directory_exists, require_header_f
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
-from LLM.pipeline import generate_code as generate_code_pipeline
+from LLM.pipeline import generate_code as generate_code_pipeline, generate_code_folder
 
 def list_files(args):
     """List the files in a directory"""
@@ -76,15 +76,22 @@ def generate_code(args):
     require_header_file(args)
     require_api_key_gpt()
     require_output_path(args)
-    generate_code_pipeline(args)
+    generate_code_pipeline(args, args.header_file)
 
+def generate_folder(args):
+    """ Generate code from a folder with folders"""
+    require_solver(args)
+    require_api_key_gpt()
+    require_directory_exists(args)
+    require_output_path(args)
+    generate_code_folder(args)
 
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
     require_output_path(args)
     clear_debug(args, args.output_path)
-
+    
 def parse_arguments(functions_list):
     """Parse the arguments given to the tool"""
     # Create argument parser
@@ -147,6 +154,7 @@ if __name__ == "__main__":
         "verify_dir": verify_dir,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
+        "generate_code_folder": generate_folder
     }
 
     # Load the environment variables

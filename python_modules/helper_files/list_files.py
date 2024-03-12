@@ -8,7 +8,7 @@ def list_files_directory(directory):
         directory: The directory to list the files from
     Returns:
         List of files in the directory"""
-    return os.listdir(directory)
+    return [f for f in os.listdir(directory) if os.path.isfile(directory + "/" + f)]
 
 def get_absolute_path(relative_path):
     """Get the absolute path to a file
@@ -18,4 +18,10 @@ def get_absolute_path(relative_path):
         The absolute path to the file"""
     return os.path.join(os.getcwd(), "..", relative_path)
 
-__all__ = ["list_files_directory", "get_absolute_path"]
+def list_folders_directory(directory):
+    """List all the folders in a given directory
+    Args:
+        directory: The directory to list the folders from
+    Returns:
+        List of folders in the directory"""
+    return [f for f in os.listdir(directory) if os.path.isdir(directory + "/" + f)]
