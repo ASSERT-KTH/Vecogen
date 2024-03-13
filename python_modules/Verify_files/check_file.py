@@ -13,21 +13,24 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
     Returns:
         True if the C file verified successfully, False otherwise
         If the file did not verify, the output of the verification"""
-    print(f"Files {absolute_path_to_c_file.split('/')[-1]} and " + 
-          f"{absolute_path_to_c_file.split('/')[-1]} exists, starting to compile...")
+
+    if args.debug:
+        print(f"Files {absolute_path_to_c_file.split('/')[-1]} and " +
+          f"{absolute_path_to_h_file.split('/')[-1]} exists, starting to compile...")
 
     # Compile the file
     # Get the directory of absolute_path_to_c_file
     absolute_output_dir = os.path.join(*absolute_path_to_c_file.split("/")[:-1])
     result, output = compile_c(absolute_path_to_c_file, absolute_output_dir)
     if result is False:
-        print(f"Compilation of file {absolute_path_to_h_file.split('/')[-1]} failed," + 
+        if args.debug:
+            print(f"Compilation of file {absolute_path_to_c_file.split('/')[-1]} failed," +
               f"Error:\n {output}")
-        sys.exit()
-    else:
+            return False, output, None
+    elif args.debug:
         print(f"File {absolute_path_to_c_file.split('/')[-1]} compiled successfully")
 
-    print(f"File {absolute_path_to_c_file.split('/')[-1]} will be verified...")
+    if args.debug:
+        print(f"File {absolute_path_to_c_file.split('/')[-1]} will be verified...")
 
-    # Verify the file
     return verify_file(args)

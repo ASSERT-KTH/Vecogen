@@ -2,7 +2,6 @@
     when the tool is run. It also contains the functions that are called based on the 
     arguments given to the tool. """
 import sys
-import os
 import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
@@ -17,17 +16,17 @@ from LLM.pipeline import generate_code as generate_code_pipeline, generate_code_
 def list_files(args):
     """List the files in a directory"""
     require_directory_exists(args)
-
-    print(list_files_directory(args.directory))
+    print(list_files_directory(args.absolute_directory))
 
 def verify(args):
     """Verify a C file and a header file"""
     # Make sure the header and C file are given in the arguments
     require_c_file(args)
+    require_header_file(args)
     require_solver(args)
 
     # Verify the file
-    check_file(args, args.absolute_c_path, args.absolute_header_path)
+    print(check_file(args.absolute_c_path, args.absolute_header_path, args))
 
 def verify_dir(args):
     """Verify a directory""" 
@@ -35,7 +34,7 @@ def verify_dir(args):
     require_solver(args)
 
     # Get the files in the directory
-    files = list_files_directory(args.directory)
+    files = list_files_directory(args.absolute_directory)
 
     # Get the C and header file
     c_file = None
@@ -55,12 +54,14 @@ def verify_dir(args):
         print("No header file found in the directory")
         sys.exit()
 
-    # Get the paths to the files
-    c_file = os.path.join(args.directory, c_file)
-    h_file = os.path.join(args.directory, h_file)
+    # Set the absolute paths to the files
+    args.c_file = args.absolute_directory + "/" + c_file
+    args.header_file = args.absolute_directory + "/" + h_file
+    require_c_file(args)
+    require_header_file(args)
 
     # Call the function
-    check_file(args, args.absolute_c_path, args.absolute_header_path)
+    print(check_file(args.absolute_c_path, args.absolute_header_path, args))
 
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
@@ -78,9 +79,14 @@ def generate_code(args):
     require_api_key_gpt()
     check_output(args)
 
-    # ensure that the output path is absolute
-    args.output_path = get_absolute_path(args.output_path)
+    # Set the path of the file that will be generated
+    args.c_file = args.output_file
+    args.absolute_c_path = get_absolute_path(args.absolute_output_directory + "/" + args.output_file)
+
     generate_code_pipeline(args)
+
+    print("The code has been generated and saved to the file: " + args.absolute_c_path + "\n" + 
+            "For more information, see results.txt")
 
 def improve_code(args):
     """ Improve existing code using the pipeline and the LLM model """
@@ -90,7 +96,6 @@ def improve_code(args):
     require_header_file(args)
     check_output(args)
     generate_code_pipeline(args, improve = True)
-
 
 def generate_folder(args):
     """ Generate code from a folder with folders"""
@@ -107,7 +112,7 @@ def clear(args):
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
     check_output(args)
     clear_debug(args, args.output_path)
-    
+
 def parse_arguments(functions_list):
     """Parse the arguments given to the tool"""
     # Create argument parser

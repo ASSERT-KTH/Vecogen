@@ -26,10 +26,9 @@ def debug_to_file(args, folder_name, file_name, text):
         # If the file does not exist then create it
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
-        
+
         # Write the text to the file
         with open(folder_name + f"/{file_name}.txt", "a", encoding="utf-8") as file:
             file.write(text + "\n")
-    
-    
+
 __all__ = ["clear_debug", "debug_to_file"]

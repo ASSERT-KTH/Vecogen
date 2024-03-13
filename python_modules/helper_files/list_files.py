@@ -16,7 +16,7 @@ def get_absolute_path(relative_path):
         relative_path: The relative path to the file
     Returns:
         The absolute path to the file"""
-    return os.path.join(os.getcwd(), "..", relative_path)
+    return os.path.join(os.getcwd(), relative_path)
 
 def list_folders_directory(directory):
     """List all the folders in a given directory

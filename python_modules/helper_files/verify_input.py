@@ -27,8 +27,11 @@ def require_directory_exists(args):
 
     # Change the relative path to the absolute path
     old_directory = args.directory
-    args.directory = get_absolute_path(args.directory)
-
+    if not os.path.isabs(args.directory):
+        args.absolute_directory = os.path.join(os.getcwd(), args.directory)
+    else:
+        args.absolute_directory = args.directory
+        
     # Make sure the directory exists
     if not os.path.isdir(args.directory):
         print(f"Please insert a valid directory, {old_directory} is not a directory")
@@ -47,13 +50,11 @@ def require_header_file(args):
 
     # See if the header path is relative or absolute
     if not os.path.isabs(args.header_file):
-        args.relative_header_path = args.header_file
         args.absolute_header_path = os.path.join(os.getcwd(), args.header_file)
-        args.header_file_name = os.path.basename(args.header_file) + ".h"
+        args.header_file_name = os.path.basename(args.header_file)
     else:
         args.absolute_header_path = args.header_file
-        args.relative_header_path = os.path.relpath(args.header_file)
-        args.header_file_name = os.path.basename(args.header_file) + ".h"
+        args.header_file_name = os.path.basename(args.header_file)
 
     # Make sure the header file exists
     if not os.path.isfile(args.absolute_header_path):
@@ -73,14 +74,11 @@ def require_c_file(args):
 
     # See if the C path is relative or absolute
     if not os.path.isabs(args.c_file):
-        args.relative_c_path = args.c_file
         args.absolute_c_path = os.path.join(os.getcwd(), args.c_file)
-        # The file name includes the extension
         args.c_file_name = os.path.basename(args.c_file)
 
     else:
         args.absolute_c_path = args.c_file
-        args.relative_c_path = os.path.relpath(args.c_file)
         args.c_file_name = os.path.basename(args.c_file)
 
     # Make sure the C file exists
@@ -132,16 +130,16 @@ def check_output(args):
     if not args.output_path:
         # Check if the C file is set, if so then use that as the output path
         if args.c_file:
-            args.output_path = os.path.dirname(args.absolute_c_path)
+            args.absolute_output_directory = os.path.dirname(args.absolute_c_path)
         elif args.directory:
-            args.output_path = args.directory
+            args.absolute_output_directory = args.directory
         elif args.header_file:
-            args.output_path = args.absolute_header_path
+            args.absolute_output_directory = os.path.dirname(args.absolute_header_path)
         else:
             print("Please insert an output path using the -o or --output_path option")
             sys.exit()
     else:
-        args.output_path = get_absolute_path(args.output_path)
+        args.absolute_output_directory = get_absolute_path(args.output_path)
 
     # Deduce the output file from the given arguments
     if not args.output_file:
@@ -150,13 +148,10 @@ def check_output(args):
         elif args.header_file:
             # Make the output file the same name as the header file but then with a .c extension
             args.output_file = args.header_file_name.replace(".h", ".c")
-        else:
-            print("Please insert an output file using the -of or --output_file option")
-            sys.exit()
 
     # Check if the output path is a director, if not then create it
-    if not os.path.isdir(args.output_path):
-        os.makedirs(args.output_path)
+    if not os.path.isdir(args.absolute_output_directory):
+        os.makedirs(args.absolute_output_directory)
 
 def ensure_integers(args):
 
