@@ -44,7 +44,11 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         output: The output of the verification
         absolute_c_path: The absolute path of the C file
     Returns:
-        A list of the problem and the strategy to solve the problem"""
+        A tuple with the following elements:
+        - A boolean that indicates if the file is valid
+        - A list of the problem and the strategy to solve the problem
+        - A string that contains the amount of verified goals
+        """
 
     # Check if the output has a syntax error
     if "Syntax error" in output or "syntax error" in output:
@@ -52,11 +56,11 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         output = re.sub(r'\[kernel\].*?\n', '', output)
 
         return False, [("There is a syntax error in the code. The following output was generated:\n"
-                        f"{output}")]
+                        f"{output}")], "0 / 0"
     # Check if the output has a fatal error
     elif "fatal error" in output:
         return False, [("There is a fatal error in the code. The following output was generated:\n"
-                        f"{output}")]
+                        f"{output}")], "0 / 0"
     # Check if the output has a timeout
     elif "Timeout" in output:
         # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
@@ -90,10 +94,15 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
                 # Add the line in the file
                 timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
 
-        return False, (f"{timeout_string}. Please try to solve the problem."), f"{verified_goals} / {total_goals}"
+        return False, (f"{timeout_string}. Please try to solve the problem."), \
+            f"{verified_goals} / {total_goals}"
 
     # Otherwise the file is valid
     else:
-        return True, ["The file is valid"]
+        # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
+        verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
+        total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
+        total_goals = total_goals.split("\n")[0].strip()
+        return True, ["The file is valid"], f"{verified_goals} / {total_goals}"
 
 __all__ = ["verify_file"]

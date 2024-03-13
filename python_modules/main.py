@@ -7,8 +7,8 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt, check_output_path, ensure_integers, \
-    get_absolute_path, require_c_file
+    require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers, \
+    get_absolute_path
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -76,8 +76,8 @@ def generate_code(args):
     require_solver(args)
     require_header_file(args)
     require_api_key_gpt()
-    check_output_path(args)
-    
+    check_output(args)
+
     # ensure that the output path is absolute
     args.output_path = get_absolute_path(args.output_path)
     generate_code_pipeline(args)
@@ -88,10 +88,7 @@ def improve_code(args):
     require_api_key_gpt()
     require_c_file(args)
     require_header_file(args)
-    
-    # Set the output path to the path of the file
-    args.output_path = os.path.dirname(args.absolute_c_path)
-    args.output_file = os.path.basename(args.absolute_c_path)
+    check_output(args)
     generate_code_pipeline(args, improve = True)
 
 
@@ -100,16 +97,15 @@ def generate_folder(args):
     require_solver(args)
     require_api_key_gpt()
     require_directory_exists(args)
-    check_output_path(args)
-    
+    check_output(args)
+
     # ensure that the output path is absolute
-    args.output_path = get_absolute_path(args.output_path)
     generate_code_folder(args)
 
 def clear(args):
     """Clears the debugging folders"""
     # Clear the files errors.txt, output_gpt.txt and prompt.txt
-    check_output_path(args)
+    check_output(args)
     clear_debug(args, args.output_path)
     
 def parse_arguments(functions_list):
@@ -141,9 +137,9 @@ def parse_arguments(functions_list):
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
                         generation", type=int, default=2048)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
-                        generation", type=str, default="output")
+                        generation", type=str)
     parser.add_argument('-output-file', '--output_file', help="The output file to use for the \
-                        code generation", type=str, default="output")
+                        code generation", type=str)
     parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
                         to the console", type=bool, action=argparse.BooleanOptionalAction, \
                         default=False)
@@ -183,9 +179,6 @@ if __name__ == "__main__":
 
     # Ensure that the integers are valid
     ensure_integers(arguments)
-
-    # Always require an output path
-    check_output_path(arguments)
 
     # Clear the debugging folders if the clear argument is given
     if arguments.clear:

@@ -1,12 +1,12 @@
 """ This module contains the function that iteratively generates a prompt based on a 
     verification error message """
+import os
 from LLM.prompts import initial_prompt, verification_error_prompt
 from LLM.specification import add_specification_to_code
 from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import get_absolute_path
 from Verify_files.check_file import check_file
 from helper_files.list_files import list_folders_directory, list_files_directory
-import os
 
 def generate_code(args, improve = False):
     """Function to iteratively generate code and check it
@@ -65,13 +65,15 @@ def generate_code(args, improve = False):
 
         # Get the output path
         output_path = f"{args.output_path}/{args.output_file}"
+        print(f"Writing code to {output_path}...")
 
         # Add the specification
-        code = add_specification_to_code(args.header_file, code, args.improve)
+        code = add_specification_to_code(args.header_file, code, improve)
 
         # Output the code to the specified file
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(code)
+            
             args.c_file = output_path
 
         print("Code has been generated, verifying...")
@@ -98,7 +100,7 @@ def generate_code(args, improve = False):
             "verified_goals": verified_goals,
             "info": information,
         }
-        
+
         information_iteration.append(iteration_info)
 
         # Check if the code needs to be rebooted
@@ -123,7 +125,7 @@ def generate_code(args, improve = False):
     # save the results to a file
     with open(f"{args.output_path}/results.txt", "w", encoding="utf-8") as f:
         f.write(str(information_iteration))
-        
+
 # Function that generates code in a folder
 def generate_code_folder(args):
     """Function to generate code from a folder with folders
@@ -133,33 +135,33 @@ def generate_code_folder(args):
         None
     Requirements of the arguments:
     - The output path is absolute"""
-        
+
     # Get the folders in the directory
     folders = list_folders_directory(args.directory)
-    
+
     # Get the base directory of the output
     base_directory = get_absolute_path(args.output_path)
-    
+
     # For each folder in the directory
     for folder in folders[1:2]:
         # Get the files in the folder
         files = list_files_directory(args.directory + "/" + folder)
-        
+
         # Get the first .h file in the folder
         specification_file = [f for f in files if f.endswith(".h")][0]
         args.header_file = folder + "/" + specification_file
-    
+
         # Set the header file
         args.header_file = args.directory + "/" +  args.header_file
-        
+
         # Set the output path
         args.output_file = "output_gpt3-5.c"
         args.output_path = base_directory + "/" + folder
-        
-        # Create the output directory if it does not exist yet 
+
+        # Create the output directory if it does not exist yet
         if not os.path.exists(args.output_path):
             os.mkdir(args.output_path)
-    
+
         # Run the code
         generate_code(args)
 
