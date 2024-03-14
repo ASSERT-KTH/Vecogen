@@ -7,7 +7,7 @@ from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import list_folders_directory, list_files_directory
 from Verify_files.check_file import check_file
 
-def generate_code(args, improve = False):
+def generate_code(args, improve = False, print_information_iteration = True):
     """Function to iteratively generate code and check it
     Args:
         args: The arguments given to the program
@@ -21,6 +21,9 @@ def generate_code(args, improve = False):
 
     # Create an array to store the information about the iterations
     information_iteration = []
+
+    # Boolean that indicates if the code has been verified
+    verified = False
 
     # Check if the model continues the code or starts from scratch
     if improve:
@@ -42,16 +45,14 @@ def generate_code(args, improve = False):
     else:
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
-    # Boolean that indicates if the code has been verified
-    verified = False
-
     # Loop that iteratively prompts and checks the code
     i = 0
     i_reboot = 0
     while (i < args.iterations and not verified):
-        print("-" * 50)
-        print(f"Iteration {i+1} of {args.iterations}, generating code...")
-        print("-" * 50)
+        if print_information_iteration:
+            print("-" * 50)
+            print(f"Iteration {i+1} of {args.iterations}, generating code...")
+            print("-" * 50)
 
         # Get the output from the LLM
         response_gpt = make_gpt_request(args, prompt)
@@ -68,7 +69,7 @@ def generate_code(args, improve = False):
                   and then verifying the code \n")
 
         # Add the specification
-        code = add_specification_to_code(args.header_file, code, improve)
+        code = add_specification_to_code(args.header_file, code)
 
         # Output the code to the specified file
         with open(args.absolute_output_directory + "/" + args.output_file, "w",
@@ -144,7 +145,7 @@ def generate_code_folder(args):
     base_directory = args.absolute_output_directory
 
     # For each folder in the directory
-    for folder in folders[1:2]:
+    for folder in folders:
         # Get the files in the folder
         files = list_files_directory(args.directory + "/" + folder)
 
@@ -168,8 +169,8 @@ def generate_code_folder(args):
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        # Run the code
-        generate_code(args)
+        # Run the code without printing the information
+        generate_code(args, print_information_iteration = False)
 
         # Print the current generated file
         print(f"Generated code for {args.absolute_c_path}.")

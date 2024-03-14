@@ -6,8 +6,7 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers, \
-    get_absolute_path
+    require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -81,11 +80,11 @@ def generate_code(args):
 
     # Set the path of the file that will be generated
     args.c_file = args.output_file
-    args.absolute_c_path = get_absolute_path(args.absolute_output_directory + "/" + args.output_file)
+    args.absolute_c_path = f"{args.absolute_output_directory}/{args.output_file}"
 
     generate_code_pipeline(args)
 
-    print("The code has been generated and saved to the file: " + args.absolute_c_path + "\n" + 
+    print("The code has been generated and saved to the file: " + args.absolute_c_path + "\n" +
             "For more information, see results.txt")
 
 def improve_code(args):
@@ -169,7 +168,7 @@ if __name__ == "__main__":
     switcher = {
         "list_files": list_files,
         "verify": verify,
-        "verify_dir": verify_dir,
+        "verify_folder": verify_dir,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
         "improve_code": improve_code,

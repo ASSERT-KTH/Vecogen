@@ -16,7 +16,7 @@ def replace_loops(use_loops):
                 Add loop invariants and assertions for loops if these \
                     improve the verification process"
     else:
-        return "no loops"
+        return "Do not make use of loops"
 
 def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     """Function that generates a prompt based on a header file

@@ -27,9 +27,7 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
               f"Error:\n {output}")
             return False, output, None
     elif args.debug:
-        print(f"File {absolute_path_to_c_file.split('/')[-1]} compiled successfully")
-
-    if args.debug:
-        print(f"File {absolute_path_to_c_file.split('/')[-1]} will be verified...")
+        print(f"File {absolute_path_to_c_file.split('/')[-1]} compiled successfully" +
+              " and will be verified...")
 
     return verify_file(args)

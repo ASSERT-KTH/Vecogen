@@ -85,7 +85,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
-                print(line, line_without_path)
 
                 # Get the line of code that caused the timeout, which comes after "line .."
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
@@ -99,8 +98,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
 
     # Otherwise the file is valid
     else:
-        # Get the amount of verified goals by querying for " [wp] Proved goals:   19 / 22"
-        print(output)
+        # Get the amount of verified goals
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
         total_goals = total_goals.split("\n")[0].strip()

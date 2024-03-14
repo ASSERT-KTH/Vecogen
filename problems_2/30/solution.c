@@ -9,9 +9,9 @@
     assigns *out;
 
     // In the code specification the result and the logic variable should differ by 0.0001
-    ensures \abs(((l / (p + q)) * p) - *out)/(\max(1, (l / (p + q)) * p)) <= 0.0001;
+    ensures (l / (p + q)) * p == *out;
 */
 void problem(int l, int p, int q, int *out)
 {
-    *out = (l / (p + q)) * p;
+    *out = ((l * p) / (p + q));
 }
