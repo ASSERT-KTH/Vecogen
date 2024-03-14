@@ -1,8 +1,7 @@
 """ This module is used to check a C file in a given directory"""
-import sys
+import os
 from Verify_files.compile_file import compile_c
 from Verify_files.verify_file import verify_file
-import os
 
 def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
     """Check a C file in a given directory

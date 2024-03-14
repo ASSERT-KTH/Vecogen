@@ -4,8 +4,7 @@ import os
 from LLM.prompts import initial_prompt, verification_error_prompt
 from LLM.specification import add_specification_to_code
 from GPT.make_GPT_requests import make_gpt_request
-from helper_files.list_files import get_absolute_path, list_folders_directory,  \
-    list_files_directory
+from helper_files.list_files import list_folders_directory, list_files_directory
 from Verify_files.check_file import check_file
 
 def generate_code(args, improve = False):
@@ -30,7 +29,8 @@ def generate_code(args, improve = False):
             code = f.read()
 
         # Write the c code to the output path
-        with open(f"{args.absolute_output_directory}/{args.output_file}", "w", encoding="utf-8") as f:
+        with open(f"{args.absolute_output_directory}/{args.output_file}", "w",
+                encoding="utf-8") as f:
             f.write(code)
 
         # Verify the file
@@ -71,7 +71,8 @@ def generate_code(args, improve = False):
         code = add_specification_to_code(args.header_file, code, improve)
 
         # Output the code to the specified file
-        with open(args.absolute_output_directory + "/" + args.output_file, "w", encoding="utf-8") as f:
+        with open(args.absolute_output_directory + "/" + args.output_file, "w",
+                  encoding="utf-8") as f:
             args.absolute_c_file = args.absolute_output_directory + "/" + args.output_file
             f.write(code)
 
@@ -140,7 +141,7 @@ def generate_code_folder(args):
     folders = list_folders_directory(args.directory)
 
     # Get the base directory of the output
-    base_directory = get_absolute_path(args.absolute_output_directory)
+    base_directory = args.absolute_output_directory
 
     # For each folder in the directory
     for folder in folders[1:2]:
@@ -154,15 +155,14 @@ def generate_code_folder(args):
         # Set the header file
         args.header_file = args.directory + "/" +  args.header_file
 
-        # Set the c file and h file paths
-        args.absolute_c_path = args.directory + "/" + folder + "/" + \
-            specification_file.replace(".h", ".c")
-        args.absolute_header_path = args.directory + "/" + folder + "/" + specification_file
-
         # Set the output path
         args.output_file = "output_gpt3-5.c"
         output_dir = base_directory + "/" + folder
         args.absolute_output_directory = output_dir
+
+        # Set the c file and h file paths
+        args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file
+        args.absolute_header_path = args.absolute_output_directory + "/" + specification_file
 
         # Create the output directory if it does not exist yet
         if not os.path.exists(output_dir):
