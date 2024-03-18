@@ -8,9 +8,9 @@ A project that uses Large Language Models (LLMs) to generate formally verified c
 - .env folder with a OPENAI API key, "OPENAI_API_KEY = {key}" 
 
 # Solvers 
-- alt-ergo (https://alt-ergo.lri.fr/)
-- CVC4 (https://cvc4.github.io/)
-- Z3  
+- alt-ergo 2.4.3 (https://alt-ergo.lri.fr/)
+- CVC4 1.7 (https://cvc4.github.io/)
+- Z3 4.8.6  
 
 
 ## Installation
@@ -52,3 +52,11 @@ python main.py function
 - '-clear': The clear option that clears all debug files
 - '-reboot': The amount of iterations before a reboot occurs. A reboot starts from the original prompt.
 - '-al': The option to allow loops or not.
+
+# Example of usages. Make sure you are in the python_modules directory
+- python3 main.py verify_folder -d ../no_loop_problems/0
+    This command will verify the first .c and .h file in the folder no_loop_problems/0
+- python3 main.py verify -c ../no_loop_problems/0/solution.c -he ../no_loop_problems/0/specification.h
+    This command will verify the given .c and .h file
+- python3 main.py generate_code -he ../no_loop_problems/0/specification.h
+    This command will generate the code for the given .h file
