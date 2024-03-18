@@ -1,4 +1,6 @@
-A project that uses Large Language Models (LLMs) to generate formally verified code. The input are formal specifications, it then uses LLMs to generate the code that will be used. The code is then verified using formal methods to ensure that it meets the specifications. The project is still in its early stages and is not yet functional. 
+Formally verified code generation using Large Language Models (LLMs)
+
+A project that uses LLMs to generate formally verified code. The input are formal specifications, it then uses LLMs to generate the code that will be used. The code is then verified using formal methods to ensure that it meets the specifications. The project is still in its early stages and is not yet functional. 
 
 ## Pre-requisites
 - Python 3.6 or higher
