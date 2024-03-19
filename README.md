@@ -7,7 +7,7 @@ A project that uses LLMs to generate formally verified code. The input are forma
 - Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
 - Frama-c (https://frama-c.com/)
 - Why3 (https://why3.lri.fr/)
-- .env folder with a OPENAI API key, "OPENAI_API_KEY = {key}" 
+- .env file in the root directory with a OPENAI API key, "OPENAI_API_KEY = {key}" 
 
 # Solvers 
 - alt-ergo 2.4.3 (https://alt-ergo.lri.fr/)
