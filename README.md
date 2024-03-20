@@ -54,6 +54,7 @@ python main.py function
 - '-clear': The clear option that clears all debug files
 - '-reboot': The amount of iterations before a reboot occurs. A reboot starts from the original prompt.
 - '-al': The option to allow loops or not.
+- '-ieg': The amount of initial examples generated for each problem
 
 # Example of usages. Make sure you are in the python_modules directory
 - python3 main.py verify_folder -d ../no_loop_problems/0

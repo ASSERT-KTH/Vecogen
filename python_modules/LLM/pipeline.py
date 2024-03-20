@@ -45,9 +45,14 @@ def generate_code(args, improve = False, print_information_iteration = True):
     else:
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
+    # A storage for the initial generation attempts
+    generation_attempts = []
+
     # Loop that iteratively prompts and checks the code
     i = 0
     i_reboot = 0
+    i_initial_prompt = 0
+
     while (i < args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
@@ -57,32 +62,15 @@ def generate_code(args, improve = False, print_information_iteration = True):
         # Get the output from the LLM
         response_gpt = make_gpt_request(args, prompt)
 
-        # Get the code from the output of the LLM
-        code = response_gpt.split("```C")[1]
-        code = code.split("```")[0]
-
-        # Remove everything before the first newline, the function signature
-        code = code.split("\n", 1)[1]
-
-        if args.debug:
-            print(f"Code was generated. Writing it to {args.absolute_output_directory} \
-                  and then verifying the code \n")
-
-        # Add the specification
-        code = add_specification_to_code(args.header_file, code)
-
-        # Output the code to the specified file
-        with open(args.absolute_output_directory + "/" + args.output_file, "w",
-                  encoding="utf-8") as f:
-            args.absolute_c_file = args.absolute_output_directory + "/" + args.output_file
-            f.write(code)
+        # Process the generated code
+        code = process_generated_code(args, response_gpt)
 
         # Verify the code
         verified, output, verified_goals = check_file(args.absolute_c_path,
             args.absolute_header_path, args)
 
         # Extra information
-        if i == 0:
+        if i <= args.initial_examples_generated:
             information = "initial prompt"
         elif i_reboot == 0:
             information = "rebooted"
@@ -98,9 +86,22 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "gpt_output": response_gpt,
             "verified": verified,
             "verified_goals": verified_goals,
+            "temperature": args.temperature,
             "info": information,
         }
         information_iteration.append(iteration_info)
+
+        # Check if another initial code generation is needed
+        if not verified and i_initial_prompt < args.initial_examples_generated - 1:
+            # Store the initial generation attempt in the list
+            generation_attempts.append([verified_goals, response_gpt])
+            if i_initial_prompt == args.initial_examples_generated:
+                if args.debug:
+                    print("Initial prompt has been generated.")
+            prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
+                                    args.allowloops)
+            
+            print([x[0] for x in generation_attempts])
 
         # Check if the code needs to be rebooted
         if not verified and i_reboot == args.reboot:
@@ -109,12 +110,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
                                     args.allowloops)
             i_reboot = 0
-        else :
+
+        # Check if the code needs to be improved
+        elif not verified:
             # Create a new prompt based on the output
             prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
                                             args.max_tokens, args.allowloops)
-
-        i_reboot += 1
+            i_reboot += 1
         i += 1
 
     # Print the results
@@ -128,6 +130,41 @@ def generate_code(args, improve = False, print_information_iteration = True):
     with open(f"{args.absolute_output_directory}/results.txt", "w", encoding="utf-8") as f:
         f.write(str(information_iteration))
 
+# Function that processes the generated code by adding the specification and creating the output file
+def process_generated_code(args, code):
+    """Function to process the generated code and write it to a file
+    Args:
+        args: The arguments given to the program
+        code: The code that has been generated
+    Returns:
+        None
+    Requirements of the arguments:
+    - The output path is absolute"""
+
+    # Get the code from the output of the LLM
+    code = code.split("```C")[1]
+    code = code.split("```")[0]
+
+    # Remove everything before the first newline, the function signature
+    code = code.split("\n", 1)[1]
+
+    if args.debug:
+        print(f"Code was generated. Writing it to {args.absolute_output_directory} \
+                and then verifying the code \n")
+
+    # Add the specification
+    code = add_specification_to_code(args.header_file, code)
+
+    # Output the code to the specified file
+    with open(args.absolute_output_directory + "/" + args.output_file, "w",
+                encoding="utf-8") as f:
+        args.absolute_c_file = args.absolute_output_directory + "/" + args.output_file
+        f.write(code)
+
+    return code
+
+
+        
 # Function that generates code in a folder
 def generate_code_folder(args):
     """Function to generate code from a folder with folders

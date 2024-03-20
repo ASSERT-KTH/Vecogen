@@ -155,9 +155,11 @@ def parse_arguments(functions_list):
                         reboot occurs", default= 999999, type=int)
     parser.add_argument("-al", "--allowloops", help="Allow loops in the generated code",
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
-
+    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem",
+                        default=1, type=int)
+    
     # Print the version of the tool
-    parser.add_argument("--version", action="version", version='%(prog)s - Version 1.0')
+    parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')
 
     # Parse arguments
     return parser.parse_args()

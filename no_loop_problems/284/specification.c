@@ -21,4 +21,11 @@
     complete behaviors;
     disjoint behaviors;
     */
-void problem(int l1, int r1, int l2, int r2, int k, int *out);
+void problem(int l1, int r1, int l2, int r2, int k, int *out)
+{
+    if (r1 < l2 || l1 > r2) {
+        *out = 0;
+    } else {
+        *out = (r1 < r2 ? r1 : r2) - (l1 > l2 ? l1 : l2) + ((l1 <= k && k <= r1) && (l2 <= k && k <= r2) ? 0 : 1);
+    }
+}

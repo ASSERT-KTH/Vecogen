@@ -11,4 +11,4 @@
         assumes a != 1;
         ensures *out == 6 * (a - 1) * a + 1;
 */
-int problem(int a);
+void problem(int a, int *out);
