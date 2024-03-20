@@ -63,3 +63,5 @@ python main.py function
     This command will verify the given .c and .h file
 - python3 main.py generate_code -he ../no_loop_problems/0/specification.h
     This command will generate the code for the given .h file
+
+python3 main.py generate_code -he ../no_loop_problems/284/specification.h -ieg 5 -temp 0.8  -iter 10 -reboot 5

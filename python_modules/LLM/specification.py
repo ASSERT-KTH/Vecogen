@@ -21,7 +21,10 @@ def add_specification_to_code(absolute_header_path: str, code):
     code_split = [x + "\n" for x in code.split("\n")]
 
     # Get the line of the first function
-    function_start_line = get_functions(code_split)[0][0]
+    try:
+        function_start_line = get_functions(code_split)[0][0]
+    except:
+        print(f"ERROR {code}\n\n\n\n\n")
 
     # See if the first function contains a bracket
     contains_bracket = "{" in code_split[function_start_line - 1]

@@ -51,7 +51,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # Loop that iteratively prompts and checks the code
     i = 0
     i_reboot = 0
-    i_initial_prompt = 0
 
     while (i < args.iterations and not verified):
         if print_information_iteration:
@@ -91,20 +90,32 @@ def generate_code(args, improve = False, print_information_iteration = True):
         }
         information_iteration.append(iteration_info)
 
+        # If another initial attempt has been done, increase the counter
+        if i < args.initial_examples_generated:
+            # Get the percentage of verified goals
+            total_goals = verified_goals.split("/")[1]
+            verified_goals = verified_goals.split("/")[0]
+            verified_percentage = int(verified_goals) / int(total_goals)
+
+            # Add the initial generation attempt to the list
+            generation_attempts.append([verified_percentage, response_gpt])
+        elif i == args.initial_examples_generated:
+            # If the initial generation attempts were done, then set the code to the best attempt
+            # The best attempt is measured by the highest percentage of verified goals
+            best_attempt = max(generation_attempts, key = lambda x: x[0])
+            print(f"The best {best_attempt[0]}")
+            code = best_attempt[0]
+
         # Check if another initial code generation is needed
-        if not verified and i_initial_prompt < args.initial_examples_generated - 1:
+        if not verified and i < args.initial_examples_generated - 1:
             # Store the initial generation attempt in the list
-            generation_attempts.append([verified_goals, response_gpt])
-            if i_initial_prompt == args.initial_examples_generated:
-                if args.debug:
-                    print("Initial prompt has been generated.")
+            if args.debug:
+                print("Initial prompt has been generated.")
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
                                     args.allowloops)
-            
-            print([x[0] for x in generation_attempts])
 
         # Check if the code needs to be rebooted
-        if not verified and i_reboot == args.reboot:
+        elif not verified and i_reboot == args.reboot:
             if args.debug:
                 print("Code has not been verified, rebooting...")
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
@@ -164,7 +175,6 @@ def process_generated_code(args, code):
     return code
 
 
-        
 # Function that generates code in a folder
 def generate_code_folder(args):
     """Function to generate code from a folder with folders
