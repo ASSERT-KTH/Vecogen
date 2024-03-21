@@ -25,7 +25,7 @@ def compile_c(absolute_path_to_c_file, absolute_path_to_output_folder):
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()
-    
+
     # Remove the compiled file 
     if os.path.exists(path_to_executable):
         os.remove(path_to_executable)

@@ -51,7 +51,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         """
 
     # Check if the output has a syntax error
-    if "Syntax error" in output or "syntax error" in output:
+    if "Syntax error" in output or "syntax error" in output or "invalid user input" in output:
         # Remove the lines with [kernel] in the output
         output = re.sub(r'\[kernel\].*?\n', '', output)
 
@@ -99,6 +99,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
     # Otherwise the file is valid
     else:
         # Get the amount of verified goals
+        print(output)
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
         total_goals = total_goals.split("\n")[0].strip()

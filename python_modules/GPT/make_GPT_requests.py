@@ -25,7 +25,7 @@ def make_gpt_request(args, prompt):
 
     # Make the request
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model= args.model_name,
         messages = message,
         temperature=temperature,
         max_tokens=max_tokens,

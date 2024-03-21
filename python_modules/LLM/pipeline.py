@@ -92,10 +92,14 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
         # If another initial attempt has been done, increase the counter
         if i < args.initial_examples_generated:
+            print(verified_goals)
             # Get the percentage of verified goals
             total_goals = verified_goals.split("/")[1]
             verified_goals = verified_goals.split("/")[0]
-            verified_percentage = int(verified_goals) / int(total_goals)
+            if int(total_goals) == 0:
+                verified_percentage = 0
+            else:
+                verified_percentage = int(verified_goals) / int(total_goals)
 
             # Add the initial generation attempt to the list
             generation_attempts.append([verified_percentage, response_gpt])
@@ -204,7 +208,8 @@ def generate_code_folder(args):
         args.header_file = args.directory + "/" +  args.header_file
 
         # Set the output path
-        args.output_file = "output_gpt3-5.c"
+        if not args.output_file:
+            args.output_file = f"output_{args.model_name}.c"
         output_dir = base_directory + "/" + folder
         args.absolute_output_directory = output_dir
 

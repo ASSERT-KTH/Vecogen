@@ -31,7 +31,7 @@ def require_directory_exists(args):
         args.absolute_directory = os.path.join(os.getcwd(), args.directory)
     else:
         args.absolute_directory = args.directory
-        
+
     # Make sure the directory exists
     if not os.path.isdir(args.directory):
         print(f"Please insert a valid directory, {old_directory} is not a directory")
@@ -193,4 +193,22 @@ def ensure_integers(args):
     # Ensure that the reboot is a positive integer
     if args.reboot is not None and args.reboot <= 0:
         print("The reboot must be a positive integer")
+        sys.exit()
+
+def require_model(model_name):
+    """ Function to check if the model is set and valid
+    Args:
+        model_name: The name of the model
+    Returns:
+        None"""
+
+    if model_name is None:
+        print("Please insert a model name using the -m or --model_name option")
+        sys.exit()
+
+    # Check if the model is available
+    available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4']
+    if model_name not in available_models:
+        print(f"The model {model_name} is not available, please use one of \
+            the following models: {available_models}")
         sys.exit()

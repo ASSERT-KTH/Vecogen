@@ -6,7 +6,8 @@ import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
-    require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers
+    require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers, \
+    require_model
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -65,7 +66,7 @@ def verify_dir(args):
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
     require_header_file(args)
-    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name, 
+    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name,
                                                args.max_tokens, args.allowloops)
 
     # filter out the -----END_ASSISTANT_INFORMATION-----  from the prompt
@@ -75,6 +76,7 @@ def generate_code(args):
     """ Generate code using the pipeline and the LLM model"""
     require_solver(args)
     require_header_file(args)
+    require_model(args.model_name)
     require_api_key_gpt()
     check_output(args)
 
@@ -90,6 +92,7 @@ def generate_code(args):
 def improve_code(args):
     """ Improve existing code using the pipeline and the LLM model """
     require_solver(args)
+    require_model(args.model_name)
     require_api_key_gpt()
     require_c_file(args)
     require_header_file(args)
@@ -99,6 +102,7 @@ def improve_code(args):
 def generate_folder(args):
     """ Generate code from a folder with folders"""
     require_solver(args)
+    require_model(args.model_name)
     require_api_key_gpt()
     require_directory_exists(args)
     check_output(args)
