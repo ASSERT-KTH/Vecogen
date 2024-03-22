@@ -65,3 +65,5 @@ python main.py function
     This command will generate the code for the given .h file
 
 python3 main.py generate_code -he ../no_loop_problems/284/specification.h -ieg 5 -temp 0.8  -iter 10 -reboot 5
+
+main.py generate_code -he ../no_loop_problems/301/specification.h -ieg 5 -temp 0.8 -iter 10 -reboot 5 -o ../output/gpt4/301/ -model gpt-4

@@ -99,7 +99,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
     # Otherwise the file is valid
     else:
         # Get the amount of verified goals
-        print(output)
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
         total_goals = total_goals.split("\n")[0].strip()
