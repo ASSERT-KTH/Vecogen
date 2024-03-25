@@ -65,8 +65,8 @@ def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     # Make sure that the token size is not too large
     prompt_size = num_tokens_from_string(prompt_mapped, model)
     if prompt_size > max_token_size:
-        raise ValueError(f"The prompt is too large, it has {prompt_size} tokens, \
-                        the maximum is {max_token_size}")
+        raise ValueError(f"The prompt is too large, it has {prompt_size} tokens, " + \
+            "the maximum is {max_token_size}")
 
     return prompt_mapped
 

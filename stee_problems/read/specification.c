@@ -86,53 +86,17 @@ int state_ELECTRIC_MOTOR_ACTIVATED;
 */
 int read(enum SIGNAL idx)
 {
-    if (idx < NUM_SIGNALS)
-    {
-        if (idx == PARKING_BRAKE_APPLIED)
-            return state_PARKING_BRAKE_APPLIED;
-        if (idx == PRIMARY_CIRCUIT_LOW_FLOW)
-            return state_PRIMARY_CIRCUIT_LOW_FLOW;
-        if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE)
-            return state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
-        if (idx == WHEEL_BASED_SPEED)
-            return state_WHEEL_BASED_SPEED;
-        if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING)
-            return state_SECONDARY_CIRCUIT_HANDLES_STEERING;
-        if (idx == ELECTRIC_MOTOR_ACTIVATED)
-            return state_ELECTRIC_MOTOR_ACTIVATED
-{
-    }
-}
-    int wheelSpeed;
-    int parkingBrake;
-    int primLowFlow;
-    int primHighVoltage;
-    int secondCircHandlesStee;
-    int electricMotorAct;
-};
-
-int state_PARKING_BRAKE_APPLIED;
-int state_PRIMARY_CIRCUIT_LOW_FLOW;
-int state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
-int state_WHEEL_BASED_SPEED;
-int state_SECONDARY_CIRCUIT_HANDLES_STEERING;
-int state_ELECTRIC_MOTOR_ACTIVATED;
-
-int read(enum SIGNAL idx)
-{
-    if (idx < NUM_SIGNALS)
-    {
-        if (idx == PARKING_BRAKE_APPLIED)
-            return state_PARKING_BRAKE_APPLIED;
-        if (idx == PRIMARY_CIRCUIT_LOW_FLOW)
-            return state_PRIMARY_CIRCUIT_LOW_FLOW;
-        if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE)
-            return state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
-        if (idx == WHEEL_BASED_SPEED)
-            return state_WHEEL_BASED_SPEED;
-        if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING)
-            return state_SECONDARY_CIRCUIT_HANDLES_STEERING;
-        if (idx == ELECTRIC_MOTOR_ACTIVATED)
-            return state_ELECTRIC_MOTOR_ACTIVATED;
+    if (idx == PARKING_BRAKE_APPLIED) {
+        return state_PARKING_BRAKE_APPLIED;
+    } else if (idx == PRIMARY_CIRCUIT_LOW_FLOW) {
+        return state_PRIMARY_CIRCUIT_LOW_FLOW;
+    } else if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE) {
+        return state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
+    } else if (idx == WHEEL_BASED_SPEED) {
+        return state_WHEEL_BASED_SPEED;
+    } else if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING) {
+        return state_SECONDARY_CIRCUIT_HANDLES_STEERING;
+    } else if (idx == ELECTRIC_MOTOR_ACTIVATED) {
+        return state_ELECTRIC_MOTOR_ACTIVATED;
     }
 }
