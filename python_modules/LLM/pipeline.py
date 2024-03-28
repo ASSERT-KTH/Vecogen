@@ -60,6 +60,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
         # Get the output from the LLM
         response_gpt = make_gpt_request(args, prompt)
+        print(response_gpt)
 
         # Process the generated code
         code = process_generated_code(args, response_gpt)
