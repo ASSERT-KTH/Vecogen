@@ -1,5 +1,3 @@
-/* Star  */
-
 /*@
     requires \valid(out);
     requires 1 <= a <= 18257;
@@ -11,4 +9,4 @@
         assumes a != 1;
         ensures *out == 6 * (a - 1) * a + 1;
 */
-void problem(int a, int *out);
+void star(int a, int *out);

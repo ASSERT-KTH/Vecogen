@@ -17,4 +17,4 @@
     complete behaviors;
     disjoint behaviors;
 */
-void problem(int n, int *out);
+void calculateWaysToGetSecondCardForBlackjack(int n, int *out);

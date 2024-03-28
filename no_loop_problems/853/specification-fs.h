@@ -1,4 +1,4 @@
-/* Star  */
+/* Star */
 
 /*@
     requires \valid(out);
@@ -11,12 +11,4 @@
         assumes a != 1;
         ensures *out == 6 * (a - 1) * a + 1;
 */
-void star(int a, int *out)
-{
-    if (a == 1)
-        *out = 1;
-    else
-    {
-        *out = 6 * (a - 1) * a + 1;
-    }
-}
+void star(int a, int *out);

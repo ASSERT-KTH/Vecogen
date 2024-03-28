@@ -1,4 +1,4 @@
-/*  The number of positions
+/*
     Petr stands in line of n people, but he doesn't know exactly which position he occupies. He can say that there are no less than a people standing in front of him and no more than b people standing behind him. Find the number of different positions Petr can occupy.
 */
 
@@ -17,7 +17,7 @@
     complete behaviors;
     disjoint behaviors;
 */
-void problem(int n, int a, int b, int *out)
+void calculatePossiblePositionsForPetr(int n, int a, int b, int *out)
 {
     *out = n - a <= b ? n - a : b + 1;
 }
