@@ -26,3 +26,5 @@ Output
 
 Note
 In the first sample the author has to get a 2 for all his exams. In the second sample he should get a 3 for two exams and a 2 for two more. In the third sample he should get a 3 for one exam.
+
+https://codeforces.com/problemset/problem/194/A

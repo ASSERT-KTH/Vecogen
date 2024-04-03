@@ -14,7 +14,7 @@
     ensures *out_1 + *out_2 + *out_3 == n;
     ensures is_fibonacci(*out_1) && is_fibonacci(*out_2) && is_fibonacci(*out_3);
 */
-void divideFibonacciNumberByThreeFibonacciNumbers(int n, int *out_1, int *out_2, int *out_3)
+void divide(int n, int *out_1, int *out_2, int *out_3)
 {
   *out_1 = 0;
   *out_2 = 0;
