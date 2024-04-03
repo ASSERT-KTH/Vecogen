@@ -2,22 +2,38 @@
     One day Vasya the Hipster decided to count how many socks he had. It turned out that he had a red socks and b blue socks. According to the latest fashion, hipsters should wear the socks of different colors: a red one on the left foot, a blue one on the right foot. Every day Vasya puts on new socks in the morning and throws them away before going to bed as he doesn't want to wash them. Vasya wonders, what is the maximum number of days when he can dress fashionable and wear different socks, and after that, for how many days he can then wear the same socks until he either runs out of socks or cannot make a single pair from the socks he's got. Can you help him?
 */
 
-/* Computation of the maximal number of days when hhe can dress fashionable and wear different socks */
+/*@ predicate IsValidConfiguration(integer a, integer b, integer naa, integer nab, integer nbb, integer a_rem, integer b_rem) =
+    0 <= naa <= a / 2 &&
+    0 <= nab <= (a + b) / 2 &&
+    0 <= nbb <= b / 2 &&
+    0 <= a_rem <= 1 &&
+    0 <= b_rem <= 1 &&
+    (naa == 0 || nbb == 0) &&
+    2 * naa + nab + a_rem == a &&
+    2 * nbb + nab + b_rem == b &&
+    a_rem + b_rem <= 1;
+*/
+
+// Predicate that looks if the solution is valid
+/*@ predicate IsPossibleConfiguration(integer a, integer b, integer result_1, integer result_2) =
+    \exists integer naa, nab, nbb, a_rem, b_rem;
+    IsValidConfiguration(a, b, naa, nab, nbb, a_rem, b_rem) ==>
+    result_1 == nab && result_2 == naa + nbb;
+*/
+
+// Predicate that shows that there does not exist a solution with a higher value
+/*@ predicate ExistsBiggerSolution(integer a, integer b, integer result_1, integer result_2) =
+    \exists integer naa, nab, nbb, a_rem, b_rem;
+    IsValidConfiguration(a, b, naa, nab, nbb, a_rem, b_rem) &&
+    nab > result_1 && result_2 == naa + nbb;
+*/
+
 /*@
     requires \valid(out_1) && \valid(out_2) && \separated(out_1, out_2);
     requires 1 <= a <= 100;
     requires 1 <= b <= 100;
     assigns *out_1, *out_2;
-    behavior has_more_red:
-        assumes a > b;
-        ensures *out_1 == b && *out_2 == (a - b) / 2;
-    behavior has_more_blue:
-        assumes b > a;
-        ensures *out_1 == a && *out_2 == (b - a) / 2;
-    behavior equal_socks:
-        assumes a == b;
-        ensures *out_1 == a && *out_2 == 0;
-    complete behaviors;
-    disjoint behaviors;
+    ensures IsPossibleConfiguration(a, b, *out_1, *out_2);
+    ensures !ExistsBiggerSolution(a, b, *out_1, *out_2);
 */
 void calculateHipsterSockDays(int a, int b, int *out_1, int *out_2);
