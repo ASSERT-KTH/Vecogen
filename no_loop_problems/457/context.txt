@@ -26,3 +26,5 @@ Output
 
 Note
 In the first sample only four two's of different suits can earn the required sum of points. In the second sample we can use all tens, jacks, queens and kings; overall it's 15 cards, as the queen of spades (as any other card) is only present once in the pack of cards and it's already in use. In the third sample there is no card, that would add a zero to the current ten points.
+
+https://codeforces.com/problemset/problem/104/A
