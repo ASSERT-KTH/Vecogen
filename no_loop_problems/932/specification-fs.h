@@ -24,7 +24,7 @@
     requires \valid(out);
     requires  1 <= n <= 50;
     requires  1 <= k <= 250;
-    requires 3 * n <= k <= 5 * n ;
+    requires 3 * n <= k <= 5 * n;
     assigns *out;
     ensures IsPossibleConfiguration(n, k, *out);
     ensures !ExistsSmallerAmountOfResits(n, k, *out)
