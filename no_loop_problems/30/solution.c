@@ -13,6 +13,7 @@
     assigns *out;
     ensures IsEqualLength(l, p, q, *out);
     ensures (double) (*out / p) == (double) (l - *out) / q;
+    ensures (double) (*out / p) == (double) (l / (p + q));
 */
 void calculateSecondSpellCollisionDistance(int l, int p, int q, double *out)
 {
