@@ -21,4 +21,4 @@ Input
 Output
 0 2
 
-https://codeforces.com/problemset/problem/125/A#:~:text=Lengths%20are%20measures%20in%20Baden,one%20foot%20contains%2012%20inches.
+https://codeforces.com/problemset/problem/125/A
