@@ -2,13 +2,40 @@
     Nikolay has a lemons, b apples and c pears. He decided to cook a compote. According to the recipe the fruits should be in the ratio 1: 2: 4 . It means that for each lemon in the compote should be exactly 2 apples and exactly 4 pears. You can't crumble up, break up or cut these fruits into pieces. These fruits — lemons, apples and pears — should be put in the compote as whole fruits. Your task is to determine the maximum total number of lemons, apples and pears from which Nikolay can cook the compote. It is possible that Nikolay can't use any fruits, in this case print 0 .
 */
 
+/*@ predicate isValidSolution(integer a, integer b, integer c, integer out) =
+    \exists integer a_used, b_used, c_used;
+    0 <= a_used <= a &&
+    0 <= b_used <= b &&
+    0 <= c_used <= c &&
+    a_used == 2 * b_used == 4 * c_used &&
+    a_used + b_used + c_used == out;
+*/
+
+/*@ predicate isValidSolution(integer a, integer b, integer c, integer out) =
+    \exists integer used_apples;
+    0 <= used_apples <= a &&
+    2 * used_apples <= b &&
+    4 * used_apples <= c &&
+    7 * used_apples == out;
+*/
+
+/*@ predicate existsLargerSolution(integer a, integer b, integer c, integer out) =
+    \exists integer a_used, b_used, c_used;
+    0 <= a_used <= a &&
+    0 <= b_used <= b &&
+    0 <= c_used <= c &&
+    a_used == 2 * b_used &&
+    a_used == 4 * c_used &&
+    a_used + b_used + c_used > out;
+*/
+
 /*@
     requires \valid(out);
     requires 1 <= a <= 1000;
     requires 1 <= b <= 1000;
     requires 1 <= c <= 1000;
     assigns *out;
-    ensures *out == 7 * \min(a / 1, \min(b / 2, c / 4));
+    ensures isValidSolution(a, b, c, *out);
 */
 void calculateMaxFruitsForCompote(int a, int b, int c, int *out)
 {
