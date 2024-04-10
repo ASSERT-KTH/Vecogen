@@ -9,18 +9,6 @@
     (x * x + y * y == N * N || x * x + N * N == y * y || N * N + y * y == x * x);
  */
 
-/*@ axiom TripleExistsAxiom:
-    \forall long N; TripleExists(N) || !TripleExists(N);
-    \forall long N > 3; TripleExists(N);
-    \forall long N < 3; !TripleExists(N);
-*/
-
-/*@ axiomatic TriplesAxiomatic {
-    axiom less_than_3:
-    \forall long N; N < 3 ==> !TripleExists(N) && \forall long N; N > 3 ==> TripleExists(N);
-}
-*/
-
 // /*@
 //     requires \valid(out1) && \valid(out2) && \separated(out1, out2);
 //     requires 1 <= N <= 1000000000;

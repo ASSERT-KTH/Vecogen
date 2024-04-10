@@ -1,3 +1,15 @@
+/*@ predicate IsValidSolution(integer n, integer x, integer y, integer result) =
+    x >= 0 &&
+    ((real)(result + x) / n) >= ((real) y / 100);
+*/
+
+/*@ predicate existsSmallerSolution(integer n, integer x, integer y, integer result) =
+    \exists integer z;
+    z >= 0 &&
+    ((real)(z + x) /  n) >= ((real) (y) / 100) &&
+    z < result;
+*/
+
 /*@
     requires \valid(out);
     requires 1 <= x <= 10000;
@@ -5,13 +17,7 @@
     requires 1 <= n <= 10000;
     requires  x <= n;
     assigns *out;
-    behavior zero_clones:
-        assumes (n * y + 99) / 100 - x <= 0;
-        ensures *out == 0;
-    behavior positive_clones:
-        assumes (n * y + 99) / 100 - x > 0;
-        ensures *out == (n * y + 99) / 100 - x;
-    complete behaviors;
-    disjoint behaviors;
+    ensures IsValidSolution(n, x, y, *out);
+    ensures !existsSmallerSolution(n, x, y, *out);
 */
 void calculateMinimumClonesForDemonstrationPercentage(int n, int x, int y, int *out);

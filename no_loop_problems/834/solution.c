@@ -3,7 +3,15 @@
  */
 
 /*@ predicate IsValidSolution(integer n, integer x, integer y, integer result) =
-    ((result + x) / n)>= (y / 100);
+    x >= 0 &&
+    ((real)(result + x) / n) >= ((real) y / 100);
+*/
+
+/*@ predicate existsSmallerSolution(integer n, integer x, integer y, integer result) =
+    \exists integer z;
+    z >= 0 &&
+    ((real)(z + x) /  n) >= ((real) (y) / 100) &&
+    z < result;
 */
 
 /*@
@@ -14,6 +22,7 @@
     requires  x <= n;
     assigns *out;
     ensures IsValidSolution(n, x, y, *out);
+    ensures !existsSmallerSolution(n, x, y, *out);
 */
 void calculateMinimumClonesForDemonstrationPercentage(int n, int x, int y, int *out)
 {

@@ -4,6 +4,7 @@
 /*@ predicate IsValidSolution(int n, int result_1, int result_2) =
     result_2 == \round_double(\Down,  (double) (10 / 3));
 */
+
 /*@
     requires \valid(out_1) && \valid(out_2) && \separated(out_1, out_2);
     requires n==10;

@@ -18,11 +18,8 @@
     startingDay == 5 ==> weekDay == 5 * (n / 7) + \min(1, n % 7) && weekendDay == 5 * (n / 7) + \min(2, n % 7 + 4) &&
     startingDay == 6 ==> weekDay == 5 * (n / 7) + \min(0, n % 7) && weekendDay == 5 * (n / 7) + \min(2, n % 7 + 5) &&
     startingDay == 7 ==> weekDay == 5 * (n / 7) + \min(0, n % 7 + 1) && weekendDay == 5 * (n / 7) + \min(2, n % 7 + 6);
-
-
-
-
 */
+
 /*@
     requires \valid(out1) && \valid(out2) && \separated(out1, out2);
     requires 1 <= n <= 1000000;
