@@ -2,19 +2,19 @@
     There exists an island called Arpa’s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa’s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.
 */
 
+/*@ axiomatic power_function {
+    axiom power_zero: \forall integer n; n == 0 ==> (long) \pow(1378, n) % 10 == 1;
+    axiom power_mod_one: \forall integer n; n % 4 == 1 ==> (long) \pow(1378, n) % 10 == 8;
+    axiom power_mod_two: \forall integer n; n % 4 == 2 ==> (long) \pow(1378, n) % 10 == 4;
+    axiom power_mod_three: \forall integer n; n % 4 == 3 ==> (long) \pow(1378, n) % 10 == 2;
+    axiom power_mod_zero: \forall integer n; n % 4 == 0 && n != 0 ==> (long) \pow(1378, n) % 10 == 6;
+  }
+*/
+
 /*@
     requires \valid(out);
     requires 0 <= n <= 1000000000;
     assigns *out;
-    behavior zero:
-        ensures n == 0 ==> *out == 1;
-    behavior one:
-        ensures n % 4 == 1 ==> *out == 8;
-    behavior two:
-        ensures n % 4 == 2 ==> *out == 4;
-    behavior three:
-        ensures n % 4 == 3 ==> *out == 2;
-    behavior four:
-        ensures n % 4 == 0 && n != 0  ==> *out == 6;
+    ensures *out == (long) \pow(1378, n) % 10;
 */
 void findLastDigitOfPower(int n, int *out);

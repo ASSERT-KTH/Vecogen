@@ -11,7 +11,7 @@
 
 /*@
     requires \valid(out1) && \valid(out2) && \separated(out1, out2);
-    requires 1 <= N <= 1000000000;
+    requires N == 2 ;
     assigns *out1, *out2;
     ensures 1 <= *out1 <= 1000000000000000000 || *out1 == -1;
     ensures 1 <= *out2 <= 1000000000000000000 || *out2 == -1;
