@@ -7,16 +7,8 @@
     0 <= a_used <= a &&
     0 <= b_used <= b &&
     0 <= c_used <= c &&
-    a_used == 2 * b_used == 4 * c_used &&
+    4 * a_used == 2 * b_used == c_used &&
     a_used + b_used + c_used == out;
-*/
-
-/*@ predicate isValidSolution(integer a, integer b, integer c, integer out) =
-    \exists integer used_apples;
-    0 <= used_apples <= a &&
-    2 * used_apples <= b &&
-    4 * used_apples <= c &&
-    7 * used_apples == out;
 */
 
 /*@ predicate existsLargerSolution(integer a, integer b, integer c, integer out) =
@@ -24,8 +16,7 @@
     0 <= a_used <= a &&
     0 <= b_used <= b &&
     0 <= c_used <= c &&
-    a_used == 2 * b_used &&
-    a_used == 4 * c_used &&
+    4 * a_used == 2 * b_used == c_used &&
     a_used + b_used + c_used > out;
 */
 
@@ -36,6 +27,7 @@
     requires 1 <= c <= 1000;
     assigns *out;
     ensures isValidSolution(a, b, c, *out);
+    ensures !existsLargerSolution(a, b, c, *out);
 */
 void calculateMaxFruitsForCompote(int a, int b, int c, int *out)
 {

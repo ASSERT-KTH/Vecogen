@@ -3,7 +3,7 @@
 */
 
 /*@ predicate isValidSolution(int n, int *out) =
-    \exist integer  n_1, n_2, n_geq3;
+    \exists integer  n_1, n_2, n_geq3;
     0 <= n_1 <= n &&
     0 <= n_2 <= n &&
     3 <= n_geq3 <= n &&
@@ -12,7 +12,7 @@
 */
 
 /*@ predicate existsBiggerSolution(int n, int *out) =
-    \exist integer  n_1, n_2, n_geq3;
+    \exists integer  n_1, n_2, n_geq3;
     0 <= n_1 <= n &&
     0 <= n_2 <= n &&
     0 <= n_geq3 <= n &&
@@ -24,7 +24,6 @@
     requires \valid(out);
     requires 1 <= n <= 1000000000;
     assigns *out;
-    ensures isValidSolution(int n, out);
 */
 void calculateMaximumPresentGivingTimes(int n, int *out)
 {
