@@ -25,6 +25,7 @@ def get_functions(lines):
             line.strip().startswith("signed ") or \
             line.strip().startswith("static ") or \
             line.strip().startswith("ulong ") or \
+            line.strip().startswith("enum ") or \
             line.strip().startswith("uint ")) and \
             "(" in line and ")" in line:
 

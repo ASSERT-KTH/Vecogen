@@ -62,17 +62,19 @@ int state_ELECTRIC_MOTOR_ACTIVATED;
 */
 void write(enum SIGNAL idx, int val)
 {
-    switch (idx) {
-        case SECONDARY_CIRCUIT_HANDLES_STEERING:
-            state_SECONDARY_CIRCUIT_HANDLES_STEERING = val;
-            if (val && !state_PARKING_BRAKE_APPLIED) {
-                state_ELECTRIC_MOTOR_ACTIVATED = 1;
-            }
-            break;
-        case ELECTRIC_MOTOR_ACTIVATED:
-            state_ELECTRIC_MOTOR_ACTIVATED = val;
-            break;
-        default:
-            break;
+    switch (idx)
+    {
+    case SECONDARY_CIRCUIT_HANDLES_STEERING:
+        state_SECONDARY_CIRCUIT_HANDLES_STEERING = val;
+        if (val && !state_PARKING_BRAKE_APPLIED)
+        {
+            state_ELECTRIC_MOTOR_ACTIVATED = 1;
+        }
+        break;
+    case ELECTRIC_MOTOR_ACTIVATED:
+        state_ELECTRIC_MOTOR_ACTIVATED = val;
+        break;
+    default:
+        break;
     }
 }

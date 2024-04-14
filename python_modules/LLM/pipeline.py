@@ -63,11 +63,17 @@ def generate_code(args, improve = False, print_information_iteration = True):
         print(response_gpt)
 
         # Process the generated code
-        code = process_generated_code(args, response_gpt)
-
-        # Verify the code
-        verified, output, verified_goals = check_file(args.absolute_c_path,
-            args.absolute_header_path, args)
+        try:
+            code = process_generated_code(args, response_gpt)
+            # Verify the code
+            verified, output, verified_goals = check_file(args.absolute_c_path,
+                args.absolute_header_path, args)
+            
+            print(verified, output, verified_goals)
+        except IndexError:
+            print("The code could not be generated, please try again.")
+            verified, output, verified_goals = False, "The model did not generate code", "0/0"
+            break
 
         # Extra information
         if i <= args.initial_examples_generated:
@@ -93,7 +99,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
         # If another initial attempt has been done, increase the counter
         if i < args.initial_examples_generated:
-            print(verified_goals)
             # Get the percentage of verified goals
             total_goals = verified_goals.split("/")[1]
             verified_goals = verified_goals.split("/")[0]

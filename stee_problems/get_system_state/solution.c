@@ -103,4 +103,14 @@ int read(enum SIGNAL idx)
   requires \true;
   ensures \result.parkingBrake == state_PARKING_BRAKE_APPLIED && \result.primLowFlow == state_PRIMARY_CIRCUIT_LOW_FLOW && \result.primHighVoltage == state_PRIMARY_CIRCUIT_HIGH_VOLTAGE && \result.wheelSpeed == state_WHEEL_BASED_SPEED && \result.secondCircHandlesStee == state_SECONDARY_CIRCUIT_HANDLES_STEERING && \result.electricMotorAct == state_ELECTRIC_MOTOR_ACTIVATED && \result.parkingBrake == \old(state_PARKING_BRAKE_APPLIED) && \result.primLowFlow == \old(state_PRIMARY_CIRCUIT_LOW_FLOW) && \result.primHighVoltage == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) && \result.wheelSpeed == \old(state_WHEEL_BASED_SPEED) && \result.secondCircHandlesStee == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) && \result.electricMotorAct == \old(state_ELECTRIC_MOTOR_ACTIVATED) && \old(model_vehicleIsMoving) == model_vehicleIsMoving && \old(model_vehicleMovingWithoutPrimaryPowerSteering) == model_vehicleMovingWithoutPrimaryPowerSteering && \old(model_primaryCircuitProvidingPowerSteering) == model_primaryCircuitProvidingPowerSteering;
 */
-struct VEHICLE_INFO get_system_state();
+struct VEHICLE_INFO get_system_state()
+{
+    struct VEHICLE_INFO veh_info;
+    veh_info.wheelSpeed = read(WHEEL_BASED_SPEED);
+    veh_info.parkingBrake = read(PARKING_BRAKE_APPLIED);
+    veh_info.primLowFlow = read(PRIMARY_CIRCUIT_LOW_FLOW);
+    veh_info.primHighVoltage = read(PRIMARY_CIRCUIT_HIGH_VOLTAGE);
+    veh_info.secondCircHandlesStee = read(SECONDARY_CIRCUIT_HANDLES_STEERING);
+    veh_info.electricMotorAct = read(ELECTRIC_MOTOR_ACTIVATED);
+    return veh_info;
+}
