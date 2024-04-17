@@ -17,4 +17,4 @@
     assigns *out;
     ensures IsWithinMargin(l, p, q, *out);
 */
-void calculateSecondSpellCollisionDistance(int l, int p, int q, int *out);
+void calculateSecondSpellCollisionDistance(double l, double p, double q, double *out);

@@ -3,7 +3,7 @@
 
 /*@ predicate isValidSolution(int n, int result_1, int result_2) =
     result_1 == n / 3 &&
-    0 == (int) \round_float(\Up, (real) 0.9);
+    0.9 ==\round_float(\Up, (real) 0.9);
 */
 
 /*@

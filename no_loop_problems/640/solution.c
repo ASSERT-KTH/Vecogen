@@ -8,24 +8,28 @@
     n - 1 - position <= b;
 */
 
+/*@ logic integer valid_position_value(integer n, integer a, integer b, integer position) =
+    valid_position(n, a, b, position) ? 1 : 0;
+*/
+
 /*@
   axiomatic axm
   {
     // Define the logical-function count() as returning the number of number of
     // possible positions for Petr
-    logic uint count(int n, int a, int b, int min, int max)
+    logic integer count(integer n, integer a, integer b, integer min, integer max)
         reads n, a, b, max, min;
 
     axiom base:
-        \forall int n, a, b, max, min;
+        \forall integer n, a, b, max, min;
         min <= max &&
         min >= 0 &&
         max < n &&
-        min == max ==> count(n, a, b, min, max) == (valid_position(n, a, b, min)) ? 1 : 0;
+        min == max ==> count(n, a, b, min, max) == valid_position_value(n, a, b, min);
 
     axiom recursion:
-      \forall int *a, x, uint n; n >= 1 ==>
-      (count(a, n, x) == count(a, (uint)(n-1), x) + ((a[n-1]==x) ? 1 : 0));
+      \forall integer *a, x, n; n >= 1 ==>
+      (count(a, n, x) == count(a, n - 1, x) + ((a[n - 1] == x) ? 1 : 0));
   }
  */
 
