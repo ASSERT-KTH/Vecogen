@@ -13,4 +13,4 @@
     disjoint behaviors;
 
 */
-void problem(int x, int mode, int *out);
+void calculateCandiesSaved(int x, int mode, int *out);

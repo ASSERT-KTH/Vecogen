@@ -4,23 +4,22 @@
 void calculateMaxSurvivalTime(int d, int L, int v1, int v2, int *out);
 
 // A structure for the test cases
-typedef struct {
+typedef struct
+{
     int d;
-     int L;
-     int v1;
-     int v2;
-     int out;
+    int L;
+    int v1;
+    int v2;
+    int out;
 } TestCase;
-
 
 // Initialize test cases
 TestCase tests[] = {
-    { 2, 6, 2, 2, 1.00000000000000000000 },
-    { 1, 10000, 1, 1, 4999.50000000000000000000 },
-    { 9999, 10000, 10000, 10000, 0.00005000000000000000 },
-    { 2173, 2176, 10000, 9989, 0.00015008254539996998 },
+    {2, 6, 2, 2, 1.00000000000000000000},
+    {1, 10000, 1, 1, 4999.50000000000000000000},
+    {9999, 10000, 10000, 10000, 0.00005000000000000000},
+    {2173, 2176, 10000, 9989, 0.00015008254539996998},
 };
-
 
 // Get the number of test cases
 int num_tests = sizeof(tests) / sizeof(tests[0]);
@@ -35,13 +34,13 @@ int main()
     for (int i = 0; i < num_tests; i++)
     {
         // Create variables to store the output
-        int out1, out2;
+        int out;
 
         // Run the function
-        calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
+        calculateMaxSurvivalTime(tests[i].d, tests[i].L, tests[i].v1, tests[i].v2, &out);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out == tests[i].out)
         {
             passed++;
         }

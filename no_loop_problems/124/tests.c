@@ -4,21 +4,20 @@
 void calculateLastTwoDigitsOfPowerOfFive(long n, int *out);
 
 // A structure for the test cases
-typedef struct {
+typedef struct
+{
     long n;
-     int out;
+    int out;
 } TestCase;
-
 
 // Initialize test cases
 TestCase tests[] = {
-    { 2, 25 },
-    { 7, 25 },
-    { 1000000000000000000, 25 },
-    { 2000000000000000000, 25 },
-    { 987654321012345678, 25 },
+    {2, 25},
+    {7, 25},
+    {1000000000000000000, 25},
+    {2000000000000000000, 25},
+    {987654321012345678, 25},
 };
-
 
 // Get the number of test cases
 int num_tests = sizeof(tests) / sizeof(tests[0]);
@@ -33,13 +32,13 @@ int main()
     for (int i = 0; i < num_tests; i++)
     {
         // Create variables to store the output
-        int out1, out2;
+        int out;
 
         // Run the function
-        calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
+        calculateLastTwoDigitsOfPowerOfFive(tests[i].n, &out);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out == tests[i].out)
         {
             passed++;
         }
