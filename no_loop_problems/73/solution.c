@@ -18,7 +18,7 @@
     disjoint behaviors;
 
 */
-void problem(int x, int mode, int *out)
+void calculateCandiesSaved(int x, int mode, int *out)
 {
     if (mode == 0)
         *out = 52 + (x == 5 || x == 6);

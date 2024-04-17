@@ -1,58 +1,57 @@
 #include <stdio.h>
 
 // The function declaration
-void problem(int x, int mode, int *out);
+void calculateCandiesSaved(int x, int mode, int *out);
 
 // A structure for the test cases
-typedef struct {
+typedef struct
+{
     int x;
-     int mode;
-     int out;
+    int mode;
+    int out;
 } TestCase;
-
 
 // Initialize test cases
 TestCase tests[] = {
-    { 4, of, week, 52 },
-    { 30, of, month, 11 },
-    { 17, of, month, 12 },
-    { 31, of, month, 7 },
-    { 6, of, week, 53 },
-    { 1, of, week, 52 },
-    { 2, of, week, 52 },
-    { 3, of, week, 52 },
-    { 5, of, week, 53 },
-    { 7, of, week, 52 },
-    { 1, of, month, 12 },
-    { 2, of, month, 12 },
-    { 3, of, month, 12 },
-    { 4, of, month, 12 },
-    { 5, of, month, 12 },
-    { 6, of, month, 12 },
-    { 7, of, month, 12 },
-    { 8, of, month, 12 },
-    { 9, of, month, 12 },
-    { 10, of, month, 12 },
-    { 11, of, month, 12 },
-    { 12, of, month, 12 },
-    { 13, of, month, 12 },
-    { 14, of, month, 12 },
-    { 15, of, month, 12 },
-    { 16, of, month, 12 },
-    { 18, of, month, 12 },
-    { 19, of, month, 12 },
-    { 20, of, month, 12 },
-    { 21, of, month, 12 },
-    { 22, of, month, 12 },
-    { 23, of, month, 12 },
-    { 24, of, month, 12 },
-    { 25, of, month, 12 },
-    { 26, of, month, 12 },
-    { 27, of, month, 12 },
-    { 28, of, month, 12 },
-    { 29, of, month, 12 },
+    {4, 0, 52},
+    {30, 1, 11},
+    {17, 1, 12},
+    {31, 1, 7},
+    {6, 0, 53},
+    {1, 0, 52},
+    {2, 0, 52},
+    {3, 0, 52},
+    {5, 0, 53},
+    {7, 0, 52},
+    {1, 1, 12},
+    {2, 1, 12},
+    {3, 1, 12},
+    {4, 1, 12},
+    {5, 1, 12},
+    {6, 1, 12},
+    {7, 1, 12},
+    {8, 1, 12},
+    {9, 1, 12},
+    {10, 1, 12},
+    {11, 1, 12},
+    {12, 1, 12},
+    {13, 1, 12},
+    {14, 1, 12},
+    {15, 1, 12},
+    {16, 1, 12},
+    {18, 1, 12},
+    {19, 1, 12},
+    {20, 1, 12},
+    {21, 1, 12},
+    {22, 1, 12},
+    {23, 1, 12},
+    {24, 1, 12},
+    {25, 1, 12},
+    {26, 1, 12},
+    {27, 1, 12},
+    {28, 1, 12},
+    {29, 1, 12},
 };
-
 
 // Get the number of test cases
 int num_tests = sizeof(tests) / sizeof(tests[0]);
@@ -67,13 +66,13 @@ int main()
     for (int i = 0; i < num_tests; i++)
     {
         // Create variables to store the output
-        int out1, out2;
+        int x, mode, out;
 
         // Run the function
-        calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
+        calculateCandiesSaved(tests[i].x, tests[i].mode, &out);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out == tests[i].out)
         {
             passed++;
         }
