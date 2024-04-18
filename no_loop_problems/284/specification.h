@@ -21,4 +21,4 @@
     complete behaviors;
     disjoint behaviors;
     */
-void calculateSharedTime(int l1, int r1, int l2, int r2, int k, int *out);
+void calculateSharedTime(long l1, long r1, long l2, long r2, long k, long *out);

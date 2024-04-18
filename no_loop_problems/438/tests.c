@@ -4,38 +4,37 @@
 void calculateMinimumFlagstonesNeeded(int n, int m, long a, long *out);
 
 // A structure for the test cases
-typedef struct {
+typedef struct
+{
     int n;
-     int m;
-     long a;
-     long out;
+    int m;
+    long a;
+    long out;
 } TestCase;
-
 
 // Initialize test cases
 TestCase tests[] = {
-    { 6, 6, 4, 4 },
-    { 1, 1, 1, 1 },
-    { 2, 1, 1, 2 },
-    { 1, 2, 1, 2 },
-    { 2, 2, 1, 4 },
-    { 2, 1, 2, 1 },
-    { 1, 1, 3, 1 },
-    { 2, 3, 4, 1 },
-    { 1000000000, 1000000000, 1, 1000000000000000000 },
-    { 12, 13, 4, 12 },
-    { 222, 332, 5, 3015 },
-    { 1000, 1000, 10, 10000 },
-    { 1001, 1000, 10, 10100 },
-    { 100, 10001, 1000000000, 1 },
-    { 1000000000, 1000000000, 1000000000, 1 },
-    { 1000000000, 1000000000, 999999999, 4 },
-    { 1000000000, 1000000000, 192, 27126743055556 },
-    { 1000000000, 987654321, 1, 987654321000000000 },
-    { 456784567, 1000000000, 51, 175618850864484 },
-    { 39916800, 134217728, 40320, 3295710 },
+    {6, 6, 4, 4},
+    {1, 1, 1, 1},
+    {2, 1, 1, 2},
+    {1, 2, 1, 2},
+    {2, 2, 1, 4},
+    {2, 1, 2, 1},
+    {1, 1, 3, 1},
+    {2, 3, 4, 1},
+    {1000000000, 1000000000, 1, 1000000000000000000},
+    {12, 13, 4, 12},
+    {222, 332, 5, 3015},
+    {1000, 1000, 10, 10000},
+    {1001, 1000, 10, 10100},
+    {100, 10001, 1000000000, 1},
+    {1000000000, 1000000000, 1000000000, 1},
+    {1000000000, 1000000000, 999999999, 4},
+    {1000000000, 1000000000, 192, 27126743055556},
+    {1000000000, 987654321, 1, 987654321000000000},
+    {456784567, 1000000000, 51, 175618850864484},
+    {39916800, 134217728, 40320, 3295710},
 };
-
 
 // Get the number of test cases
 int num_tests = sizeof(tests) / sizeof(tests[0]);
@@ -50,13 +49,13 @@ int main()
     for (int i = 0; i < num_tests; i++)
     {
         // Create variables to store the output
-        int out1, out2;
+        long out;
 
         // Run the function
-        calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
+        calculateMinimumFlagstonesNeeded(tests[i].n, tests[i].m, tests[i].a, &out);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out == tests[i].out)
         {
             passed++;
         }

@@ -1,11 +1,11 @@
-/*@ predicate IsValidSolution(long x1, long x2, long x3, long result) =
-    \exists long point;
+/*@ predicate IsValidSolution(int x1, int x2, int x3, int result) =
+    \exists int point;
     0 <= point &&
     \abs(point - x1) + \abs(point - x2) + \abs(point - x3) == result;
 */
 
-/*@ predicate ExistsSmallerSolution(long x1, long x2, long x3, long result) =
-    \exists long smaller_solution;
+/*@ predicate ExistsSmallerSolution(int x1, int x2, int x3, int result) =
+    \exists int smaller_solution;
     IsValidSolution(x1, x2, x3, smaller_solution) &&
     smaller_solution < result;
 */

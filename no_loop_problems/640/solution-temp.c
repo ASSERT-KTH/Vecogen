@@ -17,6 +17,15 @@
     complete behaviors;
     disjoint behaviors;
 */
+
+/*@
+    requires \valid(out);
+    requires 0 <= n <= 100;
+    requires 0 <= a < n;
+    requires 0 <= b < n;
+    assigns *out;
+    ensures  \sum(0, n-1, \lambda integer k; t(n, a, b, k));
+*/
 void calculatePossiblePositionsForPetr(int n, int a, int b, int *out)
 {
     *out = n - a <= b ? n - a : b + 1;
