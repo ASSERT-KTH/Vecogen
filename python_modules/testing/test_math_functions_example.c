@@ -2,15 +2,15 @@
 
 // The function declaration
 
-void calculateHipsterSockDays(int a, int b, int *out_1, int *out_2);
+void calculateHipsterSockDays(int a, int b, int *out1, int *out2);
 
 // A structure for the test cases
 typedef struct
 {
     int a;
     int b;
-    int out_1;
-    int out_2;
+    int out1;
+    int out2;
 } TestCase;
 
 // Initialize test cases
@@ -37,7 +37,7 @@ int main()
         calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out1 == tests[i].out1 && out2 == tests[i].out2)
         {
             passed++;
         }

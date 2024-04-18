@@ -1,24 +1,22 @@
 #include <stdio.h>
 
 // The function declaration
-void divideFibonacciNumberByThreeFibonacciNumbers(int n, int *out_1, int *out_2, int *out_3);
-
+void divideFibonacciNumberByThreeFibonacciNumbers(int n, int *out1, int *out2, int *out3);
 
 // A structure for the test cases
-typedef struct {
+typedef struct
+{
     int n;
-     int out_1;
-     int out_2;
-     int out_3;
+    int out1;
+    int out2;
+    int out3;
 } TestCase;
-
 
 // Initialize test cases
 TestCase tests[] = {
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
 };
-
 
 // Get the number of test cases
 int num_tests = sizeof(tests) / sizeof(tests[0]);
@@ -33,13 +31,13 @@ int main()
     for (int i = 0; i < num_tests; i++)
     {
         // Create variables to store the output
-        int out1, out2;
+        int out1, out2, out3;
 
         // Run the function
-        calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
+        divideFibonacciNumberByThreeFibonacciNumbers(tests[i].n, &out1, &out2, &out3);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out1 == tests[i].out1 && out2 == tests[i].out2 && out3 == tests[i].out3)
         {
             passed++;
         }

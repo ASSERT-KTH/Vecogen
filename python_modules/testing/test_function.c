@@ -28,7 +28,7 @@ int main()
         calculateHipsterSockDays(tests[i].a, tests[i].b, &out1, &out2);
 
         // Check if the result is correct
-        if (out1 == tests[i].out_1 && out2 == tests[i].out_2)
+        if (out1 == tests[i].out1 && out2 == tests[i].out2)
         {
             passed++;
         }
