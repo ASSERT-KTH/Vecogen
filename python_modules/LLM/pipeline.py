@@ -6,6 +6,7 @@ from LLM.specification import add_specification_to_code
 from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import list_folders_directory, list_files_directory
 from Verify_files.check_file import check_file
+from testing.test_function import test_generated_code
 
 def generate_code(args, improve = False, print_information_iteration = True):
     """Function to iteratively generate code and check it
@@ -60,22 +61,37 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
         # Get the output from the LLM
         response_gpt = make_gpt_request(args, prompt)
-        print(response_gpt)
 
         # Process the generated code
         try:
             code = process_generated_code(args, response_gpt)
+
             # Verify the code
             verified, output, verified_goals = check_file(args.absolute_c_path,
                 args.absolute_header_path, args)
-            
+
+            # See if the folder of the absolute c path has a tests file
+            files_directory = list_files_directory(os.path.dirname(args.absolute_c_path))
+
+            # Check if the tests file exists
+            if "tests.c" in files_directory:
+                # Get the path to the tests file
+                path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
+
+                passed_tests, total_tests = test_generated_code(args.absolute_c_path, path_tests)
+            else:
+                passed_tests, total_tests = 0, 0
+
+            # Print the results of the tests
+            print(f"Tests passed: {passed_tests}/{total_tests}")
+
             print(verified, output, verified_goals)
         except IndexError:
             print("The code could not be generated, please try again.")
             verified, output, verified_goals = False, "The model did not generate code", "0/0"
             break
 
-        # Extra information
+        # Add extra information about the generation attempt
         if i <= args.initial_examples_generated:
             information = "initial prompt"
         elif i_reboot == 0:
@@ -94,6 +110,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "verified_goals": verified_goals,
             "temperature": args.temperature,
             "info": information,
+            "max_tokens": args.max_tokens,
         }
         information_iteration.append(iteration_info)
 
