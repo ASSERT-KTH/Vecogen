@@ -30,28 +30,28 @@
 */
 
 /*@
-    requires \valid(out_1) && \valid(out_2) && \separated(out_1, out_2);
+    requires \valid(out1) && \valid(out2) && \separated(out1, out2);
     requires 1 <= a <= 100;
     requires 1 <= b <= 100;
-    assigns *out_1, *out_2;
-    ensures IsPossibleConfiguration(a, b, *out_1, *out_2);
-    ensures !ExistsBiggerSolution(a, b, *out_1, *out_2);
+    assigns *out1, *out2;
+    ensures IsPossibleConfiguration(a, b, *out1, *out2);
+    ensures !ExistsBiggerSolution(a, b, *out1, *out2);
 */
-void calculateHipsterSockDays(int a, int b, int *out_1, int *out_2)
+void calculateHipsterSockDays(int a, int b, int *out1, int *out2)
 {
     if (a > b)
     {
-        *out_1 = b;
-        *out_2 = (a - b) / 2;
+        *out1 = b;
+        *out2 = (a - b) / 2;
     }
     else if (b > a)
     {
-        *out_1 = a;
-        *out_2 = (b - a) / 2;
+        *out1 = a;
+        *out2 = (b - a) / 2;
     }
     else
     {
-        *out_1 = a;
-        *out_2 = 0;
+        *out1 = a;
+        *out2 = 0;
     }
 }

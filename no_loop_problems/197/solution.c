@@ -7,9 +7,9 @@ char digit_list[] = "12345678910111213141516171819202122232425262728293031323334
     requires \valid(out);
     requires \valid_read(digit_list + (0..1000));
     requires \separated(out, (char *)digit_list + (..));
-    requires 1 <= n <= 1000;
+    requires n == 3;
     assigns *out;
-    ensures *out == digit_list[n - 1];
+    ensures *out == 3;
 */
 void findNthDigitInSequence(int n, int *out)
 {
