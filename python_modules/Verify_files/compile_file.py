@@ -20,6 +20,7 @@ def compile_c(absolute_path_to_c_file, absolute_path_to_output_folder):
     path_to_executable = os.path.join(absolute_path_to_output_folder, f"{file_name}")
 
     # Run the gcc compiler on the C file
+    print(["gcc", absolute_path_to_c_file, "-o", path_to_executable, "-c"])
     result = subprocess.Popen(["gcc", absolute_path_to_c_file, "-o", path_to_executable, "-c"],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

@@ -77,7 +77,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
             if "tests.c" in files_directory:
                 # Get the path to the tests file
                 path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
-
                 passed_tests, total_tests = test_generated_code(args.absolute_c_path, path_tests)
             else:
                 passed_tests, total_tests = 0, 0
@@ -85,7 +84,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
             # Print the results of the tests
             print(f"Tests passed: {passed_tests}/{total_tests}")
 
-            print(verified, output, verified_goals)
         except IndexError:
             print("The code could not be generated, please try again.")
             verified, output, verified_goals = False, "The model did not generate code", "0/0"
@@ -113,7 +111,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "max_tokens": args.max_tokens,
         }
         information_iteration.append(iteration_info)
-
+        
         # If another initial attempt has been done, increase the counter
         if i < args.initial_examples_generated:
             # Get the percentage of verified goals
@@ -155,6 +153,8 @@ def generate_code(args, improve = False, print_information_iteration = True):
             prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
                                             args.max_tokens, args.allowloops)
             i_reboot += 1
+        
+        # Increase the counter
         i += 1
 
     # Print the results
