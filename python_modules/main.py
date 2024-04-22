@@ -143,7 +143,7 @@ def parse_arguments(functions_list):
     parser.add_argument('-temp', '--temperature', help="The temperature to use for the code \
                         generation", type=float, default=0)
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
-                        generation", type=int, default=2048)
+                        generation", type=int, default=4096)
     parser.add_argument('-o', '--output_path', help="The output path to use for the code \
                         generation", type=str)
     parser.add_argument('-output-file', '--output_file', help="The output file to use for the \
