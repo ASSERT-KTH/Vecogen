@@ -48,6 +48,5 @@ void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, i
     {
         min_value = z;
     }
-
     *out = min_value / n;
 }

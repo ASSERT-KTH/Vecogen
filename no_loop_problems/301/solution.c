@@ -26,7 +26,6 @@
 */
 void calculateOptimalMeetingPointDistance(int x1, int x2, int x3, int *out)
 {
-
     int max = x1;
     long min = x1;
     if (x2 > max)

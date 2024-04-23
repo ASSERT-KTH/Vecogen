@@ -86,17 +86,28 @@ int state_ELECTRIC_MOTOR_ACTIVATED;
 */
 int read(enum SIGNAL idx)
 {
-    if (idx == PARKING_BRAKE_APPLIED) {
+    if (idx == PARKING_BRAKE_APPLIED)
+    {
         return state_PARKING_BRAKE_APPLIED;
-    } else if (idx == PRIMARY_CIRCUIT_LOW_FLOW) {
+    }
+    else if (idx == PRIMARY_CIRCUIT_LOW_FLOW)
+    {
         return state_PRIMARY_CIRCUIT_LOW_FLOW;
-    } else if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE) {
+    }
+    else if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE)
+    {
         return state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
-    } else if (idx == WHEEL_BASED_SPEED) {
+    }
+    else if (idx == WHEEL_BASED_SPEED)
+    {
         return state_WHEEL_BASED_SPEED;
-    } else if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING) {
+    }
+    else if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING)
+    {
         return state_SECONDARY_CIRCUIT_HANDLES_STEERING;
-    } else if (idx == ELECTRIC_MOTOR_ACTIVATED) {
+    }
+    else if (idx == ELECTRIC_MOTOR_ACTIVATED)
+    {
         return state_ELECTRIC_MOTOR_ACTIVATED;
     }
 }

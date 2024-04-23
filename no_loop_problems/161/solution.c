@@ -26,7 +26,6 @@
 void findVasyasFinalEntrance(int n, int a, int b, int *out)
 {
     b = ((b % n) + n) % n;
-
     int c = (a + b) % n;
     if (c == 0)
     {

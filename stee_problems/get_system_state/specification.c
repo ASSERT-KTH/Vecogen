@@ -29,15 +29,10 @@
 
 // #define _(...) /* nothing */
 //
+// #define VEH_MOVING_LIMIT 3
+//
 // #define TRUE 1
 // #define FALSE 0
-
-enum SENSOR_STATE
-{
-    WORKING,
-    NO_FLOW,
-    SHORT_CIRCUIT
-};
 
 struct VEHICLE_INFO
 {
@@ -76,11 +71,37 @@ int state_ELECTRIC_MOTOR_ACTIVATED;
 // int state[NUM_SIGNALS]; // Global state
 
 /*
-    Evaluates the state of the primary steering circuit sensors.
+    Reads the specified signal from the state.
  */
 /*@
-  requires ((veh_info.primLowFlow == 1 && 3 >= veh_info.wheelSpeed) || (veh_info.primLowFlow == 1 && veh_info.wheelSpeed >= 4) || (veh_info.primHighVoltage == 1 && 3 >= veh_info.wheelSpeed) || (veh_info.primHighVoltage == 1 && veh_info.wheelSpeed >= 4) || (veh_info.primLowFlow != 1 && 3 >= veh_info.wheelSpeed) || (veh_info.primLowFlow != 1 && veh_info.wheelSpeed >= 4)) && veh_info.parkingBrake == state_PARKING_BRAKE_APPLIED && veh_info.primLowFlow == state_PRIMARY_CIRCUIT_LOW_FLOW && veh_info.primHighVoltage == state_PRIMARY_CIRCUIT_HIGH_VOLTAGE && veh_info.wheelSpeed == state_WHEEL_BASED_SPEED && veh_info.secondCircHandlesStee == state_SECONDARY_CIRCUIT_HANDLES_STEERING && veh_info.electricMotorAct == state_ELECTRIC_MOTOR_ACTIVATED;
-  ensures (\result == 2 || (\result == 1 && \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) != 1) || (\result == 0 && \old(state_PRIMARY_CIRCUIT_LOW_FLOW) != 1 && \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) != 1)) && \old(veh_info).parkingBrake == state_PARKING_BRAKE_APPLIED && \old(veh_info).wheelSpeed == state_WHEEL_BASED_SPEED && \old(veh_info).secondCircHandlesStee == state_SECONDARY_CIRCUIT_HANDLES_STEERING && \old(veh_info).electricMotorAct == state_ELECTRIC_MOTOR_ACTIVATED && \old(veh_info).parkingBrake == \old(state_PARKING_BRAKE_APPLIED) && \old(veh_info).wheelSpeed == \old(state_WHEEL_BASED_SPEED) && \old(veh_info).secondCircHandlesStee == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) && \old(veh_info).electricMotorAct == \old(state_ELECTRIC_MOTOR_ACTIVATED) && \old(model_vehicleIsMoving) == model_vehicleIsMoving && \old(model_vehicleMovingWithoutPrimaryPowerSteering) == model_vehicleMovingWithoutPrimaryPowerSteering && \old(model_primaryCircuitProvidingPowerSteering) == model_primaryCircuitProvidingPowerSteering && \old(state_PRIMARY_CIRCUIT_LOW_FLOW) == state_PRIMARY_CIRCUIT_LOW_FLOW && \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) == state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
+  requires idx == 4 || idx == 5 || idx == 3 || idx == 0 || idx == 1 || idx == 2;
+  ensures state_ELECTRIC_MOTOR_ACTIVATED == \old(state_ELECTRIC_MOTOR_ACTIVATED) && state_SECONDARY_CIRCUIT_HANDLES_STEERING == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) && state_WHEEL_BASED_SPEED == \old(state_WHEEL_BASED_SPEED) && state_PRIMARY_CIRCUIT_HIGH_VOLTAGE == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) && state_PRIMARY_CIRCUIT_LOW_FLOW == \old(state_PRIMARY_CIRCUIT_LOW_FLOW) && state_PARKING_BRAKE_APPLIED == \old(state_PARKING_BRAKE_APPLIED) && model_primaryCircuitProvidingPowerSteering == \old(model_primaryCircuitProvidingPowerSteering) && model_vehicleMovingWithoutPrimaryPowerSteering == \old(model_vehicleMovingWithoutPrimaryPowerSteering) && model_vehicleIsMoving == \old(model_vehicleIsMoving) && (\result != \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) || ((\old(idx) != 5 || \old(state_ELECTRIC_MOTOR_ACTIVATED) == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE)) && (\old(idx) != 4 || \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE)) && (\old(idx) != 3 || \old(state_WHEEL_BASED_SPEED) == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE)) && (\old(idx) != 1 || \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) == \old(state_PRIMARY_CIRCUIT_LOW_FLOW)) && (\old(idx) == 5 || \old(idx) == 4 || \old(idx) == 3 || \old(idx) == 2 || \old(idx) == 1 || \old(idx) == 0))) && (\old(idx) != 0 || \result == \old(state_PARKING_BRAKE_APPLIED)) && (\result == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) || ((\result != \old(state_WHEEL_BASED_SPEED) || ((\old(idx) != 5 || \old(state_ELECTRIC_MOTOR_ACTIVATED) == \old(state_WHEEL_BASED_SPEED)) && (\old(idx) != 4 || \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) == \old(state_WHEEL_BASED_SPEED)) && (\old(idx) != 1 || \old(state_WHEEL_BASED_SPEED) == \old(state_PRIMARY_CIRCUIT_LOW_FLOW)) && (\old(idx) == 5 || \old(idx) == 4 || \old(idx) == 3 || \old(idx) == 1 || \old(idx) == 0))) && (\result == \old(state_WHEEL_BASED_SPEED) || ((\result != \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) || ((\old(idx) != 5 || \old(state_ELECTRIC_MOTOR_ACTIVATED) == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING)) && (\old(idx) != 1 || \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) == \old(state_PRIMARY_CIRCUIT_LOW_FLOW)) && (\old(idx) == 5 || \old(idx) == 4 || \old(idx) == 1 || \old(idx) == 0))) && (\result == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) || ((\result != \old(state_PRIMARY_CIRCUIT_LOW_FLOW) || ((\old(idx) != 5 || \old(state_ELECTRIC_MOTOR_ACTIVATED) == \old(state_PRIMARY_CIRCUIT_LOW_FLOW)) && (\old(idx) == 5 || \old(idx) == 1 || \old(idx) == 0))) && (\result == \old(state_PRIMARY_CIRCUIT_LOW_FLOW) || ((\result != \old(state_ELECTRIC_MOTOR_ACTIVATED) || \old(idx) == 5 || \old(idx) == 0) && (\result == \old(state_ELECTRIC_MOTOR_ACTIVATED) || \old(idx) == 0)))))))));
+*/
+int read(enum SIGNAL idx)
+{
+    if (idx < NUM_SIGNALS)
+    {
+        if (idx == PARKING_BRAKE_APPLIED)
+            return state_PARKING_BRAKE_APPLIED;
+        if (idx == PRIMARY_CIRCUIT_LOW_FLOW)
+            return state_PRIMARY_CIRCUIT_LOW_FLOW;
+        if (idx == PRIMARY_CIRCUIT_HIGH_VOLTAGE)
+            return state_PRIMARY_CIRCUIT_HIGH_VOLTAGE;
+        if (idx == WHEEL_BASED_SPEED)
+            return state_WHEEL_BASED_SPEED;
+        if (idx == SECONDARY_CIRCUIT_HANDLES_STEERING)
+            return state_SECONDARY_CIRCUIT_HANDLES_STEERING;
+        if (idx == ELECTRIC_MOTOR_ACTIVATED)
+            return state_ELECTRIC_MOTOR_ACTIVATED;
+    }
+}
+
+/*
+    Reads the current state of the system.
+ */
+/*@
+  requires \true;
+  ensures \result.parkingBrake == state_PARKING_BRAKE_APPLIED && \result.primLowFlow == state_PRIMARY_CIRCUIT_LOW_FLOW && \result.primHighVoltage == state_PRIMARY_CIRCUIT_HIGH_VOLTAGE && \result.wheelSpeed == state_WHEEL_BASED_SPEED && \result.secondCircHandlesStee == state_SECONDARY_CIRCUIT_HANDLES_STEERING && \result.electricMotorAct == state_ELECTRIC_MOTOR_ACTIVATED && \result.parkingBrake == \old(state_PARKING_BRAKE_APPLIED) && \result.primLowFlow == \old(state_PRIMARY_CIRCUIT_LOW_FLOW) && \result.primHighVoltage == \old(state_PRIMARY_CIRCUIT_HIGH_VOLTAGE) && \result.wheelSpeed == \old(state_WHEEL_BASED_SPEED) && \result.secondCircHandlesStee == \old(state_SECONDARY_CIRCUIT_HANDLES_STEERING) && \result.electricMotorAct == \old(state_ELECTRIC_MOTOR_ACTIVATED) && \old(model_vehicleIsMoving) == model_vehicleIsMoving && \old(model_vehicleMovingWithoutPrimaryPowerSteering) == model_vehicleMovingWithoutPrimaryPowerSteering && \old(model_primaryCircuitProvidingPowerSteering) == model_primaryCircuitProvidingPowerSteering;
 */
 enum SENSOR_STATE eval_prim_sensor_state(struct VEHICLE_INFO veh_info)
 {
