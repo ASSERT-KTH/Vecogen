@@ -80,7 +80,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
                 passed_tests, total_tests, test_information = test_generated_code(args.absolute_c_path, path_tests)
                 print(f"Tests passed: {passed_tests}/{total_tests}")
             else:
-                passed_tests, total_tests, test_information = 0, 0
+                passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
                 print(f"No tests found, proved goals: {verified_goals}")
 
             # Print the results of the tests
