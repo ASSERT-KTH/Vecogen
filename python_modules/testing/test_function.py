@@ -1,6 +1,8 @@
 """ This module tests a function that is generated using gcc"""
 import os
 import subprocess
+from io import StringIO
+import pandas as pd
 
 def test_generated_code(path_file, path_test):
     """ Function that tests a generated file
@@ -19,25 +21,31 @@ def test_generated_code(path_file, path_test):
     output_path = os.path.join(*path_file.split("/")[:-1])
     if not os.path.exists(output_path):
         os.makedirs(output_path)
-    
+
     path_to_executable = os.path.join(output_path, f"test")
-    
+
     # Compile the file and the test cases
     subprocess.Popen(["gcc", path_file, path_test, "-o", path_to_executable],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
+
+    # Name for the output of the test cases
+    output_tests_path =  os.path.join(output_path, "output_tests.json")
+
     # Run the test cases
-    result = subprocess.Popen([path_to_executable],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
-    stdout, stderr = result.communicate()
-    stdout = stdout.decode("utf-8")
-    stderr = stderr.decode("utf-8")
+    subprocess.Popen([path_to_executable, output_tests_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Remove the executable
     os.system(f"rm '{path_to_executable}'")
 
-    # Filter the output by extracting the values from the format
-    result = stdout.split("Passed ")[1].split(" out of ")
-    passed = int(result[0])
-    total = int(result[1].split(" tests")[0])
 
-    return passed, total
+    # Print the output of the test cases by reading the output file
+    with open(output_tests_path, "r") as file:
+        # Read the test output as a pandas json
+        tests_output = pd.read_json(StringIO(file.read()))
+
+        # Print the last row
+        test_information = tests_output.iloc[-1]['summary']
+        passed = test_information['passed']
+        total = test_information['total']
+
+    return passed, total, tests_output.to_dict()

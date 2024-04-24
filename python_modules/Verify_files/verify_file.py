@@ -51,8 +51,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         """
 
     # Check if the output has a syntax error
-    print(output)
-    print('\n' * 10)
     if "Syntax error" in output or "syntax error" in output or "invalid user input" in output:
         # Remove the lines with [kernel] in the output
         output = re.sub(r'\[kernel\].*?\n', '', output)
