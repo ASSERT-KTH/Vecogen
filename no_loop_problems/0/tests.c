@@ -87,6 +87,11 @@ int main(int argc, char *argv[])
         if (out1 == tests[i].out1 && out2 == tests[i].out2)
         {
             passed++;
+            printf("Test %d passed\n", i + 1);
+        }
+        else
+        {
+            printf("Test %d failed\n", i + 1);
         }
 
         // Print results to the file as JSON

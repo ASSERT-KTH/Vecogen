@@ -110,12 +110,12 @@ int main(int argc, char *argv[])
         // Check if the result is correct
         if (out1 == tests[i].out1 && out2 == tests[i].out2 && out3 == tests[i].out3)
         {
-            printf("Test %d passed\n", i);
             passed++;
+            printf("Test %d passed\n", i + 1);
         }
         else
         {
-            printf("Test %d failed\n", i);
+            printf("Test %d failed\n", i + 1);
         }
 
         // Print results to the file as JSON

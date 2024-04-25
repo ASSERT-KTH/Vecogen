@@ -101,9 +101,12 @@ int main(int argc, char *argv[])
         // Check if the result is correct
         if (out == tests[i].out)
         {
-            printf("Test %d passed\n", i);
+            printf("Test %d passed\n", i + 1);
             passed++;
-            printf("passed amount %d\n", passed);
+        }
+        else
+        {
+            printf("Test %d failed\n", i + 1);
         }
 
         // Print results to the file as JSON
