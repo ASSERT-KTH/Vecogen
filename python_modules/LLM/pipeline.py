@@ -83,8 +83,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
                 passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
                 print(f"No tests found, proved goals: {verified_goals}")
 
-            # Print the results of the tests
-
         except IndexError:
             print("The code could not be generated, please try again.")
             verified, output, verified_goals = False, "The model did not generate code", "0/0"
