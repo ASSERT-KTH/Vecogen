@@ -1,0 +1,220 @@
+[
+    {
+        "test_case": 1,
+        "inputs": {"d": 2, "L": 6, "v1": 2, "v2": 2},
+        "expected_output": 1,
+        "received_output": 1,
+        "passed": true
+    },
+    {
+        "test_case": 2,
+        "inputs": {"d": 1, "L": 10000, "v1": 10000, "v2": 10000},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 3,
+        "inputs": {"d": 3274, "L": 4728, "v1": 888, "v2": 4578},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 4,
+        "inputs": {"d": 4600, "L": 9696, "v1": 5634, "v2": 8248},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 5,
+        "inputs": {"d": 2255, "L": 7902, "v1": 8891, "v2": 429},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 6,
+        "inputs": {"d": 6745, "L": 9881, "v1": 2149, "v2": 9907},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 7,
+        "inputs": {"d": 4400, "L": 8021, "v1": 6895, "v2": 2089},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 8,
+        "inputs": {"d": 5726, "L": 9082, "v1": 7448, "v2": 3054},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 9,
+        "inputs": {"d": 3381, "L": 9769, "v1": 4898, "v2": 2532},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 10,
+        "inputs": {"d": 1036, "L": 6259, "v1": 5451, "v2": 4713},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 11,
+        "inputs": {"d": 5526, "L": 6455, "v1": 197, "v2": 4191},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 12,
+        "inputs": {"d": 1, "L": 9, "v1": 1, "v2": 2},
+        "expected_output": 2,
+        "received_output": 2,
+        "passed": true
+    },
+    {
+        "test_case": 13,
+        "inputs": {"d": 1196, "L": 4082, "v1": 4071, "v2": 9971},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 14,
+        "inputs": {"d": 8850, "L": 9921, "v1": 8816, "v2": 9449},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 15,
+        "inputs": {"d": 3341, "L": 7299, "v1": 2074, "v2": 8927},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 16,
+        "inputs": {"d": 7831, "L": 8609, "v1": 6820, "v2": 2596},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 17,
+        "inputs": {"d": 2322, "L": 7212, "v1": 77, "v2": 4778},
+        "expected_output": 1,
+        "received_output": 1,
+        "passed": true
+    },
+    {
+        "test_case": 18,
+        "inputs": {"d": 9976, "L": 9996, "v1": 4823, "v2": 4255},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 19,
+        "inputs": {"d": 7631, "L": 9769, "v1": 5377, "v2": 6437},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 20,
+        "inputs": {"d": 8957, "L": 9525, "v1": 8634, "v2": 107},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 21,
+        "inputs": {"d": 6612, "L": 9565, "v1": 3380, "v2": 2288},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 22,
+        "inputs": {"d": 1103, "L": 6256, "v1": 3934, "v2": 9062},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 23,
+        "inputs": {"d": 1, "L": 10000, "v1": 1, "v2": 1},
+        "expected_output": 4999,
+        "received_output": 4999,
+        "passed": true
+    },
+    {
+        "test_case": 24,
+        "inputs": {"d": 1854, "L": 3280, "v1": 1481, "v2": 2140},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 25,
+        "inputs": {"d": 9999, "L": 10000, "v1": 10000, "v2": 10000},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 26,
+        "inputs": {"d": 1023, "L": 2340, "v1": 1029, "v2": 3021},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 27,
+        "inputs": {"d": 2173, "L": 2176, "v1": 10000, "v2": 9989},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 28,
+        "inputs": {"d": 1, "L": 2, "v1": 123, "v2": 1},
+        "expected_output": 0,
+        "received_output": 0,
+        "passed": true
+    },
+    {
+        "test_case": 29,
+        "inputs": {"d": 123, "L": 1242, "v1": 12, "v2": 312},
+        "expected_output": 3,
+        "received_output": 3,
+        "passed": true
+    },
+    {
+        "test_case": 30,
+        "inputs": {"d": 2, "L": 9997, "v1": 3, "v2": 12},
+        "expected_output": 666,
+        "received_output": 666,
+        "passed": true
+    },
+    {
+        "summary": {
+            "total": 30,
+            "passed": 30,
+            "failed": 0,
+            "pass_rate": 1.00
+        }
+    }
+]
