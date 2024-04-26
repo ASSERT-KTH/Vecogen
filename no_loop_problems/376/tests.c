@@ -48,10 +48,29 @@ TestCase tests[] = {
 int num_tests = sizeof(tests) / sizeof(tests[0]);
 
 // The main function
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        printf("Usage: %s <output_filename>\n", argv[0]);
+        return 1; // Exit with error code if no filename is provided
+    }
+
+    // File name is taken from command line
+    const char *filename = argv[1];
+
     // Keep track of the amount of passed tests
     int passed = 0;
+    FILE *file = fopen(filename, "w"); // Open the file specified by command line for writing
+
+    if (file == NULL)
+    {
+        printf("Failed to open file: %s\n", filename);
+        return 1; // Exit with error code if file cannot be opened
+    }
+
+    // Start JSON array
+    fprintf(file, "[\n");
 
     // For each test case try the function
     for (int i = 0; i < num_tests; i++)
@@ -66,8 +85,35 @@ int main()
         if (out == tests[i].out)
         {
             passed++;
+            printf("Test %d passed\n", i + 1);
         }
+        else
+        {
+            printf("Test %d failed\n", i + 1);
+        }
+
+        // Print results to the file as JSON
+        fprintf(file, "    {\n");
+        fprintf(file, "        \"test_case\": %d,\n", i + 1);
+        fprintf(file, "        \"inputs\": {\"n\": %d},\n", tests[i].n);
+        fprintf(file, "        \"expected_output\": %d,\n", tests[i].out);
+        fprintf(file, "        \"received_output\": %d,\n", out);
+        fprintf(file, "        \"passed\": %s\n", (out == tests[i].out) ? "true" : "false");
+        fprintf(file, "    },\n");
     }
-    printf("\nPassed %d out of %d tests.\n", passed, num_tests);
+
+    // Add summary to the file
+    fprintf(file, "    {\n");
+    fprintf(file, "        \"summary\": {\n");
+    fprintf(file, "            \"total\": %d,\n", num_tests);
+    fprintf(file, "            \"passed\": %d,\n", passed);
+    fprintf(file, "            \"failed\": %d,\n", num_tests - passed);
+    fprintf(file, "            \"pass_rate\": %.2f\n", (float)passed / num_tests);
+    fprintf(file, "        }\n");
+    fprintf(file, "    }\n");
+
+    // End JSON array
+    fprintf(file, "]\n");
+    fclose(file);
     return 0;
 }

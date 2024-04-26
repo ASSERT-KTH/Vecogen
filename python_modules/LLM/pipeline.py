@@ -77,12 +77,11 @@ def generate_code(args, improve = False, print_information_iteration = True):
             if "tests.c" in files_directory:
                 # Get the path to the tests file
                 path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
-                passed_tests, total_tests = test_generated_code(args.absolute_c_path, path_tests)
+                passed_tests, total_tests, test_information = test_generated_code(args.absolute_c_path, path_tests)
+                print(f"Tests passed: {passed_tests}/{total_tests}")
             else:
-                passed_tests, total_tests = 0, 0
-
-            # Print the results of the tests
-            print(f"Tests passed: {passed_tests}/{total_tests}")
+                passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
+                print(f"No tests found, proved goals: {verified_goals}")
 
         except IndexError:
             print("The code could not be generated, please try again.")
@@ -106,12 +105,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "gpt_output": response_gpt,
             "verified": verified,
             "verified_goals": verified_goals,
+            "test_information": test_information,
             "temperature": args.temperature,
             "info": information,
             "max_tokens": args.max_tokens,
         }
         information_iteration.append(iteration_info)
-        
+
         # If another initial attempt has been done, increase the counter
         if i < args.initial_examples_generated:
             # Get the percentage of verified goals
@@ -128,7 +128,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
             # If the initial generation attempts were done, then set the code to the best attempt
             # The best attempt is measured by the highest percentage of verified goals
             best_attempt = max(generation_attempts, key = lambda x: x[0])
-            print(f"The best {best_attempt[0]}")
             code = best_attempt[0]
 
         # Check if another initial code generation is needed
@@ -136,6 +135,8 @@ def generate_code(args, improve = False, print_information_iteration = True):
             # Store the initial generation attempt in the list
             if args.debug:
                 print("Initial prompt has been generated.")
+
+            # The prompt is the initial prompt, thus we do not need to do it again
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
                                     args.allowloops)
 
@@ -153,7 +154,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
             prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
                                             args.max_tokens, args.allowloops)
             i_reboot += 1
-        
+
         # Increase the counter
         i += 1
 
