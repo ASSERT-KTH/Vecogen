@@ -16,4 +16,6 @@ Input
 7 7 7 7
 
 Output
-3
+3p
+
+https://codeforces.com/problemset/problem/228/a
