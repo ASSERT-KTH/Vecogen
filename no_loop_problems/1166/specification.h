@@ -27,24 +27,4 @@
     ensures !ExistsSmallerSolution(a, b, c, d, *out);
 */
 
-void minimumHorseshoesNeeded(int a, int b, int c, int d, int *out)
-{
-    int unique_colors = 0;
-
-    if (a != b)
-    {
-        unique_colors++;
-    }
-
-    if (a != c && b != c)
-    {
-        unique_colors++;
-    }
-
-    if (a != d && b != d && c != d)
-    {
-        unique_colors++;
-    }
-
-    *out = 3 - unique_colors;
-}
+void minimumHorseshoesNeeded(int a, int b, int c, int d, int *out);
