@@ -1,7 +1,7 @@
 """This module is used to verify a C file using Frama-C"""
 import subprocess
 import re
-from helper_files.change_specification import get_line_in_code
+from Frama_C.frama_c_parser import get_line_number_in_parsed_code
 from helper_files.debug import debug_to_file
 
 def verify_file(args):
@@ -88,7 +88,11 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
 
                 # Get the line of code that caused the timeout, which comes after "line .."
                 line_number = int(re.search(r'line\s+(\d+)', line_without_path).group(1))
-                code_line = get_line_in_code(absolute_c_path, line_number)
+
+                # Find the line number in the parsed Frama-C code
+                code_line = get_line_number_in_parsed_code(absolute_c_path, line_number)
+                print(f"Line number: {line_number}, code line: {code_line}")
+                print(f"Line without path: {line_without_path}")
 
                 # Add the line in the file
                 timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
