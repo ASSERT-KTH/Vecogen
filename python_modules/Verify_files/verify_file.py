@@ -69,7 +69,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         total_goals = total_goals.split("\n")[0].strip()
 
         # Print the amount of verified goals
-        print(f"Verified goals: {verified_goals} of {total_goals}")
         total_timeouts = output.split("Timeout:")[1]
         total_timeouts = total_timeouts.split("\n")[0].strip()
 
@@ -91,8 +90,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
 
                 # Find the line number in the parsed Frama-C code
                 code_line = get_line_number_in_parsed_code(absolute_c_path, line_number)
-                print(f"Line number: {line_number}, code line: {code_line}")
-                print(f"Line without path: {line_without_path}")
 
                 # Add the line in the file
                 timeout_string += f"{line_without_path.split('(')[0]} does not hold: {code_line}"
@@ -103,7 +100,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
     # Otherwise the file is valid
     else:
         # Get the amount of verified goals
-        print(output)
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
         total_goals = total_goals.split("\n")[0].strip()

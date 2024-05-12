@@ -2,9 +2,9 @@
 import os
 import subprocess
 from io import StringIO
-import pandas as pd
+import json
 
-def test_generated_code(path_file, path_test):
+def test_generated_code(path_file, path_test, test_file_name, output_path):
     """ Function that tests a generated file
     Args:
         path_file: The path to the generated file
@@ -18,11 +18,10 @@ def test_generated_code(path_file, path_test):
     path_test = os.path.normpath(path_test)
 
     # Create the output directory if it does not exist
-    output_path = os.path.join(*path_file.split("/")[:-1])
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
-    path_to_executable = os.path.join(output_path, f"test")
+    path_to_executable = os.path.join(output_path, test_file_name)
 
     # Compile the file and the test cases
     subprocess.Popen(["gcc", path_file, path_test, "-o", path_to_executable],
@@ -39,13 +38,13 @@ def test_generated_code(path_file, path_test):
 
 
     # Print the output of the test cases by reading the output file
-    with open(output_tests_path, "r") as file:
+    with open(output_tests_path, "r", encoding="utf-8") as file:
         # Read the test output as a pandas json
-        tests_output = pd.read_json(StringIO(file.read()))
+        tests_output = json.load(StringIO(file.read()))
 
         # Print the last row
-        test_information = tests_output.iloc[-1]['summary']
+        test_information = tests_output[-1]['summary']
         passed = test_information['passed']
         total = test_information['total']
 
-    return passed, total, tests_output.to_dict()
+    return passed, total, tests_output

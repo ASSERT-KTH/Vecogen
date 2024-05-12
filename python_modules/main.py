@@ -2,6 +2,7 @@
     when the tool is run. It also contains the functions that are called based on the 
     arguments given to the tool. """
 import sys
+import os
 import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
@@ -159,8 +160,10 @@ def parse_arguments(functions_list):
                         reboot occurs", default= 999999, type=int)
     parser.add_argument("-al", "--allowloops", help="Allow loops in the generated code",
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
-    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem",
-                        default=1, type=int)
+    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=1, type=int)
+    parser.add_argument("-tmp", "--temp_folder", help="The folder where temporary files are stored", default= os.path.join(os.getcwd(), "..", "tmp"), type=str)
+
+    
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')

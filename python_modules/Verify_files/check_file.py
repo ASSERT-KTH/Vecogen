@@ -19,8 +19,7 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
 
     # Compile the file
     # Get the directory of absolute_path_to_c_file
-    absolute_output_dir = os.path.join(*absolute_path_to_c_file.split("/")[:-1])
-    result, output = compile_c(absolute_path_to_c_file, absolute_output_dir)
+    result, output = compile_c(absolute_path_to_c_file, args.temp_folder)
     if result is False:
         if args.debug:
             print(f"Compilation of file {absolute_path_to_c_file.split('/')[-1]} failed," +

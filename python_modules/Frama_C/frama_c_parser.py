@@ -29,6 +29,7 @@ def get_line_number_in_parsed_code(c_file_path, line_number):
     # Read the file
     with open(c_file_path, "r") as file:
         parsed_code_lines = file.readlines()
+
     # Parse the C file
     #parsed_code = parse_c_file(c_file_path)
 
