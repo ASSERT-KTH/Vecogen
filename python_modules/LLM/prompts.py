@@ -12,11 +12,10 @@ def replace_loops(use_loops):
         A string that indicates if the code should use loops or not"""
 
     if use_loops:
-        return "for, while, do-while or recursive loops \n \
-                Add loop invariants and assertions for loops if these \
+        return "* Add loop invariants and assertions for loops if these \
                     improve the verification process"
     else:
-        return "Do not make use of loops"
+        return "* Do not make use of for, while, do-while or recursive loops"
 
 def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     """Function that generates a prompt based on a header file
@@ -66,11 +65,10 @@ def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     prompt_size = num_tokens_from_string(prompt_mapped, model)
     if prompt_size > max_token_size:
         # print everything to a file
-        with open("prompt-error.txt", "w") as f:
+        with open("prompt-error.txt", "w", encoding="utf-8") as f:
             f.write(prompt_mapped)
         raise ValueError(f"The prompt is too large, it has {prompt_size} tokens, " + \
             "the maximum is {max_token_size}")
-    
 
     return prompt_mapped
 
@@ -169,13 +167,11 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
 
     return prompt_mapped
 
-def seperate_prompt(prompt):
-    """Function to seperate the user and assistant prompt
+def one_shot():
+    """Function that generates a prompt for a one-shot model
     Args:
-        prompt: The prompt to seperate
+        None
     Returns:
-        A list with two elements, the first is the user prompt and the second is 
-        the assistant prompt"""
-
-    # Split the prompt into the user and assistant prompt
-    return prompt.split("-----END_ASSISTANT_INFORMATION-----")
+        The prompt as a string"""
+    
+    

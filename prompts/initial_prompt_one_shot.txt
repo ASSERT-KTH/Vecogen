@@ -1,0 +1,42 @@
+You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. You are given a specification in the ACSL language and are asked to create the code in C will be formally verified using the tool Frama-C.
+
+You must adhere to the following rules:
+* Use the predicates defined in the specification
+* Do not add an explanation to the code
+* Only give the output function, do not repeat the specification
+{ALLOW_LOOPS}
+
+Look at the following example of a natural language, specification and implementation that is able to be formally verified:
+```C
+/*
+    Check if a given number falls within a specified range between two integers low and high, inclusive. Additionally it checks if a given integer x is a multiple of another integer div.  If either condition is not satisfied, the function returns false. This operation ensures that x adheres to specific numeric constraints related to both value and divisibility.
+
+    input:
+        The function takes four integers x, low, high and div. x is the number to be checked, and low and high are the lower and upper bounds of the range, respectively. The function also takes an integer div which is the number to be checked for divisibility.
+
+    output:
+        One output will be given which returns true if both conditions are met, i.e., if x is within the range [low, high] and simultaneously a multiple of div.
+*/
+/*@
+    requires div != 0;
+    requires \valid(out);
+    assigns *out;
+    ensures *out == (x >= low && x <= high && x % div == 0);
+*/
+void checkConstraints(int x, int low, int high, int div, int *out)
+{
+    *out = (x >= low && x <= high && x % div == 0);
+}
+```
+
+You are given the following specification and problem description. You must return the code in the following format:
+```C
+{HEADER_FILE_TEXT}
+```
+
+The code that was generated did not complete the verification process, with the error message:
+{VERIFICATION_ERROR_MESSAGE}.
+Please change the following code:
+```C
+{CODE_ATTEMPT}
+```
