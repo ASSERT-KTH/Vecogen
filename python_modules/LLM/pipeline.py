@@ -79,7 +79,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
                 path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
                 passed_tests, total_tests, test_information =  \
                     test_generated_code(args.absolute_c_path, path_tests,
-                        f"tests_iteration_{i}.json", args.temp_folder)
+                        f"tests_iteration_{i}.json", args.temp_folder, args.debug)
                 print(f"Tests passed: {passed_tests}/{total_tests}")
             else:
                 passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"

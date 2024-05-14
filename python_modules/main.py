@@ -131,7 +131,7 @@ def parse_arguments(functions_list):
     parser.add_argument("-c", "--c_file", help="The C file to use", type=str)
     parser.add_argument("-he", "--header_file", help="The header file to use", type=str)
     parser.add_argument("-wpt", "--wp_timeout", help="The timeout to use for the wp-prover",
-                        type=int, default=90)
+                        type=int, default=2)
     parser.add_argument("-wps", "--wp_steps", help="The steps to use for the wp-prover",
                         type=int, default=1500)
     parser.add_argument("-s", "--solver", help="The solver to use for the formal verification",

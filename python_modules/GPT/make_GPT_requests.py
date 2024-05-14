@@ -1,5 +1,6 @@
 """ This module contains the function that makes a request to an OpenAI API"""
 from openai import OpenAI
+from LLM.prompts import seperate_prompt
 
 def make_gpt_request(args, prompt):
     """Make a request to the OpenAI API
@@ -11,9 +12,12 @@ def make_gpt_request(args, prompt):
 
     # Create the openAI client
     client = OpenAI()
-
-    # Parameters for the request
-    message=[{"role": "user", "content": prompt}]
+    
+    # Seperate the prompt into the assistant and user prompt
+    assistant_prompt, user_prompt = seperate_prompt(prompt)
+    
+    message=[{"role": "system", "content": assistant_prompt}, 
+             {"role": "user", "content": user_prompt}]
     temperature=args.temperature
     max_tokens=args.max_tokens
     frequency_penalty=0.0
@@ -26,8 +30,6 @@ def make_gpt_request(args, prompt):
         max_tokens=max_tokens,
         frequency_penalty=frequency_penalty
     )
-
-    print(response.choices[0].message.content)
 
     # Return the response
     return response.choices[0].message.content

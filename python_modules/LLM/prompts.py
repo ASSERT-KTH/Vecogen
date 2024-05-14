@@ -167,11 +167,22 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
 
     return prompt_mapped
 
-def one_shot():
-    """Function that generates a prompt for a one-shot model
+def seperate_prompt(prompt):
+    """Function to seperate the user and assistant prompt
     Args:
-        None
+        prompt: The prompt to seperate
     Returns:
-        The prompt as a string"""
+        A list with two elements, the first is the user prompt and the second is 
+        the assistant prompt"""
+
+    # Split the prompt into the user and assistant prompt
+    return prompt.split("-----END_ASSISTANT_INFORMATION-----")
+
+# def one_shot():
+#     """Function that generates a prompt for a one-shot model
+#     Args:
+#         None
+#     Returns:
+#         The prompt as a string"""
     
     

@@ -97,6 +97,10 @@ def require_solver(args):
 
     # Get the solvers
     available_solvers = solvers()
+    
+    # Remove coq if it exists
+    if "Coq" in available_solvers:
+        available_solvers.remove("Coq")
 
     # If no solver is present then use all the solvers available
     if args.solver is None:
