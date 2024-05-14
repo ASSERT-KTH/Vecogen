@@ -2,13 +2,16 @@
 from openai import OpenAI
 from LLM.prompts import seperate_prompt
 
-def make_gpt_request(args, prompt):
+def make_gpt_request(args, prompt, n):
     """Make a request to the OpenAI API
     Args:
         args: The arguments given to the program
         prompt: The prompt to send to the OpenAI API
+        n: The number of completions to generate
     Returns:
-        The response from the OpenAI API"""
+        The response from the OpenAI API
+        The amount of tokens used in the request
+        The exact model used in the request"""
 
     # Create the openAI client
     client = OpenAI()
@@ -28,8 +31,9 @@ def make_gpt_request(args, prompt):
         messages = message,
         temperature=temperature,
         max_tokens=max_tokens,
-        frequency_penalty=frequency_penalty
+        frequency_penalty=frequency_penalty,
+        n = n,
     )
 
     # Return the response
-    return response.choices[0].message.content
+    return response.choices, response.usage.total_tokens, response.model

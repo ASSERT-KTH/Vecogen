@@ -22,6 +22,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
     # Create an array to store the information about the iterations
     information_iteration = []
+    initial_generation_attempts = []
 
     # Boolean that indicates if the code has been verified
     verified = False
@@ -47,12 +48,69 @@ def generate_code(args, improve = False, print_information_iteration = True):
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
     # A storage for the initial generation attempts
-    generation_attempts = []
+    
+    # generate the initial attempts
+    responses_gpt, tokens_used, model_used = make_gpt_request(args, prompt, 
+                                                args.initial_examples_generated)
+    
+    # For each response, check the code
+    for i in range(args.initial_examples_generated):
+        print("-" * 50)
+        print(f"Initial iteration {i+1} of {args.initial_examples_generated}, generating code...")
+        print("-" * 50)
+            
+        code_response = responses_gpt[i].message.content
+        
+        # Process the generated code
+        try:
+            code, verified, output, verified_goals, test_information = \
+                verify_and_test_code_attempt(args, code_response, i)
 
-    # Loop that iteratively prompts and checks the code
+        except IndexError:
+            print("The code could not be generated, please try again.")
+            verified, output, verified_goals = False, "The model did not generate code", "0/0"
+            break
+    
+        # Create a dict that will contain information about the iteration
+        iteration_info = {
+            "iteration": i,
+            "prompt": prompt,
+            "gpt_output": response_gpt,
+            "verified": verified,
+            "verified_goals": verified_goals,
+            "test_information": test_information,
+            "temperature": args.temperature,
+            "info": "initial prompt",
+            "max_tokens": args.max_tokens,
+            "tokens_used": tokens_used,
+            "model": model_used,
+        }
+        information_iteration.append(iteration_info)
+        
+        # Get the percentage of verified goals
+        total_goals = verified_goals.split("/")[1]
+        verified_goals = verified_goals.split("/")[0]
+        if int(total_goals) == 0:
+            verified_percentage = 0
+        else:
+            verified_percentage = int(verified_goals) / int(total_goals)
+        
+        initial_generation_attempts.append([verified_percentage, response_gpt])
+        
+    # Pick the best initial generation attempt
+    best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+    code = best_attempt[0]
+    
+    # Generate a prompt
     i = 0
     i_reboot = 0
-
+    
+    # If there is an improvement step then get the prompt
+    if args.iterations > 0:
+        prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
+                                            args.max_tokens, args.allowloops)
+    
+    # Create the initial n initial generation attempts
     while (i < args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
@@ -60,30 +118,15 @@ def generate_code(args, improve = False, print_information_iteration = True):
             print("-" * 50)
 
         # Get the output from the LLM
-        response_gpt = make_gpt_request(args, prompt)
+        response_gpt, tokens_used, model_used = make_gpt_request(args, prompt, 1)
+        
+        # Take the first response
+        response_gpt = response_gpt[0].message.content
 
         # Process the generated code
         try:
-            code = process_generated_code(args, response_gpt)
-
-            # Verify the code
-            verified, output, verified_goals = check_file(args.absolute_c_path,
-                args.absolute_header_path, args)
-
-            # See if the folder of the absolute c path has a tests file
-            files_directory = list_files_directory(os.path.dirname(args.absolute_c_path))
-
-            # Check if the tests file exists
-            if "tests.c" in files_directory:
-                # Get the path to the tests file
-                path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
-                passed_tests, total_tests, test_information =  \
-                    test_generated_code(args.absolute_c_path, path_tests,
-                        f"tests_iteration_{i}.json", args.temp_folder, args.debug)
-                print(f"Tests passed: {passed_tests}/{total_tests}")
-            else:
-                passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
-                print(f"No tests found, proved goals: {verified_goals}")
+            code, verified, output, verified_goals, test_information = \
+                verify_and_test_code_attempt(args, response_gpt, i)
 
         except IndexError:
             print("The code could not be generated, please try again.")
@@ -91,9 +134,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
             break
 
         # Add extra information about the generation attempt
-        if i <= args.initial_examples_generated:
-            information = "initial prompt"
-        elif i_reboot == 0:
+        if i_reboot == 0:
             information = "rebooted"
         elif verified:
             information = "verified"
@@ -111,39 +152,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "temperature": args.temperature,
             "info": information,
             "max_tokens": args.max_tokens,
+            "tokens_used": tokens_used,
+            "model": model_used,
         }
         information_iteration.append(iteration_info)
 
-        # If another initial attempt has been done, increase the counter
-        if i < args.initial_examples_generated:
-            # Get the percentage of verified goals
-            total_goals = verified_goals.split("/")[1]
-            verified_goals = verified_goals.split("/")[0]
-            if int(total_goals) == 0:
-                verified_percentage = 0
-            else:
-                verified_percentage = int(verified_goals) / int(total_goals)
-
-            # Add the initial generation attempt to the list
-            generation_attempts.append([verified_percentage, response_gpt])
-        elif i == args.initial_examples_generated:
-            # If the initial generation attempts were done, then set the code to the best attempt
-            # The best attempt is measured by the highest percentage of verified goals
-            best_attempt = max(generation_attempts, key = lambda x: x[0])
-            code = best_attempt[0]
-
-        # Check if another initial code generation is needed
-        if not verified and i < args.initial_examples_generated - 1:
-            # Store the initial generation attempt in the list
-            if args.debug:
-                print("Initial prompt has been generated.")
-
-            # The prompt is the initial prompt, thus we do not need to do it again
-            prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
-                                    args.allowloops)
-
         # Check if the code needs to be rebooted
-        elif not verified and i_reboot == args.reboot:
+        if not verified and i_reboot == args.reboot:
             if args.debug:
                 print("Code has not been verified, rebooting...")
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
@@ -254,4 +269,45 @@ def generate_code_folder(args):
         print(f"Generated code for {args.absolute_c_path}.")
 
     # Get the paths to the header, the C file and the output
+    
+def verify_and_test_code_attempt(args, response_gpt, i):
+    """ 
+    Function to verify and test the code that has been generated
+    Args:
+        args: The arguments given to the program
+        response_gpt: The response from the GPT model
+        i: The iteration number
+    Returns:
+        code: The code that has been generated
+        verified: Boolean that indicates if the code is verified
+        output: The output of the verification process
+        verified_goals: The proportion of goals that have been verified
+        test_information: The information about the tests
+    """
+    
+    # Process the generated code by adding the specification
+    code = process_generated_code(args, response_gpt)
+
+    # Verify the code
+    verified, output, verified_goals = check_file(args.absolute_c_path,
+        args.absolute_header_path, args)
+
+    # See if the folder of the absolute c path has a tests file
+    files_directory = list_files_directory(os.path.dirname(args.absolute_c_path))
+
+    # Check if the tests file exists
+    if "tests.c" in files_directory:
+        # Get the path to the tests file
+        path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
+        passed_tests, total_tests, test_information =  \
+            test_generated_code(args.absolute_c_path, path_tests,
+                f"tests_iteration_{i}.json", args.temp_folder, args.debug)
+        if args.debug:
+            print(f"Tests passed: {passed_tests}/{total_tests}")
+    else:
+        passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
+        if args.debug:
+            print(f"No tests found, proved goals: {verified_goals}")
+            
+    return code, verified, output, verified_goals, test_information
 __all__ = ["generate_code", "generate_code_folder"]
