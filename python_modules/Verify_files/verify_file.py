@@ -11,6 +11,10 @@ def verify_file(args):
     Returns:
         True if the C file verified successfully, False otherwise
         If the file did not verify, the output of the verification"""
+    # If debugging is enabled then print the folder that the file is being verified in
+    if args.debug:
+        print(f"Verifying file {args.absolute_c_path.split('/')[-1]}")
+
     # Create the prompt that is used for frama c
     prompt = f'frama-c  -wp "{args.absolute_c_path}"                            \
                         -wp-prover {args.solver}                                \
@@ -27,7 +31,7 @@ def verify_file(args):
     stdout, stderr = result.communicate()
     stdout_str = stdout.decode("utf-8")
     stderr_str = stderr.decode("utf-8")
-    
+
     # See if there was an error in the command prompt
     if args.debug:
         debug_to_file(args, "../tmp/", "errors", stderr_str)
@@ -49,7 +53,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         - A list of the problem and the strategy to solve the problem
         - A string that contains the amount of verified goals
         """
-        
+
     # Check if the output has a syntax error
     if "Syntax error" in output or "syntax error" in output or "invalid user input" in output:
         # Remove the lines with [kernel] in the output
@@ -77,7 +81,6 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
             f"The verification timed out. Timeouts: {total_timeouts} of {total_goals}.\n"
             " The following lines caused the timeouts:\n"
         )
-        
 
         # Get the lines that caused timeouts
         for line in output.split("\n"):

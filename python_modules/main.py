@@ -140,7 +140,7 @@ def parse_arguments(functions_list):
                         formal verification", type=bool, action=argparse.BooleanOptionalAction,
                         default=False)
     parser.add_argument("-iter", "--iterations", help="The number of iterations to use for \
-                        the code generation", type=int, default=1)
+                        the code generation", type=int, default=0)
     parser.add_argument('-temp', '--temperature', help="The temperature to use for the code \
                         generation", type=float, default=0)
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
@@ -162,8 +162,6 @@ def parse_arguments(functions_list):
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=1, type=int)
     parser.add_argument("-tmp", "--temp_folder", help="The folder where temporary files are stored", default= os.path.join(os.getcwd(), "..", "tmp"), type=str)
-
-    
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')

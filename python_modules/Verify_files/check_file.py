@@ -1,5 +1,4 @@
 """ This module is used to check a C file in a given directory"""
-import os
 from Verify_files.compile_file import compile_c
 from Verify_files.verify_file import verify_file
 
@@ -19,7 +18,7 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
 
     # Compile the file
     # Get the directory of absolute_path_to_c_file
-    result, output = compile_c(absolute_path_to_c_file, args.temp_folder)
+    result, output = compile_c(args, absolute_path_to_c_file, args.temp_folder)
     if result is False:
         if args.debug:
             print(f"Compilation of file {absolute_path_to_c_file.split('/')[-1]} failed," +
@@ -29,4 +28,5 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
         print(f"File {absolute_path_to_c_file.split('/')[-1]} compiled successfully" +
               " and will be verified...")
 
+    # Verify the file and return it
     return verify_file(args)

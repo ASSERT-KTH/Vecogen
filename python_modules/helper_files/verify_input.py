@@ -172,8 +172,8 @@ def ensure_integers(args):
         sys.exit()
 
     # Ensure that the number of iterations is a positive integer
-    if args.iterations is not None and args.iterations <= 0:
-        print("The number of iterations must be a strictly positive integer")
+    if args.iterations is not None and args.iterations < 0:
+        print("The number of iterations must be a positive integer")
         sys.exit()
 
     # Ensure that the maximum tokens is a positive integer

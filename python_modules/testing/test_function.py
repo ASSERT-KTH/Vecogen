@@ -13,7 +13,7 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     Returns:
         The amount of tests that passed
         The total amount of tests"""
-        
+ 
     # If debugging is true then print information that the file will be tested
     if debug:
         print(f"Testing the file {path_file} with the test file {path_test}")
@@ -32,8 +32,23 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     subprocess.Popen(["gcc", path_file, path_test, "-o", path_to_executable],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+    # If the executable does not exist then wait, since the compilation might still be running
+    while not os.path.exists(path_to_executable):
+        time.sleep(0.3)
+
     # Run the test cases
-    subprocess.Popen([path_to_executable, path_to_executable + ".json"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        subprocess.Popen([path_to_executable, path_to_executable + ".json"],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except OSError:
+        time.sleep(0.5)
+        subprocess.Popen([path_to_executable, path_to_executable + ".json"],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # If debugging is true then print information that the file will be tested
+    if debug:
+        print(f"Compiled the file {path_file} with the test file " +
+              f"{path_test} to {path_to_executable}")
 
     # Remove the executable
     os.system(f"rm '{path_to_executable}'")

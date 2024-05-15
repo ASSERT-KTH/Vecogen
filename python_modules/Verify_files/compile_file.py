@@ -2,7 +2,7 @@
 import subprocess
 import os
 
-def compile_c(absolute_path_to_c_file, absolute_path_temp_folder):
+def compile_c(args, absolute_path_to_c_file, absolute_path_temp_folder):
     """Compile a C file using the gcc compiler
     Args:
         absolute_path_to_c_file: The path to the C file
@@ -18,10 +18,14 @@ def compile_c(absolute_path_to_c_file, absolute_path_temp_folder):
     # Set the path to the executable file
     file_name = absolute_path_to_c_file.split("/")[-1].split(".")[0]
     path_to_executable = os.path.join(absolute_path_temp_folder, f"{file_name}")
-    
+
     # Run the gcc compiler on the C file
     result = subprocess.Popen(["gcc", absolute_path_to_c_file, "-o", path_to_executable, "-c"],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # If debugging is enabled then print the folder that the file is being compiled to
+    if args.debug:
+        print(f"Compiling file {absolute_path_to_c_file.split('/')[-1]} to {path_to_executable}")
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()
@@ -29,7 +33,6 @@ def compile_c(absolute_path_to_c_file, absolute_path_temp_folder):
     # # Remove the compiled file 
     # if os.path.exists(path_to_executable):
     #     os.remove(path_to_executable)
-    
 
     # Return the result and command prompt output
     if result.returncode == 0:
