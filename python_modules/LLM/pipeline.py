@@ -57,7 +57,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
         print(f"Initial iteration {i+1} of {args.initial_examples_generated}, generating code...")
         print("-" * 50)
 
+        # Get the generated code and tokens used
         response_gpt = responses_gpt[i].message.content
+
+        # Get the tokens used, which is calculated by the amount of tokens used in the first
+        # iteration
+        if i > 0:
+            tokens_used = 0
 
         # Process the generated code
         try:
@@ -93,14 +99,17 @@ def generate_code(args, improve = False, print_information_iteration = True):
         else:
             verified_percentage = int(verified_goals) / int(total_goals)
 
-        initial_generation_attempts.append([verified_percentage, response_gpt])
+        initial_generation_attempts.append([verified_percentage, response_gpt, verified])
 
     # Pick the best initial generation attempt
     best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+
+    # Of this best attempt, get the code and boolean if it is verified or not
     code = best_attempt[0]
+    verified = best_attempt[2]
 
     # Generate a prompt
-    i = 0
+    i = args.initial_examples_generated
     i_reboot = 0
 
     # If there is an improvement step then get the prompt
@@ -109,10 +118,11 @@ def generate_code(args, improve = False, print_information_iteration = True):
                                             args.max_tokens, args.allowloops)
 
     # Create the initial n initial generation attempts
-    while (i < args.iterations and not verified):
+    while (i < args.initial_examples_generated + args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
-            print(f"Iteration {i+1} of {args.iterations}, generating code...")
+            print(f"Improvement Iteration {i} of {args.initial_examples_generated} \
+                  , generating code...")
             print("-" * 50)
 
         # Get the output from the LLM

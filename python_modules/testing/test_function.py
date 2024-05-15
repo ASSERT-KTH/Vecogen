@@ -13,7 +13,7 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     Returns:
         The amount of tests that passed
         The total amount of tests"""
- 
+
     # If debugging is true then print information that the file will be tested
     if debug:
         print(f"Testing the file {path_file} with the test file {path_test}")
