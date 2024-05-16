@@ -15,7 +15,7 @@ def replace_loops(use_loops):
         return "* Add loop invariants and assertions for loops if these \
                     improve the verification process"
     else:
-        return "* Do not make use of for, while, do-while or recursive loops"
+        return "* Do not make use of any type of loop. That is, no for, while, do-while or recursive loops"
 
 def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
     """Function that generates a prompt based on a header file

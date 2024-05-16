@@ -10,7 +10,9 @@ def verify_file(args):
         args: The arguments given to the program
     Returns:
         True if the C file verified successfully, False otherwise
-        If the file did not verify, the output of the verification"""
+        A message that indicates the problem
+        The amount of verified goals
+        """
     # If debugging is enabled then print the folder that the file is being verified in
     if args.debug:
         print(f"Verifying file {args.absolute_c_path.split('/')[-1]}")
@@ -84,7 +86,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
 
         # Get the lines that caused timeouts
         for line in output.split("\n"):
-            if "Goal" in line  and "*" not in line:
+            if "Goal" in line  and "*" not in line and "(file " in line:
                 # Remove the path from the line, thus remove everything between / and /
                 pattern = r'\(file\s+\/.*?\/tmp\/'
                 line_without_path = re.sub(pattern, '(file ', line)
@@ -107,6 +109,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         verified_goals = output.split("Proved goals:")[1].split("/")[0].strip()
         total_goals = output.split("Proved goals:")[1].split("/")[1].strip()
         total_goals = total_goals.split("\n")[0].strip()
-        return True, ["The file is valid"], f"{verified_goals} / {total_goals}"
+        verified = verified_goals == total_goals
+        return verified, ["The file is valid"], f"{verified_goals} / {total_goals}"
 
 __all__ = ["verify_file"]

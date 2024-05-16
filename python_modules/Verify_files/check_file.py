@@ -18,6 +18,7 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
 
     # Compile the file
     # Get the directory of absolute_path_to_c_file
+
     result, output = compile_c(args, absolute_path_to_c_file, args.temp_folder)
     if result is False:
         if args.debug:

@@ -138,7 +138,7 @@ def parse_arguments(functions_list):
                         type=str)
     parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the \
                         formal verification", type=bool, action=argparse.BooleanOptionalAction,
-                        default=False)
+                        default=True)
     parser.add_argument("-iter", "--iterations", help="The number of iterations to use for \
                         the code generation", type=int, default=0)
     parser.add_argument('-temp', '--temperature', help="The temperature to use for the code \

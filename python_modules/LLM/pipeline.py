@@ -1,6 +1,7 @@
 """ This module contains the function that iteratively generates a prompt based on a 
     verification error message """
 import os
+import json
 from LLM.prompts import initial_prompt, verification_error_prompt
 from LLM.specification import add_specification_to_code
 from GPT.make_GPT_requests import make_gpt_request
@@ -102,7 +103,10 @@ def generate_code(args, improve = False, print_information_iteration = True):
         initial_generation_attempts.append([verified_percentage, response_gpt, verified])
 
     # Pick the best initial generation attempt
-    best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+    if args.initial_examples_generated > 1:
+        best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+    else:
+        best_attempt = initial_generation_attempts[0]
 
     # Of this best attempt, get the code and boolean if it is verified or not
     code = best_attempt[0]
@@ -121,8 +125,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     while (i < args.initial_examples_generated + args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
-            print(f"Improvement Iteration {i} of {args.initial_examples_generated} \
-                  , generating code...")
+            print(f"Improvement Iteration {i} of {args.iterations}, generating code...")
             print("-" * 50)
 
         # Get the output from the LLM
@@ -136,13 +139,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
             code, verified, output, verified_goals, test_information = \
                 verify_and_test_code_attempt(args, response_gpt, i)
 
-        except IndexError:
-            print("The code could not be generated, please try again.")
+        except IndexError as e:
+            print("The code could not be generated, please try again. The error is: ", e)
             verified, output, verified_goals = False, "The model did not generate code", "0/0"
             break
 
         # Add extra information about the generation attempt
-        if i_reboot == 0:
+        if i_reboot == args.reboot:
             information = "rebooted"
         elif verified:
             information = "verified"
@@ -192,7 +195,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
     # save the results to a file
     with open(f"{args.absolute_output_directory}/results.txt", "w", encoding="utf-8") as f:
-        f.write(str(information_iteration))
+        json.dump(information_iteration, f, indent=4)
 
 # Function that processes the generated code by adding the specification and creating the output file
 def process_generated_code(args, code):
@@ -300,13 +303,27 @@ def verify_and_test_code_attempt(args, response_gpt, i):
     verified, output, verified_goals = check_file(args.absolute_c_path,
         args.absolute_header_path, args)
 
+    # If the compilation failed, then return the information
+    if not verified and verified_goals is None:
+        test_information = {
+            "summary": {
+                "passed": 0,
+                "failed": 0,
+                "total": 0,
+                "information": "Compilation failed"
+            }
+        }
+
+        return code, verified, output, "0 / 0", [test_information]
+
     # See if the folder of the absolute c path has a tests file
-    files_directory = list_files_directory(os.path.dirname(args.absolute_c_path))
+    files_directory = list_files_directory(os.path.dirname(args.absolute_header_path))
+
 
     # Check if the tests file exists
     if "tests.c" in files_directory:
         # Get the path to the tests file
-        path_tests = os.path.dirname(args.absolute_c_path) + "/tests.c"
+        path_tests = os.path.dirname(args.absolute_header_path) + "/tests.c"
         passed_tests, total_tests, test_information =  \
             test_generated_code(args.absolute_c_path, path_tests,
                 f"tests_iteration_{i}", args.temp_folder, args.debug)

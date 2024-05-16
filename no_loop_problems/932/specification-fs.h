@@ -27,6 +27,6 @@
     requires 3 * n <= k <= 5 * n;
     assigns *out;
     ensures IsPossibleConfiguration(n, k, *out);
-    ensures !ExistsSmallerAmountOfResits(n, k, *out)
+    ensures !ExistsSmallerAmountOfResits(n, k, *out);
 */
 void calculateMinimumExamsToResitForGivenSum(int n, int k, int *out);

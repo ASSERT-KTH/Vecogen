@@ -36,7 +36,4 @@
     assigns *out;
     ensures *out == (x + 4) / 5;
 */
-void calculateMinimumElephantSteps(int x, int *out)
-{
-    *out = (x + 4) / 5;
-}
+void calculateMinimumElephantSteps(int x, int *out);

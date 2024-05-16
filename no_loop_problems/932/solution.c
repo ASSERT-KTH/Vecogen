@@ -8,42 +8,12 @@
     Output the single number — the minimum number of exams that the author will get a 2 for, considering that the sum of marks for all exams must equal k.
 */
 
-/*@ predicate IsPossibleConfiguration(integer n, integer k, integer result) =
-    \exists integer n2, n3, n4, n5;
-    0 <= n2 <= n &&
-    0 <= n3 <= n &&
-    0 <= n4 <= n &&
-    0 <= n5 <= n &&
-    2 * n2 + 3 * n3 + 4 * n4 + 5 * n5 == k &&
-    n2 + n3 + n4 + n5 == n &&
-    result == n2;
-*/
-
-/*@ predicate ExistsSmallerAmountOfResits(integer n, integer k, integer result) =
-    \exists integer n2, n3, n4, n5;
-    0 <= n2 <= n &&
-    0 <= n3 <= n &&
-    0 <= n4 <= n &&
-    0 <= n5 <= n &&
-    2 * n2 + 3 * n3 + 4 * n4 + 5 * n5 == k &&
-    n2 + n3 + n4 + n5 == n &&
-    n2 < result;
-*/
-
 /*@
     requires \valid(out);
-    requires    1 <= n <= 50;
-    requires    1 <= k <= 150;
-    // Ensure that there at least exists one solution
-    requires \exists integer n2, n3, n4, n5; 0 <= n2 <= n &&
-    0 <= n3 <= n &&
-    0 <= n4 <= n &&
-    0 <= n5 <= n &&
-    2 * n2 + 3 * n3 + 4 * n4 + 5 * n5 == k &&
-    n2 + n3 + n4 + n5 == n;
+    requires  1 <= n <= 50;
+    requires  1 <= k <= 250;
     assigns *out;
-    ensures IsPossibleConfiguration(n, k, *out);
-    ensures !ExistsSmallerAmountOfResits(n, k, *out);
+    ensures *out == \max(0, 3 * n - k);
 */
 void calculateMinimumExamsToResitForGivenSum(int n, int k, int *out)
 {

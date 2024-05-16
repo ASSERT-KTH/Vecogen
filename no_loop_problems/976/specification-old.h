@@ -20,9 +20,4 @@
     ensures *out1 + *out2 + *out3 == n;
     ensures *out1 == 0 && *out2 == 0 && *out3 == n;
 */
-void divideFibonacciNumberByThreeFibonacciNumbers(int n, int *out1, int *out2, int *out3)
-{
-    *out1 = 0;
-    *out2 = 0;
-    *out3 = n;
-}
+void divideFibonacciNumberByThreeFibonacciNumbers(int n, int *out1, int *out2, int *out3);
