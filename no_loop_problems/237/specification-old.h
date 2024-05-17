@@ -8,29 +8,10 @@
     Output one integer: the smallest number of brains in the chest which allows Heidi to take one brain home.
 */
 
-/*@ predicate isValidSolution(integer N, integer out) =
-    \exists integer zombies_vote_yes, zombies_vote_no;
-    0 <= zombies_vote_yes <= N &&
-    0 <= zombies_vote_no <= N &&
-    zombies_vote_yes + zombies_vote_no + 1 == N &&
-    zombies_vote_yes + 1 >= ((real) N) / 2 &&
-    zombies_vote_yes + 1 == out;
-*/
-
-/*@ predicate existsSmallerSolution(integer N, integer out) =
-    \exists integer zombies_vote_yes, zombies_vote_no;
-    0 <= zombies_vote_yes <= N &&
-    0 <= zombies_vote_no <= N &&
-    zombies_vote_yes + zombies_vote_no + 1 == N &&
-    zombies_vote_yes + 1 >= ((real) N) / 2 &&
-    zombies_vote_yes + 1 < out;
-*/
-
 /*@
     requires \valid(out);
     requires 1 <= N <= 1000000000;
     assigns *out;
-    ensures isValidSolution(N, *out);
-    ensures !existsSmallerSolution(N, *out);
+    ensures *out == ((N + 1) / 2);
 */
 void calculateMinimumBrainsForStrategy(int N, int *out);
