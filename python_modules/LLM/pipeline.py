@@ -100,7 +100,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
         else:
             verified_percentage = int(verified_goals) / int(total_goals)
 
-        initial_generation_attempts.append([verified_percentage, response_gpt, verified])
+        initial_generation_attempts.append([verified_percentage, response_gpt, verified, output])
 
     # Pick the best initial generation attempt
     if args.initial_examples_generated > 1:
@@ -111,6 +111,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # Of this best attempt, get the code and boolean if it is verified or not
     code = best_attempt[0]
     verified = best_attempt[2]
+    output = best_attempt[3]
 
     # Generate a prompt
     i = args.initial_examples_generated
@@ -249,7 +250,7 @@ def generate_code_folder(args):
     
     # Sort the folders based on the number
     folders.sort(key=lambda x: int(x.split('-')[0]))
-
+    
     # For each folder in the directory
     for folder in folders:
         # Get the files in the folder
@@ -288,6 +289,7 @@ def generate_code_folder(args):
         generate_code(args, print_information_iteration = False)
 
         # Print the current generated file
+        print("\n \n" + "-" * 50 + "\n \n")
         print(f"Generated code for {args.absolute_c_path}.")
 
 def verify_and_test_code_attempt(args, response_gpt, i):
