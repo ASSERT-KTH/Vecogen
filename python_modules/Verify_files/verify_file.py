@@ -18,6 +18,8 @@ def verify_file(args):
         print(f"Verifying file {args.absolute_c_path.split('/')[-1]}")
 
     # Create the prompt that is used for frama c
+    if args.debug:
+        print("Verifying using frama-c")
     prompt = f'frama-c  -wp "{args.absolute_c_path}"                            \
                         -wp-prover {args.solver}                                \
                         -wp-steps {args.wp_steps}                               \
@@ -25,6 +27,8 @@ def verify_file(args):
                         -wp-rte                                                 \
                         {"-wp-smoke-tests" if args.smoke_detector else ""}      \
                         -wp-status'
+    if args.debug:
+        print("Verification process was completed")
 
     # Call a subroutine to use Frama-C to verify the C file
     result = subprocess.Popen(prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)

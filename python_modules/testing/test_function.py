@@ -38,9 +38,10 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
 
     # Run the test cases
     try:
-        subprocess.Popen([path_to_executable, path_to_executable + ".json"],
+        subprocess.Popen([path_to_executable, f"{path_to_executable}.json"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except OSError:
+        print("Error: The test cases could not be run. The file might not be compiled correctly.")
         time.sleep(0.5)
         subprocess.Popen([path_to_executable, path_to_executable + ".json"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -49,6 +50,11 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     if debug:
         print(f"Compiled the file {path_file} with the test file " +
               f"{path_test} to {path_to_executable}")
+
+    # Wait until the test cases are done and the json is created
+    while not os.path.exists(path_to_executable + ".json"):
+        time.sleep(0.3)
+        print("Waiting for the test cases to finish...")
 
     # Remove the executable
     os.system(f"rm '{path_to_executable}'")
@@ -62,5 +68,8 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
         test_information = tests_output[-1]['summary']
         passed = test_information['passed']
         total = test_information['total']
+        
+    # Remove the json test file
+    os.system(f"rm '{path_to_executable}.json'")
 
     return passed, total, tests_output
