@@ -249,9 +249,6 @@ def generate_code_folder(args):
     
     # Sort the folders based on the number
     folders.sort(key=lambda x: int(x.split('-')[0]))
-    
-    # Only take the first two folders
-    folders = folders[:2]
 
     # For each folder in the directory
     for folder in folders:
