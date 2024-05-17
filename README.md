@@ -67,3 +67,5 @@ python main.py function
 python3 main.py generate_code -he ../no_loop_problems/284/specification.h -ieg 5 -temp 0.8  -iter 10 -reboot 5
 
 python3 main.py generate_code -he ../no_loop_problems/301/specification.h -ieg 5 -temp 0.8 -iter 10 -reboot 5 -o ../output/gpt4/301/ -model gpt-4
+
+python3 main.py generate_code_folder -d ../no_loop_problems/ -ieg 1 -iter 1 -temp 1  -reboot 5 -wpt 5 -o ../output/3.5-1-1-1-all -output-file generated_code.c

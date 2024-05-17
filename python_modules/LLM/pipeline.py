@@ -246,6 +246,12 @@ def generate_code_folder(args):
 
     # Get the base directory of the output
     base_directory = args.absolute_output_directory
+    
+    # Sort the folders based on the number
+    folders.sort(key=lambda x: int(x.split('-')[0]))
+    
+    # Only take the first two folders
+    folders = folders[:2]
 
     # For each folder in the directory
     for folder in folders:
@@ -253,7 +259,15 @@ def generate_code_folder(args):
         files = list_files_directory(args.directory + "/" + folder)
 
         # Get the first .h file in the folder
-        specification_file = [f for f in files if f.endswith(".h")][0]
+        specification_files = [f for f in files if f.endswith(".h")]
+        
+        # Pick the specification file here
+        
+        # If the folder has specification-old.h then pick that one
+        if "specification-old.h" in specification_files:
+            specification_file = "specification-old.h"
+        else:
+            specification_file = "specification.h"
         args.header_file = folder + "/" + specification_file
 
         # Set the header file
@@ -267,7 +281,7 @@ def generate_code_folder(args):
 
         # Set the c file and h file paths
         args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file
-        args.absolute_header_path = args.absolute_output_directory + "/" + specification_file
+        args.absolute_header_path = args.absolute_directory + "/" + folder + "/" + specification_file
 
         # Create the output directory if it does not exist yet
         if not os.path.exists(output_dir):
@@ -278,8 +292,6 @@ def generate_code_folder(args):
 
         # Print the current generated file
         print(f"Generated code for {args.absolute_c_path}.")
-
-    # Get the paths to the header, the C file and the output
 
 def verify_and_test_code_attempt(args, response_gpt, i):
     """ 
@@ -318,7 +330,6 @@ def verify_and_test_code_attempt(args, response_gpt, i):
 
     # See if the folder of the absolute c path has a tests file
     files_directory = list_files_directory(os.path.dirname(args.absolute_header_path))
-
 
     # Check if the tests file exists
     if "tests.c" in files_directory:
