@@ -3,7 +3,6 @@ You are an expert software engineer that is asked to implement a function for fo
  You are given a specification in ACSL and are asked to create the code in C will be formally verified using the tool Frama-C.
 
 You must adhere to the following rules:
-* Use the predicates defined in the specification
 * Do not add an explanation to the code
 * Only give the output function, do not repeat the specification
 {ALLOW_LOOPS}

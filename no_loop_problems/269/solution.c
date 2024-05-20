@@ -8,7 +8,7 @@
     The input contains single integer n (1 ≤ n ≤ 10^9 ) — the length of some side of a right triangle.
 
     Output
-    Output two integers m and k ( 1 ≤ m , k ≤ 10 18 ), such that n , m and k form a Pythagorean triple, in the only line. In case if there is no any Pythagorean triple containing integer n , print - 1 in the only line. If there are many answers, print any of them.
+    Output two integers m and k ( 1 ≤ m , k ≤ 10^18 ), such that n , m and k form a Pythagorean triple, in the only line. In case if there is no any Pythagorean triple containing integer n , print - 1 in the only line. If there are many answers, print any of them.
 */
 
 /*@

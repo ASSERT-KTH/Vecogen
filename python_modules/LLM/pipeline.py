@@ -109,7 +109,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
         best_attempt = initial_generation_attempts[0]
 
     # Of this best attempt, get the code and boolean if it is verified or not
-    code = best_attempt[0]
+    code = best_attempt[1]
     verified = best_attempt[2]
     output = best_attempt[3]
 
