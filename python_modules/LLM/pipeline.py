@@ -48,10 +48,42 @@ def generate_code(args, improve = False, print_information_iteration = True):
     else:
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
-    # generate the initial attempts
-    responses_gpt, tokens_used, model_used = make_gpt_request(args, prompt,
-                                                args.initial_examples_generated)
+    # generate the initial attempts by making prompts of at most x each
+    responses_gpt = []
+    tokens_used = []
+    model_used = []
+    i_examples_generated = 0
+    max_examples_per_call = 20
+    
+    # Make GPT requests with at most x examples at a time
+    while i_examples_generated < args.initial_examples_generated:
+        # Calculate the amount of examples to generate
+        n = min(max_examples_per_call, args.initial_examples_generated - i_examples_generated)
+        
+        # Call the function to make the GPT request
+        response_gpt, tokens_used_call, model_used = make_gpt_request(args, prompt, n)
+        
+        # Add the tokens used to the list
+        # Only the first iteration has the tokens used
+        tokens_used_initial_n_examples = [0] * (n - 1)
+        tokens_used_initial_n_examples.insert(0, tokens_used_call)
+        
+        # Add the tokens used and the responses to the list
+        tokens_used.extend(tokens_used_initial_n_examples)
+        responses_gpt.extend(response_gpt)
+        
+        # Increase the counter
+        i_examples_generated += n
 
+    # Print the initial examples and tokens used
+    if args.debug:
+        print("Initial examples and tokens used:")
+        for i in range(args.initial_examples_generated):
+            print(f"Example {i+1} of {args.initial_examples_generated}")
+            print(f"Tokens used: {tokens_used[i]}")
+            print(responses_gpt[i].message.content)
+            print("-" * 50)
+            print("\n")
     # For each response, check the code
     for i in range(args.initial_examples_generated):
         print("-" * 50)
@@ -60,11 +92,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
         # Get the generated code and tokens used
         response_gpt = responses_gpt[i].message.content
-
-        # Get the tokens used, which is calculated by the amount of tokens used in the first
-        # iteration
-        if i > 0:
-            tokens_used = 0
 
         # Process the generated code
         try:
@@ -87,7 +114,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
             "temperature": args.temperature,
             "info": "initial prompt",
             "max_tokens": args.max_tokens,
-            "tokens_used": tokens_used,
+            "tokens_used": tokens_used[i],
             "model": model_used,
         }
         information_iteration.append(iteration_info)
