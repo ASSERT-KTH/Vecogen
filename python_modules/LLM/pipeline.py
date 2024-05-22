@@ -53,7 +53,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     tokens_used = []
     model_used = []
     i_examples_generated = 0
-    max_examples_per_call = 20
+    max_examples_per_call = 10
     
     # Make GPT requests with at most x examples at a time
     while i_examples_generated < args.initial_examples_generated:
