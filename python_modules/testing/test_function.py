@@ -35,6 +35,8 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     # If the executable does not exist then wait, since the compilation might still be running
     while not os.path.exists(path_to_executable):
         time.sleep(0.3)
+        print("Waiting for the compilation to finish...")
+
 
     # Run the test cases
     try:
@@ -68,8 +70,7 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
         test_information = tests_output[-1]['summary']
         passed = test_information['passed']
         total = test_information['total']
-        
+
     # Remove the json test file
     os.system(f"rm '{path_to_executable}.json'")
-
     return passed, total, tests_output

@@ -43,17 +43,17 @@ def generate_code(args, improve = False, print_information_iteration = True):
         response_gpt = responses_gpt[i].message.content
 
         # Process the generated code
-        code, verified, output, verified_goals, iteration_info, verified_percentage = \
+        code, verified, output, verified_goals, iteration_info, passed_percentage = \
             process_code_and_get_iteration_information(args, response_gpt, i, prompt, tokens_used[i], model_used, True)
 
         # Add extra information about the generation attempt
         information_iteration.append(iteration_info)
-        initial_generation_attempts.append([verified_percentage, response_gpt, verified, output])
-        
+        initial_generation_attempts.append([passed_percentage, response_gpt, verified, output])
+
         # If the code is verified, then break
         if verified:
             break
-    
+
     # Pick the best initial generation attempt
     if args.initial_examples_generated > 1:
         best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
@@ -79,25 +79,41 @@ def generate_code(args, improve = False, print_information_iteration = True):
     while (i < args.initial_examples_generated + args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
-            print(f"Improvement Iteration {i - args.initial_examples_generated} of {args.iterations}, generating {args.initial_examples_generated} fixes...")
+            print(f"Improvement Iteration {i - args.initial_examples_generated + 1} of " +
+                f"{args.iterations}, generating {args.initial_examples_generated} fixes...")
             print("-" * 50)
 
         # Get the output from the LLM
         responses_gpt, tokens_used, model_used = prompt_using_n_examples(args, prompt, 10000)
 
+        # An array that contains the information about possible attempts for this iteration
+        iteration_attempts = []
         for j in range(args.initial_examples_generated):
             response_gpt = responses_gpt[j].message.content
 
             # Process the generated code
-            code, verified, output, verified_goals, iteration_info, verified_percentage = \
+            code, verified, output, verified_goals, iteration_info, passed_percentage = \
                 process_code_and_get_iteration_information(args, response_gpt, i_total, prompt, tokens_used[j], model_used, \
                 rebooting= args.reboot == i_reboot)
-                
+
             i_total += 1
             information_iteration.append(iteration_info)
-            
+
+            # Add the information to the iteration attempts
+            iteration_attempts.append([passed_percentage, response_gpt, verified, output])
             if verified:
                 break
+
+        #  Pick the best initial generation attempt
+        if args.initial_examples_generated > 1:
+            best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+        else:
+            best_attempt = initial_generation_attempts[0]
+
+        # Of this best attempt, get the code and boolean if it is verified or not
+        code = best_attempt[1]
+        verified = best_attempt[2]
+        output = best_attempt[3]
 
         # Get the next prompt
         if not verified and i_reboot == args.reboot:
@@ -161,7 +177,6 @@ def add_specification_and_output_code(args, code):
 
     return code
 
-
 # Function that generates code in a folder
 def generate_code_folder(args):
     """Function to generate code from a folder with folders
@@ -182,7 +197,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Take only the folders larger than n
-    # folders = [f for f in folders if int(f.split('-')[0]) <= 200]
+    folders = [f for f in folders if int(f.split('-')[0])  >= 260]
     
     # For each folder in the directory
     for folder in folders:
@@ -225,6 +240,7 @@ def generate_code_folder(args):
         print("\n \n" + "-" * 50 + "\n \n")
         print(f"Generated code for {args.absolute_c_path}.")
 
+# Function that verifies and tests the code that has been generated
 def verify_and_test_code_attempt(args, response_gpt, i):
     """ 
     Function to verify and test the code that has been generated
@@ -258,7 +274,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
             }
         }
 
-        return code, verified, output, "0 / 0", [test_information]
+        return code, verified, output, "0 / 0", test_information
 
     # See if the folder of the absolute c path has a tests file
     files_directory = list_files_directory(os.path.dirname(args.absolute_header_path))
@@ -273,7 +289,15 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         if args.debug:
             print(f"Tests passed: {passed_tests}/{total_tests}")
     else:
-        passed_tests, total_tests, test_information = 0, 0, "No tests found in the folder"
+        test_information = {
+            "summary": {
+                "passed": 0,
+                "failed": 0,
+                "total": 0,
+                "information": "No tests found in the folder"
+            }
+        }
+        passed_tests, total_tests = 0, 0, 
         if args.debug:
             print(f"No tests found, proved goals: {verified_goals}")
 
@@ -305,7 +329,7 @@ def improve_code_prompt(args):
     # Get the output path
     prompt = verification_error_prompt(args.header_file, code, output, \
                 args.model_name, args.max_tokens, args.allowloops)
-    
+
     return verified, output, prompt
 
 # Function that uses the LLM to generate code, whilst only asking for N exmaples at a time
@@ -319,33 +343,33 @@ def prompt_using_n_examples(args, prompt, n):
         tokens_used: The amount of tokens used for each response
         model_used: The model used, no list is used as only one model is used
     """
-    
+
     # generate the initial attempts by making prompts of at most x each
     responses_gpt = []
     tokens_used = []
     model_used = []
     i_examples_generated = 0
-    
+
     # Make GPT requests with at most n examples at a time
     while i_examples_generated < args.initial_examples_generated:
         # Calculate the amount of examples to generate
         n = min(n, args.initial_examples_generated - i_examples_generated)
-        
+
         # Call the function to make the GPT request
         response_gpt, tokens_used_call, model_used = make_gpt_request(args, prompt, n)
-        
+
         # Add the tokens used to the list
         # Only the first iteration has the tokens used
         tokens_used_initial_n_examples = [0] * (n - 1)
         tokens_used_initial_n_examples.insert(0, tokens_used_call)
-        
+
         # Add the tokens used and the responses to the list
         tokens_used.extend(tokens_used_initial_n_examples)
         responses_gpt.extend(response_gpt)
-        
+
         # Increase the counter
         i_examples_generated += n
-    
+
     return responses_gpt, tokens_used, model_used
 
 # Function that processes the code, and gets iteration information, and verifies the goals
@@ -366,7 +390,7 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
         verified_goals: The proportion of goals that have been verified
         test_information: The information about the tests
         iteration_info: The information about the iteration
-        verified_percentage: The percentage of verified goals
+        passed_percentage: The percentage of either passed tests (priority) or verified goals
     """
 
     # Process the generated code
@@ -403,13 +427,20 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
         "model": model_used,
     }
 
-    # Get the percentage of verified goals
-    total_goals = verified_goals.split("/")[1]
-    verified_goals = verified_goals.split("/")[0]
-    if int(total_goals) == 0:
-        verified_percentage = 0
-    else:
-        verified_percentage = int(verified_goals) / int(total_goals)
-        
-    return code, verified, output, verified_goals, iteration_info, verified_percentage
+    # Get the percentage of tests passed if the tests have been run
+    # Otherwise use the verified goals
+    try:
+        if test_information[-1]["summary"]["total"] > 0:
+            passed_percentage = test_information[-1]["summary"]["pass_rate"]
+        else:
+            total_goals = verified_goals.split("/")[1]
+            verified_goals = verified_goals.split("/")[0]
+            if int(total_goals) == 0:
+                passed_percentage = 0
+            else:
+                passed_percentage = int(verified_goals) / int(total_goals)
+    except:
+        print("Error: Could not get the percentage of passed tests or verified goals")
+        print(test_information)
 
+    return code, verified, output, verified_goals, iteration_info, passed_percentage
