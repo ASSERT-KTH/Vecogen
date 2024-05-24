@@ -17,17 +17,13 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
           f"{absolute_path_to_h_file.split('/')[-1]} exists, starting to compile...")
 
     # Compile the file
-    # Get the directory of absolute_path_to_c_file
-
     result, output = compile_c(args, absolute_path_to_c_file, args.temp_folder)
     if result is False:
         if args.debug:
-            print(f"Compilation of file {absolute_path_to_c_file.split('/')[-1]} failed," +
-              f"Error:\n {output}")
+            print(f"Compilation failed, Error:\n {output}")
             return False, output, None
     elif args.debug:
-        print(f"File {absolute_path_to_c_file.split('/')[-1]} compiled successfully" +
-              " and will be verified...")
+        print("File compiled successfully")
 
     # Verify the file and return it
     return verify_file(args)

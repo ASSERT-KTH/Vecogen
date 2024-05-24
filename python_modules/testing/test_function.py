@@ -28,14 +28,24 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
 
     path_to_executable = os.path.join(output_path, test_file_name)
 
-    # Compile the file and the test cases
-    subprocess.Popen(["gcc", path_file, path_test, "-o", path_to_executable],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+    # Compile the file and the test cases, if the compilation fails then return 0 tests passed
+    process = subprocess.Popen(
+    ["gcc", path_file, path_test, "-o", path_to_executable],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE
+    )
+    
+    stdout, stderr = process.communicate()
+    stdout = stdout.decode("utf-8")
+    stderr = stderr.decode("utf-8")
+    
+    
     # If the executable does not exist then wait, since the compilation might still be running
     while not os.path.exists(path_to_executable):
         time.sleep(0.3)
         print("Waiting for the compilation to finish...")
+        print(f"stdout: {stdout}")
+        print(f"stderr: {stderr}")
 
 
     # Run the test cases

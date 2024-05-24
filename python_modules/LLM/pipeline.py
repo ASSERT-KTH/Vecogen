@@ -36,7 +36,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # For each response, check the code. Stop if the code is verified
     for i in range(args.initial_examples_generated):
         print("-" * 50)
-        print(f"Initial iteration {i+1} of {args.initial_examples_generated}, generating code...")
+        print(f"Iteration {i+1} of {args.initial_examples_generated}, initial attempt.")
         print("-" * 50)
 
         # Get the generated code and tokens used
@@ -79,7 +79,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     while (i < args.initial_examples_generated + args.iterations and not verified):
         if print_information_iteration:
             print("-" * 50)
-            print(f"Improvement Iteration {i - args.initial_examples_generated + 1} of " +
+            print(f"Iteration {i - args.initial_examples_generated + 1} of " +
                 f"{args.iterations}, generating {args.initial_examples_generated} fixes...")
             print("-" * 50)
 
@@ -103,6 +103,10 @@ def generate_code(args, improve = False, print_information_iteration = True):
             iteration_attempts.append([passed_percentage, response_gpt, verified, output])
             if verified:
                 break
+            
+        # If the code is verified, then break
+        if verified:
+            break
 
         #  Pick the best initial generation attempt
         if args.initial_examples_generated > 1:
@@ -118,7 +122,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
         # Get the next prompt
         if not verified and i_reboot == args.reboot:
             if args.debug:
-                print("Code has not been verified, rebooting...")
+                print("Reboot the code generation process.")
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
                                     args.allowloops)
             i_reboot = 0
@@ -171,9 +175,8 @@ def add_specification_and_output_code(args, code):
         args.absolute_c_file = args.absolute_output_directory + "/" + args.output_file
         f.write(code)
 
-    # If debugging is true, then say that the code has been written to the file
     if args.debug:
-        print(f"Code has been written to {args.absolute_output_directory}/{args.output_file}")
+        print(f"Code generated. Written to {args.absolute_output_directory}/{args.output_file}")
 
     return code
 
@@ -197,7 +200,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Take only the folders larger than n
-    folders = [f for f in folders if int(f.split('-')[0])  >= 260]
+    folders = [f for f in folders if int(f.split('-')[0]) ==  301]
     
     # For each folder in the directory
     for folder in folders:
@@ -206,8 +209,6 @@ def generate_code_folder(args):
 
         # Get the first .h file in the folder
         specification_files = [f for f in files if f.endswith(".h")]
-        
-        # Pick the specification file here
         
         # If the folder has specification-old.h then pick that one
         if "specification-old.h" in specification_files:
@@ -238,7 +239,7 @@ def generate_code_folder(args):
 
         # Print the current generated file
         print("\n \n" + "-" * 50 + "\n \n")
-        print(f"Generated code for {args.absolute_c_path}.")
+        print(f"Generated code for folder {folder}.")
 
 # Function that verifies and tests the code that has been generated
 def verify_and_test_code_attempt(args, response_gpt, i):
@@ -257,8 +258,21 @@ def verify_and_test_code_attempt(args, response_gpt, i):
     """
 
     # Process the generated code by adding the specification
-    code = add_specification_and_output_code(args, response_gpt)
-
+    try:
+        code = add_specification_and_output_code(args, response_gpt)
+    except Exception as e:
+        if args.debug:
+            print(f"Error: Could not add the specification to the code, error: {e}")
+        return response_gpt, False, "Could not add specification to code", "0 / 0", {
+            "summary": {
+                "passed": 0,
+                "failed": 0,
+                "total": 0,
+                "information": f"Error with GPT response, could not add specification. Error: {e}"
+            }
+        }
+        
+        
     # Verify the code
     verified, output, verified_goals = check_file(args.absolute_c_path,
         args.absolute_header_path, args)
@@ -394,13 +408,8 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
     """
 
     # Process the generated code
-    try:
-        code, verified, output, verified_goals, test_information = \
-            verify_and_test_code_attempt(args, response_gpt, i)
-
-    except IndexError as e:
-        print("The code could not be generated, please try again.")
-        verified, output, verified_goals = False, f"The model did not generate code, error {e}", "0/0"
+    code, verified, output, verified_goals, test_information = \
+        verify_and_test_code_attempt(args, response_gpt, i)
 
      # Add extra information about the generation attempt
     if initial_attempt:
@@ -414,7 +423,7 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
 
     # Create a dict that will contain information about the iteration
     iteration_info = {
-        "iteration": i,
+        "iteration": i + 1,
         "prompt": prompt,
         "gpt_output": response_gpt,
         "verified": verified,
@@ -440,7 +449,8 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
             else:
                 passed_percentage = int(verified_goals) / int(total_goals)
     except:
-        print("Error: Could not get the percentage of passed tests or verified goals")
-        print(test_information)
+        print("Error: Could not get the percentage of passed tests or verified goals" +
+              "Test information: {test_information}, verified goals: {verified_goals})")
+        passed_percentage = 0
 
     return code, verified, output, verified_goals, iteration_info, passed_percentage
