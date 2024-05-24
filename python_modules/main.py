@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_header_file, \
     require_c_file, require_solver, require_api_key_gpt, check_output, ensure_integers, \
-    require_model
+    require_model, require_specification_file_name
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.prompts import initial_prompt
@@ -106,6 +106,7 @@ def generate_folder(args):
     require_model(args.model_name)
     require_api_key_gpt()
     require_directory_exists(args)
+    require_specification_file_name(args)
     check_output(args)
 
     # ensure that the output path is absolute
@@ -162,6 +163,7 @@ def parse_arguments(functions_list):
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
     parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=1, type=int)
     parser.add_argument("-tmp", "--temp_folder", help="The folder where temporary files are stored", default= os.path.join(os.getcwd(), "..", "tmp"), type=str)
+    parser.add_argument("-sfn", "--specification_file_name", help="The name of the specification file in the folders. This is used for code generation of a whole folder.", default="specification-solution-tied.h", type=str)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')

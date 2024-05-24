@@ -13,8 +13,7 @@ def check_file(absolute_path_to_c_file, absolute_path_to_h_file, args):
         If the file did not verify, the output of the verification"""
 
     if args.debug:
-        print(f"Files {absolute_path_to_c_file.split('/')[-1]} and " +
-          f"{absolute_path_to_h_file.split('/')[-1]} exists, starting to compile...")
+        print("Specification and generated file exists, starting to compile...")
 
     # Compile the file
     result, output = compile_c(args, absolute_path_to_c_file, args.temp_folder)

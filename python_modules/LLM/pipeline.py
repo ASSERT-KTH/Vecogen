@@ -199,23 +199,15 @@ def generate_code_folder(args):
     # Sort the folders based on the number
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
-    # Take only the folders larger than n
-    folders = [f for f in folders if int(f.split('-')[0]) ==  301]
+    # Filter the folders if needed
+    # folders = [f for f in folders if int(f.split('-')[0]) ==  301]
+    
+    # Filter the folders based on if it the specific specification file is present
+    folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
     
     # For each folder in the directory
-    for folder in folders:
-        # Get the files in the folder
-        files = list_files_directory(args.directory + "/" + folder)
-
-        # Get the first .h file in the folder
-        specification_files = [f for f in files if f.endswith(".h")]
-        
-        # If the folder has specification-old.h then pick that one
-        if "specification-old.h" in specification_files:
-            specification_file = "specification-old.h"
-        else:
-            specification_file = "specification.h"
-        args.header_file = folder + "/" + specification_file
+    for folder in folders:        
+        args.header_file = folder + "/" + args.specification_file_name
 
         # Set the header file
         args.header_file = args.directory + "/" +  args.header_file
@@ -228,7 +220,8 @@ def generate_code_folder(args):
 
         # Set the c file and h file paths
         args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file
-        args.absolute_header_path = args.absolute_directory + "/" + folder + "/" + specification_file
+        args.absolute_header_path = args.absolute_directory + "/" + folder + \
+            "/" + args.specification_file_name
 
         # Create the output directory if it does not exist yet
         if not os.path.exists(output_dir):
@@ -276,6 +269,9 @@ def verify_and_test_code_attempt(args, response_gpt, i):
     # Verify the code
     verified, output, verified_goals = check_file(args.absolute_c_path,
         args.absolute_header_path, args)
+    
+    # Print the amount of verified goals
+    print(f"Amount of verified goals: {verified_goals}")
 
     # If the compilation failed, then return the information
     if not verified and verified_goals is None:
@@ -300,8 +296,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         passed_tests, total_tests, test_information =  \
             test_generated_code(args.absolute_c_path, path_tests,
                 f"tests_iteration_{i}", args.temp_folder, args.debug)
-        if args.debug:
-            print(f"Tests passed: {passed_tests}/{total_tests}")
+        print(f"Tests passed: {passed_tests}/{total_tests}")
     else:
         test_information = {
             "summary": {

@@ -37,6 +37,21 @@ def require_directory_exists(args):
         print(f"Please insert a valid directory, {old_directory} is not a directory")
         sys.exit()
 
+def require_specification_file_name(args):
+    """Function to check if a specification file name is given in the arguments
+    Args: 
+        args: The arguments given by the user
+    Returns:
+        None"""
+    
+    if not args.specification_file_name:
+        print("Please insert a specification file name using the -s or --specification_file_name option")
+        sys.exit()
+        
+    # If the file does not end on .h then add it
+    if not args.specification_file_name.endswith(".h"):
+        args.specification_file_name += ".h"
+
 def require_header_file(args):
     """Function to check if a header file is given in the arguments
     Args:
