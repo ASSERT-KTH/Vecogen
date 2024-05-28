@@ -191,7 +191,7 @@ def generate_code_folder(args):
     - The output path is absolute"""
 
     # Get the folders in the directory
-    # folders = list_folders_directory(args.directory)
+    folders = list_folders_directory(args.directory)
 
     # Get the base directory of the output
     base_directory = args.absolute_output_directory
@@ -200,7 +200,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0]) == 0]
+    # folders = [f for f in folders if int(f.split('-')[0]) == 0]
     
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
