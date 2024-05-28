@@ -167,7 +167,7 @@ def add_specification_and_output_code(args, code):
     code = code.split("\n", 1)[1]
 
     # Add the specification
-    code = add_specification_to_code(args.header_file, code)
+    code = add_specification_to_code(args.formal_specification_path, code)
 
     # Output the code to the specified file
     with open(args.absolute_output_directory + "/" + args.output_file, "w",
@@ -191,7 +191,7 @@ def generate_code_folder(args):
     - The output path is absolute"""
 
     # Get the folders in the directory
-    folders = list_folders_directory(args.directory)
+    # folders = list_folders_directory(args.directory)
 
     # Get the base directory of the output
     base_directory = args.absolute_output_directory
@@ -200,17 +200,16 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) ==  301]
+    folders = [f for f in folders if int(f.split('-')[0]) == 0]
     
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
     
     # For each folder in the directory
     for folder in folders:        
-        args.header_file = folder + "/" + args.specification_file_name
-
-        # Set the header file
-        args.header_file = args.directory + "/" +  args.header_file
+        # Set the header files
+        args.header_file = args.directory + "/" + folder + "/" + args.specification_file_name
+        args.formal_specification_path = args.absolute_directory + "/" + folder + "/" +  args.formal_specification_file
 
         # Set the output path
         if not args.output_file:
@@ -283,7 +282,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "information": "Compilation failed"
             }
         }
-
+        
         return code, verified, output, "0 / 0", test_information
 
     # See if the folder of the absolute c path has a tests file
@@ -296,7 +295,6 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         passed_tests, total_tests, test_information =  \
             test_generated_code(args.absolute_c_path, path_tests,
                 f"tests_iteration_{i}", args.temp_folder, args.debug)
-        print(f"Tests passed: {passed_tests}/{total_tests}")
     else:
         test_information = {
             "summary": {
@@ -308,7 +306,8 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         }
         passed_tests, total_tests = 0, 0, 
         if args.debug:
-            print(f"No tests found, proved goals: {verified_goals}")
+            print(f"No tests found, proved goals: {verified_goals}")   
+    print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
 
     return code, verified, output, verified_goals, test_information
 

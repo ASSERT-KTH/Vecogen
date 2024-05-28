@@ -38,7 +38,8 @@ python main.py function
 
 # Existing flags
 - '-c' : The .c file
-- '-he': The .h file
+- '-he': The .h file to verify
+- '-fsf': The formal specification header file to use for verification purposes. If not set, then uses header_file instead
 - '-d' : The directory
 - '-s' : The solvers to be used
 - '-p' : The prompt to be used
@@ -53,7 +54,7 @@ python main.py function
 - '-model': The model to be used for the code generation
 - '-clear': The clear option that clears all debug files
 - '-reboot': The amount of iterations before a reboot occurs. A reboot starts from the original prompt.
-- '-al': The option to allow loops or not.
+- '-al': The option to allow loops or not
 - '-ieg': The amount of initial examples generated for each problem
 - '-sfn': The name of the specification file in the folder. Used for generating code in folders
 

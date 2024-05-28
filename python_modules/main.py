@@ -131,10 +131,11 @@ def parse_arguments(functions_list):
     parser.add_argument("-d", "--directory", help="The directory to use", type=str)
     parser.add_argument("-c", "--c_file", help="The C file to use", type=str)
     parser.add_argument("-he", "--header_file", help="The header file to use", type=str)
+    parser.add_argument("-fsf", "--formal_specification_file", help="The formal specification header file to use for verification purposes. If not set, then uses header_file instead.", type=str)
     parser.add_argument("-wpt", "--wp_timeout", help="The timeout to use for the wp-prover",
                         type=int, default=2)
     parser.add_argument("-wps", "--wp_steps", help="The steps to use for the wp-prover",
-                        type=int, default=1500)
+                        type=int, default=1500000)
     parser.add_argument("-s", "--solver", help="The solver to use for the formal verification",
                         type=str)
     parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the \
