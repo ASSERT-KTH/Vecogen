@@ -39,14 +39,23 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     stdout = stdout.decode("utf-8")
     stderr = stderr.decode("utf-8")
     
+    # If there is an error then return 0 tests passed
+    if stderr:
+        test_information = {
+            "summary": {
+                "passed": 0,
+                "failed": 0,
+                "total": 0,
+                "information": "Compilation failed: " + stderr
+            }
+        }
+        
+        return 0, 0, test_information
     
     # If the executable does not exist then wait, since the compilation might still be running
     while not os.path.exists(path_to_executable):
         time.sleep(0.3)
         print("Waiting for the compilation to finish...")
-        print(f"stdout: {stdout}")
-        print(f"stderr: {stderr}")
-
 
     # Run the test cases
     try:

@@ -54,16 +54,8 @@ def generate_code(args, improve = False, print_information_iteration = True):
         if verified:
             break
 
-    # Pick the best initial generation attempt
-    if args.initial_examples_generated > 1:
-        best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
-    else:
-        best_attempt = initial_generation_attempts[0]
-
-    # Of this best attempt, get the code and boolean if it is verified or not
-    code = best_attempt[1]
-    verified = best_attempt[2]
-    output = best_attempt[3]
+    # Take the best attempt
+    code, verified, output = take_best_attempt(initial_generation_attempts)
 
     # Generate a prompt
     i = args.initial_examples_generated
@@ -104,20 +96,12 @@ def generate_code(args, improve = False, print_information_iteration = True):
             if verified:
                 break
             
-        # If the code is verified, then break
+        # If the code is verified, then exit the while loop and stop searching for a solution
         if verified:
             break
 
-        #  Pick the best initial generation attempt
-        if args.initial_examples_generated > 1:
-            best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
-        else:
-            best_attempt = initial_generation_attempts[0]
-
-        # Of this best attempt, get the code and boolean if it is verified or not
-        code = best_attempt[1]
-        verified = best_attempt[2]
-        output = best_attempt[3]
+        # Pick the best attempt
+        code, verified, output = take_best_attempt(iteration_attempts)
 
         # Get the next prompt
         if not verified and i_reboot == args.reboot:
@@ -200,7 +184,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) == 0]
+    folders = [f for f in folders if int(f.split('-')[0]) > 144]
     
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
@@ -269,9 +253,6 @@ def verify_and_test_code_attempt(args, response_gpt, i):
     verified, output, verified_goals = check_file(args.absolute_c_path,
         args.absolute_header_path, args)
     
-    # Print the amount of verified goals
-    print(f"Amount of verified goals: {verified_goals}")
-
     # If the compilation failed, then return the information
     if not verified and verified_goals is None:
         test_information = {
@@ -448,3 +429,36 @@ def process_code_and_get_iteration_information(args, response_gpt, i, prompt,
         passed_percentage = 0
 
     return code, verified, output, verified_goals, iteration_info, passed_percentage
+
+# Function that ranks the best attempt according to a passed percentage of test cases
+def take_best_attempt(initial_generation_attempts):
+    """Function to take the best attempt based on the percentage of passed test cases
+    Args:
+        initial_generation_attempts: The initial generation attempts
+            It is a list of tuples of 4 elements that contain:
+            * passed_percentage
+            * response_gpt
+            * verified
+            * output
+    Returns:
+        code: The code that has been generated
+        verified: Boolean that indicates if the code is verified
+        output: The output of the verification process
+    """
+    
+    # First check if there is at least one attempt that is not 0 / 0
+    print(initial_generation_attempts)
+    if any([x[0] != "0 / 0" for x in initial_generation_attempts]):
+        initial_generation_attempts = [x for x in initial_generation_attempts if x[0] != "0 / 0"]
+    else:
+        return initial_generation_attempts[0][1], initial_generation_attempts[0][2], initial_generation_attempts[0][3]
+
+
+    # Pick the best initial generation attempt otherwise
+    if len(initial_generation_attempts) > 1:
+        best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+    else:
+        best_attempt = initial_generation_attempts[0]
+
+    # Of this best attempt, get the code and boolean if it is verified or not
+    return best_attempt[1], best_attempt[2], best_attempt[3]

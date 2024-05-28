@@ -226,6 +226,11 @@ def ensure_integers(args):
     if args.reboot is not None and args.reboot <= 0:
         print("The reboot must be a positive integer")
         sys.exit()
+        
+    # Ensure the initial examples is a positive integer
+    if args.initial_examples_generated is not None and args.initial_examples_generated <= 0:
+        print("The initial examples generated (ieg) must be a positive integer")
+        sys.exit()
 
 def require_model(model_name):
     """ Function to check if the model is set and valid
