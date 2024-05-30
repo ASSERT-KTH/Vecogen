@@ -11,6 +11,5 @@
         ensures *out == 12 - ((x > 29) ? 1 : 0) - 4 * ((x > 30) ? 1 : 0);
     complete behaviors;
     disjoint behaviors;
-
 */
 void calculateCandiesSaved(int x, int mode, int *out);
