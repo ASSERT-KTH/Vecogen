@@ -1,3 +1,12 @@
+/*@ predicate ExistsSolution(integer b, integer c, integer d, integer f, integer g, integer h) =
+    \exists integer a, e, i;
+    0 <= a <= 100000 && 0 <= e <= 100000 && 0 <= i <= 100000 &&
+    a + b + c == a + d + g && a + b + c == b + e + h && a + b + c == c + f + i &&
+    a + b + c == a + e + i && a + b + c == c + e + g && a + b + c == d + e + f &&
+    a + b + c == d + e + f && a + b + c == g + h + i;
+
+*/
+
 /*@
     requires \valid(out_a) && \valid(out_b) && \valid(out_c);
     requires \valid(out_d) && \valid(out_e) && \valid(out_f);

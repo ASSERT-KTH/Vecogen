@@ -184,7 +184,8 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0]) > 144]
+    # folders = [f for f in folders if int(f.split('-')[0]) > 1000]
+    
     
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
@@ -447,9 +448,8 @@ def take_best_attempt(initial_generation_attempts):
     """
     
     # First check if there is at least one attempt that is not 0 / 0
-    print(initial_generation_attempts)
-    if any([x[0] != "0 / 0" for x in initial_generation_attempts]):
-        initial_generation_attempts = [x for x in initial_generation_attempts if x[0] != "0 / 0"]
+    if any([x[0] != "0" for x in initial_generation_attempts]):
+        initial_generation_attempts = [x for x in initial_generation_attempts if x[0] != "0"]
     else:
         return initial_generation_attempts[0][1], initial_generation_attempts[0][2], initial_generation_attempts[0][3]
 

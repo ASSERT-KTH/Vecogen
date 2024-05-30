@@ -1,3 +1,4 @@
+/*@ predicate is_perfect_square(integer x) = \exists integer n; n*n == x; @*/
 /*@ predicate is_fibonacci(integer n) =
       is_perfect_square(5*n*n + 4) || is_perfect_square(5*n*n - 4) || n == 0; @*/
 
