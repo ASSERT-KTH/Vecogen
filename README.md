@@ -57,6 +57,7 @@ python main.py function
 - '-al': The option to allow loops or not
 - '-ieg': The amount of initial examples generated for each problem
 - '-sfn': The name of the specification file in the folder. Used for generating code in folders
+- '-nl': The option to only use natural language in the prompting. This means that any formal feedback is not used when iterative prompting.
 
 # Example of usages. Make sure you are in the python_modules directory
 - python3 main.py verify_folder -d ../no_loop_problems/0

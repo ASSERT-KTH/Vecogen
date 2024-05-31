@@ -121,7 +121,7 @@ def compilation_error_prompt(absolute_header_path, previous_attempt, error_messa
     return prompt_mapped
 
 def verification_error_prompt(absolute_header_path, previous_attempt, error_message,
-                              model, max_token_size, use_loop):
+                              model, max_token_size, use_loop, natural_language_only):
     """Function that generates a prompt based on a verification error message
     Args:
         header_file_path: The path to the header file
@@ -129,6 +129,8 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
         error_message: The error message from the verification
         model: The model to use
         max_token_size: The maximum token size allowed
+        natural_language_only: Whether the prompt must be in natural language only. 
+            If false it also makes use of the formal specification feedback
     Returns:
         The prompt as a string"""
 
@@ -137,9 +139,14 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
             as header_file:
         header_text = header_file.read()
 
-    # Get the path to the template
-    template_path = os.path.join(os.getcwd(), "..",
-                                "prompts/verification_error_prompt_template.txt")
+    # Check if only natural language must be used or also formal specification feedback
+    if natural_language_only:
+        # Get the path to the template
+        template_path = os.path.join(os.getcwd(), "..",
+            "prompts/verification_error_prompt_template_natural_language.txt")
+    else:
+        template_path = os.path.join(os.getcwd(), "..",
+            "prompts/verification_error_prompt_template.txt")
 
     # Get the template for the prompt
     with open(template_path, "r", encoding="utf-8") as template:

@@ -65,7 +65,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # If there is an improvement step then get the prompt
     if args.iterations > 0:
         prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
-                                            args.max_tokens, args.allowloops)
+                                            args.max_tokens, args.allowloops, args.natural_language_only)
 
     # Create the initial n initial generation attempts
     while (i < args.initial_examples_generated + args.iterations and not verified):
@@ -115,7 +115,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
         elif not verified:
             # Create a new prompt based on the output
             prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
-                                            args.max_tokens, args.allowloops)
+                                            args.max_tokens, args.allowloops, args.natural_language_only)
             i_reboot += 1
 
         # Increase the counter
@@ -184,7 +184,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
     
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) > 1000]
+    folders = [f for f in folders if int(f.split('-')[0]) < 970]
     
     
     # Filter the folders based on if it the specific specification file is present
@@ -318,7 +318,7 @@ def improve_code_prompt(args):
 
     # Get the output path
     prompt = verification_error_prompt(args.header_file, code, output, \
-                args.model_name, args.max_tokens, args.allowloops)
+                args.model_name, args.max_tokens, args.allowloops, args.natural_language_only)
 
     return verified, output, prompt
 
