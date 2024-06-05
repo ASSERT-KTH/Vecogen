@@ -165,6 +165,7 @@ def parse_arguments(functions_list):
     parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=1, type=int)
     parser.add_argument("-tmp", "--temp_folder", help="The folder where temporary files are stored", default= os.path.join(os.getcwd(), "..", "tmp"), type=str)
     parser.add_argument("-sfn", "--specification_file_name", help="The name of the specification file in the folders. This is used for code generation of a whole folder.", default="specification-solution-tied.h", type=str)
+    parser.add_argument("-nl", "--natural_language_only", help="A boolean whether only natural language will be used. This removes all the need for providing formal feedback.", default=False, action=argparse.BooleanOptionalAction, type=bool)
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')

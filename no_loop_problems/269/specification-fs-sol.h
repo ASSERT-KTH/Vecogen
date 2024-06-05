@@ -4,7 +4,7 @@
     assigns *out1, *out2;
     behavior N_less_than_3:
         assumes N < 3;
-        ensures *out1 == -1 && *out2 == -1;
+        ensures *out1 == -1 && *out2 == 0;
     behavior N_greater_than_3_and_N_odd:
         assumes N >= 3 && N % 2 != 0;
         ensures *out1 == (N * N - 1) / 2 && *out2 == (N * N  + 1) / 2;
