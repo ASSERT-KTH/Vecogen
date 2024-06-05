@@ -17,6 +17,11 @@ def generate_code(args, improve = False, print_information_iteration = True):
         print_information_iteration: Boolean that indicates if the information about the iteration should be printed
     """
 
+    # Total completions, total tokens used, and total effective completions
+    total_completions = 0
+    total_tokens_used = 0
+    total_effective_completions = 0
+
     # Create an array to store the information about the iterations
     information_iteration = []
     initial_generation_attempts = []
@@ -31,7 +36,9 @@ def generate_code(args, improve = False, print_information_iteration = True):
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
 
     # generate the initial attempts by making prompts of at most x each
-    responses_gpt, tokens_used, model_used = prompt_using_n_examples(args, prompt, 10000)
+    responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
+    total_completions += len(responses_gpt)
+    total_tokens_used += sum(tokens_used)
 
     # For each response, check the code. Stop if the code is verified
     for i in range(args.initial_examples_generated):
@@ -49,6 +56,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
         # Add extra information about the generation attempt
         information_iteration.append(iteration_info)
         initial_generation_attempts.append([passed_percentage, response_gpt, verified, output])
+        total_effective_completions += 1
 
         # If the code is verified, then break
         if verified:
@@ -57,13 +65,16 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # Take the best attempt
     code, verified, output = take_best_attempt(initial_generation_attempts)
 
+    # print the best result
+    print(f"Verified: {verified}, proved goals: {verified_goals}")
+
     # Generate a prompt
     i = args.initial_examples_generated
     i_total = args.initial_examples_generated
     i_reboot = 0
 
     # If there is an improvement step then get the prompt
-    if args.iterations > 0:
+    if args.iterations > 0 and not verified:
         prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
                                             args.max_tokens, args.allowloops)
 
@@ -76,7 +87,9 @@ def generate_code(args, improve = False, print_information_iteration = True):
             print("-" * 50)
 
         # Get the output from the LLM
-        responses_gpt, tokens_used, model_used = prompt_using_n_examples(args, prompt, 10000)
+        responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
+        total_completions += len(responses_gpt)
+        total_tokens_used += sum(tokens_used)
 
         # An array that contains the information about possible attempts for this iteration
         iteration_attempts = []
@@ -88,14 +101,16 @@ def generate_code(args, improve = False, print_information_iteration = True):
                 process_code_and_get_iteration_information(args, response_gpt, i_total, prompt, tokens_used[j], model_used, \
                 rebooting= args.reboot == i_reboot)
 
-            i_total += 1
-            information_iteration.append(iteration_info)
+            print(f"iteration {i_total}, verified: {verified}, verified goals: {verified_goals}, passed tests: {passed_percentage}")
 
             # Add the information to the iteration attempts
             iteration_attempts.append([passed_percentage, response_gpt, verified, output])
+            information_iteration.append(iteration_info)
+            i_total += 1
+            total_effective_completions += 1
             if verified:
                 break
-            
+
         # If the code is verified, then exit the while loop and stop searching for a solution
         if verified:
             break
@@ -121,7 +136,14 @@ def generate_code(args, improve = False, print_information_iteration = True):
         # Increase the counter
         i += 1
 
+    # Add the final information to the last iteration
+    information_iteration[-1]["total_completions"] = total_completions
+    information_iteration[-1]["total_tokens_used"] = total_tokens_used
+    information_iteration[-1]["total_effective_completions"] = total_effective_completions
+
     # Print the results
+    print(f"Total completions: {total_completions}, total tokens used: {total_tokens_used}, " +
+          f"total effective completions: {total_effective_completions}")
     print(f"Verified: {verified}, proved goals: {verified_goals}")
     if args.debug:
         print("Results:")
@@ -179,16 +201,16 @@ def generate_code_folder(args):
 
     # Get the base directory of the output
     base_directory = args.absolute_output_directory
-    
+
     # Sort the folders based on the number
     folders.sort(key=lambda x: int(x.split('-')[0]))
-    
+
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0]) > 144]
-    
+    folders = [f for f in folders if int(f.split('-')[0])  == 104]
+
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
-    
+
     # For each folder in the directory
     for folder in folders:        
         # Set the header files
@@ -322,7 +344,7 @@ def improve_code_prompt(args):
     return verified, output, prompt
 
 # Function that uses the LLM to generate code, whilst only asking for N exmaples at a time
-def prompt_using_n_examples(args, prompt, n):
+def prompt_using_max_n_examples(args, prompt, n):
     """Function to generate code using the pipeline and the LLM model
     Args:
         args: The arguments given to the program
@@ -445,20 +467,24 @@ def take_best_attempt(initial_generation_attempts):
         verified: Boolean that indicates if the code is verified
         output: The output of the verification process
     """
-    
-    # First check if there is at least one attempt that is not 0 / 0
-    print(initial_generation_attempts)
-    if any([x[0] != "0 / 0" for x in initial_generation_attempts]):
-        initial_generation_attempts = [x for x in initial_generation_attempts if x[0] != "0 / 0"]
-    else:
-        return initial_generation_attempts[0][1], initial_generation_attempts[0][2], initial_generation_attempts[0][3]
 
+    # Best attempt, start with the first one
+    best_attempt = initial_generation_attempts[0]
 
-    # Pick the best initial generation attempt otherwise
-    if len(initial_generation_attempts) > 1:
-        best_attempt = max(initial_generation_attempts, key = lambda x: x[0])
+    # First get if there is a verified attempt
+    verified_attempt = any([x[2] for x in initial_generation_attempts])
+
+    # If there is a verified attempt, then return the first one
+    if verified_attempt:
+        for attempt in initial_generation_attempts:
+            if attempt[2]:
+                return attempt[1], attempt[2], attempt[3]
+    # If there is no verified attempt, then return the one with the most amount of passed tests / goals
     else:
-        best_attempt = initial_generation_attempts[0]
+        for attempt in initial_generation_attempts:
+            print(attempt, best_attempt)
+            if attempt[0] != "0 / 0" and attempt[0] > best_attempt[0]:
+                best_attempt = attempt
 
     # Of this best attempt, get the code and boolean if it is verified or not
     return best_attempt[1], best_attempt[2], best_attempt[3]

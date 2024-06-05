@@ -19,7 +19,7 @@ def make_gpt_request(args, prompt, n):
     # Seperate the prompt into the assistant and user prompt
     assistant_prompt, user_prompt = seperate_prompt(prompt)
 
-    message=[{"role": "system", "content": assistant_prompt}, 
+    message=[{"role": "system", "content": assistant_prompt},
              {"role": "user", "content": user_prompt}]
     temperature=args.temperature
     max_tokens=args.max_tokens
