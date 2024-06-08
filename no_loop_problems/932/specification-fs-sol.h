@@ -6,4 +6,3 @@
     ensures *out == \max(0, 3 * n - k);
 */
 void calculateMinimumExamsToResitForGivenSum(int n, int k, int *out);
-void calculateMinimumExamsToResitForGivenSum(int n, int k, int *out);

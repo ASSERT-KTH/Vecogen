@@ -139,7 +139,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # Add the final information to the last iteration
     information_iteration[-1]["total_completions"] = total_completions
     information_iteration[-1]["total_tokens_used"] = total_tokens_used
-    information_iteration[-1]["total_effective_completions"] = total_effective_completions
+    information_iteration[-1]["total_completions_used"] = total_effective_completions
 
     # Print the results
     print(f"Total completions: {total_completions}, total tokens used: {total_tokens_used}, " +
@@ -206,7 +206,8 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0])  == 104]
+    # folders = [f for f in folders if int(f.split('-')[0])  ]
+    # folders = ["0", "86", "124", "139", "237", "301", "376", "379", "427", "757", "834", "932", "976", "1166", "1347"]
 
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
