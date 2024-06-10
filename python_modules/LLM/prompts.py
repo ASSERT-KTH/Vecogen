@@ -17,7 +17,7 @@ def replace_loops(use_loops):
     else:
         return "* Do not make use of any type of loop. That is, no for, while, do-while or recursive loops"
 
-def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
+def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop, prompt_technique):
     """Function that generates a prompt based on a header file
     Args:
         header_file_path: The path to the header file
@@ -32,13 +32,22 @@ def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
             as header_file:
         header_text = header_file.read()
 
+    # Create a string that will include the path of the prompt template
+    template_path = "prompts/initial_prompt_template"
+    
+    # Add the prompting technique, by replacing - to _ and adding the path
+    template_path += "_" + prompt_technique.replace("-", "_")
+    
+    # Add the file extension
+    template_path += ".txt"
+    
     # Get the path to the template
-    template_path = os.path.join(os.getcwd(), "..",  "prompts/initial_prompt_template.txt")
+    template_path = os.path.join(os.getcwd(), "..", template_path)
 
     # Get the template for the prompt
     with open(template_path, "r", encoding="utf-8") as template:
         prompt_template = template.read()
-
+        
     # Get the functions from the header file
     with open(absolute_header_file_path, 'r', encoding='utf-8') as file:
         functions = get_functions(file.readlines())
@@ -57,7 +66,7 @@ def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop):
         "HEADER_FILE_NAME": header_file_name,
         "ALLOW_LOOPS": replace_loops(use_loop),
     }
-
+    
     # Apply the map to the template
     prompt_mapped = prompt_template.format(**prompt_replacement_mapping)
 
@@ -121,7 +130,7 @@ def compilation_error_prompt(absolute_header_path, previous_attempt, error_messa
     return prompt_mapped
 
 def verification_error_prompt(absolute_header_path, previous_attempt, error_message,
-                              model, max_token_size, use_loop, natural_language_only):
+                              model, max_token_size, use_loop, natural_language_only, prompt_technique):
     """Function that generates a prompt based on a verification error message
     Args:
         header_file_path: The path to the header file
@@ -138,16 +147,23 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
     with open(absolute_header_path, "r", encoding="utf-8") \
             as header_file:
         header_text = header_file.read()
-
-    # Check if only natural language must be used or also formal specification feedback
+        
+    # Create a string that will include the path of the prompt template
+    template_path = "prompts/verification_error_prompt_template"
+    
+    # Add the prompting technique, by replacing - to _ and adding the path
+    template_path += "_" + prompt_technique.replace("-", "_")
+    
+    # If natural language only is true, add the natural language only path
     if natural_language_only:
-        # Get the path to the template
-        template_path = os.path.join(os.getcwd(), "..",
-            "prompts/verification_error_prompt_template_natural_language.txt")
-    else:
-        template_path = os.path.join(os.getcwd(), "..",
-            "prompts/verification_error_prompt_template.txt")
-
+        template_path += "_natural_language"
+    
+    # Add the file extension
+    template_path += ".txt"
+    
+    # Get the path to the template
+    template_path = os.path.join(os.getcwd(), "..", template_path)
+    
     # Get the template for the prompt
     with open(template_path, "r", encoding="utf-8") as template:
         prompt_template = template.read()
@@ -184,12 +200,3 @@ def seperate_prompt(prompt):
 
     # Split the prompt into the user and assistant prompt
     return prompt.split("-----END_ASSISTANT_INFORMATION-----")
-
-# def one_shot():
-#     """Function that generates a prompt for a one-shot model
-#     Args:
-#         None
-#     Returns:
-#         The prompt as a string"""
-    
-    

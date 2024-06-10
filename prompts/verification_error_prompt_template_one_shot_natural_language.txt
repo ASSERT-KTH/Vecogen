@@ -25,9 +25,9 @@ Look at the following example of a natural language, specification and implement
     ensures *out == (x >= low && x <= high && x % div == 0);
 */
 void checkConstraints(int x, int low, int high, int div, int *out)
-{
+{{
     *out = (x >= low && x <= high && x % div == 0);
-}
+}}
 ```
 
 You are given the following specification and problem description. You must return the code in the following format:
@@ -35,9 +35,7 @@ You are given the following specification and problem description. You must retu
 {HEADER_FILE_TEXT}
 ```
 
-The code that was generated did not complete the verification process, with the error message:
-{VERIFICATION_ERROR_MESSAGE}.
-Please change the following code:
+The code that was generated did not complete the verification process. Improve the code by using the given problem description, whilst paying attention to the fact that the code will be formally verified. Please change the following code:
 ```C
 {CODE_ATTEMPT}
 ```
