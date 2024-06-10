@@ -33,7 +33,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     if improve:
         prompt, output, verified = improve_code_prompt(args)
     else:
-        prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops)
+        prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops, args.prompt_technique)
 
     # generate the initial attempts by making prompts of at most x each
     responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
@@ -76,7 +76,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     # If there is an improvement step then get the prompt
     if args.iterations > 0 and not verified:
         prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
-                                            args.max_tokens, args.allowloops, args.natural_language_only)
+                                            args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
 
     # Create the initial n initial generation attempts
     while (i < args.initial_examples_generated + args.iterations and not verified):
@@ -123,14 +123,13 @@ def generate_code(args, improve = False, print_information_iteration = True):
             if args.debug:
                 print("Reboot the code generation process.")
             prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
-                                    args.allowloops)
+                                    args.allowloops, args.prompt_technique)
             i_reboot = 0
 
         # Check if the code needs to be improved
         elif not verified:
             # Create a new prompt based on the output
-            prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
-                                            args.max_tokens, args.allowloops, args.natural_language_only)
+            prompt = verification_error_prompt(args.header_file, code, output, args.model_name, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
             i_reboot += 1
 
         # Increase the counter
@@ -207,7 +206,7 @@ def generate_code_folder(args):
 
     # Filter the folders if needed
     # folders = [f for f in folders if int(f.split('-')[0])  ]
-    # folders = ["0", "86", "124", "139", "237", "301", "376", "379", "427", "757", "834", "932", "976", "1166", "1347"]
+    folders = ["0", "86", "124", "139", "237", "301", "376", "379", "427", "757", "834", "932", "976", "1166", "1347"]
 
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
@@ -340,7 +339,7 @@ def improve_code_prompt(args):
 
     # Get the output path
     prompt = verification_error_prompt(args.header_file, code, output, \
-                args.model_name, args.max_tokens, args.allowloops, args.natural_language_only)
+                args.model_name, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
 
     return verified, output, prompt
 
