@@ -5,23 +5,17 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import gc
 from LLM.prompts import seperate_prompt
-
+from LLM.AbstractLLM import LLM
 # Module inspired by https://github.com/ASSERT-KTH/MoKav/blob/feat/codellama/src/chatgpt.py#L80
 # This is used to run CodeLama on a GPU
-class CodeLlama():
-    def __init__(self, default_instruction, cache_file_path, default_n, args, model="codellama/CodeLlama-7b-Instruct-hf"):
+class CodeLlama(LLM):
+    def __init__(self, args, model="codellama/CodeLlama-7b-Instruct-hf"):
         # Arguments from Vecogen
-        self.args = args
         self.cache_file_path = args.temp_folder
+        self.args = args
         
         # Attempt to load cache from file
         self.cache = self.load_cache()  # Load cache from file
-        
-        # To spare resources the temp is set to 0 and 1 example is generated each time
-        self.default_temp = 0
-        
-        # Default values, 1 example is generated
-        self.default_n = 1
         self.inst_sep = '[/INST]'
         
         # If quanization is needed, uncomment the following lines
@@ -55,7 +49,7 @@ class CodeLlama():
             json.dump(self.cache, f)
 
     # Get response from CodeLlama
-    def get_response(self, prompt):
+    def make_request(self, prompt, n):
         # Seperate the prompt
         assistant_prompt, user_prompt = seperate_prompt(prompt)
         
@@ -85,8 +79,8 @@ class CodeLlama():
             outputs = self.model.generate(
                 inputs,
                 max_length= self.args.max_tokens,
-                temperature= self.default_temp,
-                num_return_sequences= self.default_n,
+                temperature= self.args.temperature,
+                num_return_sequences= n,
                 pad_token_id=self.tokenizer.eos_token_id,
                 do_sample=True,
             )

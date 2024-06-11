@@ -68,7 +68,7 @@ def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
     require_header_file(args)
     initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name,
-                                               args.max_tokens, args.allowloops)
+                                               args.max_tokens, args.allowloops, args.prompt_technique)
 
     # filter out the -----END_ASSISTANT_INFORMATION-----  from the prompt
     print(initial_prompt_unfiltered.replace("-----END_ASSISTANT_INFORMATION-----", ""))
@@ -77,9 +77,9 @@ def generate_code(args):
     """ Generate code using the pipeline and the LLM model"""
     require_solver(args)
     require_header_file(args)
-    require_model(args.model_name)
     require_api_key_gpt()
     check_output(args)
+    require_model(args)
 
     # Set the path of the file that will be generated
     args.c_file = args.output_file
@@ -93,21 +93,21 @@ def generate_code(args):
 def improve_code(args):
     """ Improve existing code using the pipeline and the LLM model """
     require_solver(args)
-    require_model(args.model_name)
     require_api_key_gpt()
     require_c_file(args)
     require_header_file(args)
     check_output(args)
+    require_model(args)
     generate_code_pipeline(args, improve = True)
 
 def generate_folder(args):
     """ Generate code from a folder with folders"""
     require_solver(args)
-    require_model(args.model_name)
     require_api_key_gpt()
     require_directory_exists(args)
     require_specification_file_name(args)
     check_output(args)
+    require_model(args)
 
     # ensure that the output path is absolute
     generate_code_folder(args)

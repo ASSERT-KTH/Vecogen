@@ -4,7 +4,8 @@ import sys
 import os
 from helper_files.list_files import get_absolute_path
 from Frama_C.solvers import solvers
-
+from LLM.GPT import GPT
+from LLM.CodeLlama import CodeLlama
 def require_directory(args):
     """Function to check if a directory is given in the arguments
     Args:
@@ -232,20 +233,26 @@ def ensure_integers(args):
         print("The initial examples generated (ieg) must be a positive integer")
         sys.exit()
 
-def require_model(model_name):
-    """ Function to check if the model is set and valid
+def require_model(args):
+    """ Function to check if the model is set and valid. This will also create an instance of the model that will be run and used to generate the code. Look at the AbstractLLM class in LLM.py for the interface.
     Args:
         model_name: The name of the model
     Returns:
         None"""
 
-    if model_name is None:
+    if args.model_name is None:
         print("Please insert a model name using the -m or --model_name option")
         sys.exit()
 
     # Check if the model is available
-    available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4']
-    if model_name not in available_models:
-        print(f"The model {model_name} is not available, please use one of \
+    available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o', 'CodeLlama']
+    if args.model_name not in available_models:
+        print(f"The model {args.model_name} is not available, please use one of \
             the following models: {available_models}")
         sys.exit()
+        
+    # Put the model in the args, and create an instance
+    if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
+        args.model = GPT(args)
+    elif args.model_name == 'CodeLlama':
+        args.model = CodeLlama(args)
