@@ -351,24 +351,24 @@ def prompt_using_max_n_examples(args, prompt, n):
         args: The arguments given to the program
         prompt: The prompt to use
     Returns:
-        responses_gpt: The responses from the GPT model
+        responses_LLM: The responses from the LLM
         tokens_used: The amount of tokens used for each response
         model_used: The model used, no list is used as only one model is used
     """
 
     # generate the initial attempts by making prompts of at most x each
-    responses_gpt = []
+    responses_llm = []
     tokens_used = []
     model_used = []
     i_examples_generated = 0
 
-    # Make GPT requests with at most n examples at a time
+    # Make LLM requests with at most n examples at a time
     while i_examples_generated < args.initial_examples_generated:
         # Calculate the amount of examples to generate
         n = min(n, args.initial_examples_generated - i_examples_generated)
 
-        # Call the function to make the GPT request
-        response_gpt, tokens_used_call, model_used = make_gpt_request(args, prompt, n)
+        # Call the function to make the LLM request
+        response_gpt, tokens_used_call, model_used = args.model.make_request(args, prompt, n)
 
         # Add the tokens used to the list
         # Only the first iteration has the tokens used
@@ -377,12 +377,12 @@ def prompt_using_max_n_examples(args, prompt, n):
 
         # Add the tokens used and the responses to the list
         tokens_used.extend(tokens_used_initial_n_examples)
-        responses_gpt.extend(response_gpt)
+        responses_llm.extend(response_gpt)
 
         # Increase the counter
         i_examples_generated += n
 
-    return responses_gpt, tokens_used, model_used
+    return responses_llm, tokens_used, model_used
 
 # Function that processes the code, and gets iteration information, and verifies the goals
 def process_code_and_get_iteration_information(args, response_gpt, i, prompt, 
