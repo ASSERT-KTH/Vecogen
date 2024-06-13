@@ -34,7 +34,6 @@ def generate_code(args, improve = False, print_information_iteration = True):
         prompt, output, verified = improve_code_prompt(args)
     else:
         prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops, args.prompt_technique)
-
     # generate the initial attempts by making prompts of at most x each
     responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
     total_completions += len(responses_gpt)
@@ -205,8 +204,10 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0])  ]
-    folders = ["0", "86", "124", "139", "237", "301", "376", "379", "427", "757", "834", "932", "976", "1166", "1347"]
+    folders = [f for f in folders if int(f.split('-')[0]) > 420 or int(f.split('-')[0]) == 0]
+
+    # filter folders based on the number
+    # folders = ["0"]
 
     # Filter the folders based on if it the specific specification file is present
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
