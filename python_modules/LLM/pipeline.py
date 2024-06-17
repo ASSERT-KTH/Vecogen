@@ -4,7 +4,6 @@ import os
 import json
 from LLM.prompts import initial_prompt, verification_error_prompt
 from LLM.specification import add_specification_to_code
-from GPT.make_GPT_requests import make_gpt_request
 from helper_files.list_files import list_folders_directory, list_files_directory
 from Verify_files.check_file import check_file
 from testing.test_function import test_generated_code
@@ -204,7 +203,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0]) > 420 or int(f.split('-')[0]) == 0]
+    # folders = [f for f in folders if int(f.split('-')[0]) >= 427]
 
     # filter folders based on the number
     # folders = ["0"]
@@ -308,7 +307,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "information": "No tests found in the folder"
             }
         }
-        passed_tests, total_tests = 0, 0, 
+        passed_tests, total_tests = 0, 0
         if args.debug:
             print(f"No tests found, proved goals: {verified_goals}")   
     print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
@@ -368,7 +367,7 @@ def prompt_using_max_n_examples(args, prompt, n):
         n = min(n, args.initial_examples_generated - i_examples_generated)
 
         # Call the function to make the LLM request
-        response_gpt, tokens_used_call, model_used = args.model.make_request(args, prompt, n)
+        response_gpt, tokens_used_call, model_used = args.model.make_request(prompt, n)
 
         # Add the tokens used to the list
         # Only the first iteration has the tokens used
