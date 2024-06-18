@@ -17,10 +17,6 @@ class GPT(LLM):
             The response from the OpenAI API
             The amount of tokens used in the request
             The exact model used in the request"""
-
-        # Create the openAI client
-        client = OpenAI()
-
         # Seperate the prompt into the assistant and user prompt
         assistant_prompt, user_prompt = seperate_prompt(prompt)
 
@@ -31,7 +27,7 @@ class GPT(LLM):
         frequency_penalty=0.0
 
         # Make the request
-        response = client.chat.completions.create(
+        response = self.client.chat.completions.create(
             model= self.args.model_name,
             messages = message,
             temperature=temperature,

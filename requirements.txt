@@ -1,3 +1,5 @@
-dotenv
+python-dotenv
 torch
+openai
 transformers
+tiktoken
