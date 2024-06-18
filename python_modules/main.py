@@ -77,7 +77,6 @@ def generate_code(args):
     """ Generate code using the pipeline and the LLM model"""
     require_solver(args)
     require_header_file(args)
-    require_api_key_gpt()
     check_output(args)
     require_model(args)
 

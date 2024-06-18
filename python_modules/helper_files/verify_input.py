@@ -253,6 +253,7 @@ def require_model(args):
         
     # Put the model in the args, and create an instance
     if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
+        require_api_key_gpt()
         args.model = GPT(args)
     elif args.model_name == 'CodeLlama':
         args.model = CodeLlama(args)
