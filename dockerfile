@@ -46,7 +46,5 @@ RUN opam depext --install -y frama-c
 
 
 # Run the bash file
-CMD ["./solvers.sh"]
-
-# Default command to run when starting the container
+# ./solvers.sh && 
 CMD ["bash"]

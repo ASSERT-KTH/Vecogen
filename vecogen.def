@@ -1,0 +1,86 @@
+BootStrap: docker
+From: debian:latest
+
+%files
+    requirements.txt /Vecogen/requirements.txt
+    . /Vecogen
+
+%post
+    # Update the package list and install dependencies
+    apt-get update && apt-get install -y \
+        opam \
+        m4 \
+        bubblewrap \
+        wget \
+        gcc \
+        libc-dev \
+        make \
+        unzip \
+        graphviz \
+        libcairo2-dev \
+        libexpat1-dev \
+        libgmp-dev \
+        libgtk-3-dev \
+        libgtksourceview-3.0-dev \
+        pkg-config \
+        zlib1g-dev \
+        python3-pip
+
+    # Initialize OPAM (OCaml Package Manager) and install OCaml
+    opam init -y --disable-sandboxing
+    opam update
+    opam switch create 4.14.1
+    opam switch 4.14.1
+    eval $(opam env)
+
+    # Allow installing stuff to system Python.
+    rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
+
+    # Upgrade pip to the latest version.
+    pip3 install --upgrade pip
+
+    # Install Python dependencies
+    cd /Vecogen
+    pip3 install -r requirements.txt
+
+    # Install opam-depext and frama-c
+    eval $(opam env)
+    opam install -y opam-depext
+    opam depext --install -y frama-c
+
+    # Install required packages for solvers
+    apt-get update
+    apt-get install -y wget unzip
+
+    echo "Installing solvers..."
+
+    # Install CVC5
+    CVC5_URL="https://github.com/cvc5/cvc5/releases/download/cvc5-1.1.2/cvc5-Linux-static.zip"
+    wget $CVC5_URL -O cvc5.zip
+    unzip cvc5.zip
+    cp cvc5-Linux-static/bin/cvc5 /usr/local/bin
+    chmod +x /usr/local/bin/cvc5
+    cvc5 --version
+    rm -rf cvc5-Linux-static cvc5.zip
+
+    # Install Z3
+    Z3_URL="https://github.com/Z3Prover/z3/releases/download/z3-4.8.6/z3-4.8.6-x64-ubuntu-16.04.zip"
+    wget $Z3_URL -O z3.zip
+    unzip z3.zip
+    cp z3-4.8.6-x64-ubuntu-16.04/bin/z3 /usr/local/bin
+    chmod +x /usr/local/bin/z3
+    z3 -version
+    rm -rf z3-4.8.6-x64-ubuntu-16.04 z3.zip
+
+    # Configure Why3
+    why3 config detect
+
+    echo "Done!"
+
+%environment
+    # Set environment variables
+    eval $(opam env)
+
+%runscript
+    # Command to run when the container starts
+    exec bash
