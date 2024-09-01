@@ -76,14 +76,16 @@ def require_header_file(args):
     if not os.path.isfile(args.absolute_header_path):
         print(f"Please insert a valid header file, {args.header_file} is not a file")
         sys.exit()
-    
+
     # If the args.formal_specification_file is not set, then set it to the header
     if not args.formal_specification_file:
         args.formal_specification_file = args.header_file
+        args.formal_specification_path = args.absolute_header_path
     else:
         # Ensure that the path is absolute
         if not os.path.isabs(args.formal_specification_file):
             args.formal_specification_file = os.path.join(os.getcwd(), args.formal_specification_file)
+            args.formal_specification_path = os.path.dirname(args.formal_specification_file) + "/" + args.formal_specification_file
         # Verify that the formal specification file exists
         if not os.path.isfile(args.formal_specification_file):
             print(f"Please insert a valid formal specification file, {args.formal_specification_file} is not a file")

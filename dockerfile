@@ -18,14 +18,16 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-dev \
     libgtksourceview-3.0-dev \
     pkg-config \
-    zlib1g-dev \ 
+    zlib1g-dev \
     python3 \
     python3-venv \
     python3-pip
 
 # Set the working directory
-COPY requirements.txt /Vecogen/requirements.txt
 WORKDIR /Vecogen
+
+# Copy the requirements file to avoid issues with automatic mounts
+COPY requirements.txt /Vecogen/requirements.txt
 
 # Initialize OPAM (OCaml Package Manager) and install OCaml
 RUN opam init -y --disable-sandboxing && \
@@ -53,10 +55,16 @@ RUN opam init -y --disable-sandboxing && \
     z3 -version && \
     rm -rf z3-4.8.6-x64-ubuntu-16.04 z3.zip && \
     eval $(opam env) && \
-    opam env >> /root/.bashrc
+    ldconfig && \
+    opam env >> /etc/bash.bashrc
 
-# Copy the other files
+# Copy the remaining application files
 COPY . /Vecogen
 
-# Run the bash file
+# Ensure that the container can run in read-only mode
+# by creating necessary writable directories under /run and /tmp
+VOLUME /run
+VOLUME /tmp
+
+# Run the bash file (consider changing this if you need a specific entrypoint)
 CMD ["bash"]

@@ -1,0 +1,6 @@
+docker build -t merlijnsevenhuijsen/vecogen . && docker run -it merlijnsevenhuijsen/vecogen && docker push merlijnsevenhuijsen/vecogen
+apptainer run -B ~/temp:/Vecogen/output docker://merlijnsevenhuijsen/vecogen
+python3 main.py generate_code -he ../no_loop_problems/0/specification-fs-sol.h -output_path ../Vecogen/output
+
+python3 main.py generate_code_folder -he ../no_loop_problems/ -output_path ../output
+python3 main.py generate_code_folder -d ../no_loop_problems/ -ieg 1 -iter 1 -temp 0  -reboot 5 -wpt 5 -o ../output/3.5-1-1-0-all -output-file generated_code.c

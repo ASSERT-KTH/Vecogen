@@ -212,10 +212,10 @@ def generate_code_folder(args):
     folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
 
     # For each folder in the directory
-    for folder in folders:        
+    for folder in folders:
         # Set the header files
         args.header_file = args.directory + "/" + folder + "/" + args.specification_file_name
-        args.formal_specification_path = args.absolute_directory + "/" + folder + "/" +  args.formal_specification_file
+        args.formal_specification_path = args.absolute_directory + "/" + folder + "/" +  args.specification_file_name
 
         # Set the output path
         if not args.output_file:
