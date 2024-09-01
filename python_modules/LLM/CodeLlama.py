@@ -11,7 +11,7 @@ from LLM.AbstractLLM import LLM
 class CodeLlama(LLM):
     def __init__(self, args, model="codellama/CodeLlama-7b-Instruct-hf"):
         # Arguments from Vecogen
-        self.cache_file_path = args.temp_folder
+        self.cache_file_path = args.temp_folder + "/codellama_cache/cache.json"
         self.args = args
         
         # Attempt to load cache from file
