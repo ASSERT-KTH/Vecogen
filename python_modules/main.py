@@ -67,7 +67,11 @@ def verify_dir(args):
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
     require_header_file(args)
-    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model_name,
+
+    # Use the model gpt-3.5-turbo by default
+    args.model_name = "gpt-3.5-turbo"
+    require_model(args)
+    initial_prompt_unfiltered = initial_prompt(args.header_file, args.model,
                                                args.max_tokens, args.allowloops, args.prompt_technique)
 
     # filter out the -----END_ASSISTANT_INFORMATION-----  from the prompt

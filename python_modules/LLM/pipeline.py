@@ -32,7 +32,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
     if improve:
         prompt, output, verified = improve_code_prompt(args)
     else:
-        prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens, args.allowloops, args.prompt_technique)
+        prompt = initial_prompt(args.header_file, args.model, args.max_tokens, args.allowloops, args.prompt_technique)
     # generate the initial attempts by making prompts of at most x each
     responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
     total_completions += len(responses_gpt)
@@ -73,7 +73,7 @@ def generate_code(args, improve = False, print_information_iteration = True):
 
     # If there is an improvement step then get the prompt
     if args.iterations > 0 and not verified:
-        prompt = verification_error_prompt(args.header_file, code, output, args.model_name,
+        prompt = verification_error_prompt(args.header_file, code, output, args.model,
                                             args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
 
     # Create the initial n initial generation attempts
@@ -120,14 +120,14 @@ def generate_code(args, improve = False, print_information_iteration = True):
         if not verified and i_reboot == args.reboot:
             if args.debug:
                 print("Reboot the code generation process.")
-            prompt = initial_prompt(args.header_file, args.model_name, args.max_tokens,
+            prompt = initial_prompt(args.header_file, args.model, args.max_tokens,
                                     args.allowloops, args.prompt_technique)
             i_reboot = 0
 
         # Check if the code needs to be improved
         elif not verified:
             # Create a new prompt based on the output
-            prompt = verification_error_prompt(args.header_file, code, output, args.model_name, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
+            prompt = verification_error_prompt(args.header_file, code, output, args.model, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
             i_reboot += 1
 
         # Increase the counter
@@ -339,7 +339,7 @@ def improve_code_prompt(args):
 
     # Get the output path
     prompt = verification_error_prompt(args.header_file, code, output, \
-                args.model_name, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
+                args.model, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
 
     return verified, output, prompt
 

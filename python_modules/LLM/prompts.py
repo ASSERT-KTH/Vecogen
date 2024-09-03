@@ -1,6 +1,5 @@
 """ This module contains the functions that generate prompts for the OPENAI models"""
 import os
-from GPT.check_tokens import num_tokens_from_string
 from helper_files.analyse_specification import get_functions
 from helper_files.change_specification import add_line_in_code
 
@@ -71,7 +70,8 @@ def initial_prompt(absolute_header_file_path, model, max_token_size, use_loop, p
     prompt_mapped = prompt_template.format(**prompt_replacement_mapping)
 
     # Make sure that the token size is not too large
-    prompt_size = num_tokens_from_string(prompt_mapped, model)
+    prompt_size = model.num_tokens_from_string(prompt_mapped, model.args.model_name)
+
     if prompt_size > max_token_size:
         # print everything to a file
         with open("prompt-error.txt", "w", encoding="utf-8") as f:
@@ -122,7 +122,7 @@ def compilation_error_prompt(absolute_header_path, previous_attempt, error_messa
     prompt_mapped = prompt_template.format(**prompt_replacement_mapping)
 
     # Make sure that the token size is not too large
-    prompt_size = num_tokens_from_string(prompt_mapped, model)
+    prompt_size = model.num_tokens_from_string(prompt_mapped, model.args.model_name)
     if prompt_size > max_token_size:
         raise ValueError(f"The prompt is too large, it has {prompt_size} tokens, \
                         the maximum is {max_token_size}")
@@ -183,7 +183,7 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
     prompt_mapped = prompt_template.format(**prompt_replacement_mapping)
 
     # Make sure that the token size is not too large
-    prompt_size = num_tokens_from_string(prompt_mapped, model)
+    prompt_size = model.num_tokens_from_string(prompt_mapped, model.args.model_name)
     if prompt_size > max_token_size:
         raise ValueError(f"The prompt is too large, it has {prompt_size} tokens, \
                         the maximum is {max_token_size}")
