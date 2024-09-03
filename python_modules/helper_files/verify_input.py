@@ -6,6 +6,7 @@ from helper_files.list_files import get_absolute_path
 from Frama_C.solvers import solvers
 from LLM.GPT import GPT
 from LLM.CodeLlama import CodeLlama
+from LLM.Groq import Groq_LLM
 def require_directory(args):
     """Function to check if a directory is given in the arguments
     Args:
@@ -248,10 +249,10 @@ def require_model(args):
 
     # Check if the model is available
     available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o', 'CodeLlama']
-    if args.model_name not in available_models:
-        print(f"The model {args.model_name} is not available, please use one of \
-            the following models: {available_models}")
-        sys.exit()
+    # if args.model_name not in available_models:
+    #     print(f"The model {args.model_name} is not available, please use one of \
+    #         the following models: {available_models}")
+    #     sys.exit()
         
     # Put the model in the args, and create an instance
     if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
@@ -259,3 +260,5 @@ def require_model(args):
         args.model = GPT(args)
     elif args.model_name == 'CodeLlama':
         args.model = CodeLlama(args)
+    else:
+        args.model = Groq_LLM(args)

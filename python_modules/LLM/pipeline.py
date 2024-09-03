@@ -203,7 +203,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) >= 427]
+    folders = [f for f in folders if int(f.split('-')[0]) >= 1350]
 
     # filter folders based on the number
     # folders = ["0"]

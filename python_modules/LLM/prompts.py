@@ -142,6 +142,9 @@ def verification_error_prompt(absolute_header_path, previous_attempt, error_mess
             If false it also makes use of the formal specification feedback
     Returns:
         The prompt as a string"""
+    
+    # Limit the error message to 500 characters
+    # error_message = error_message[:800]
 
     # Get the text from the header file
     with open(absolute_header_path, "r", encoding="utf-8") \

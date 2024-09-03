@@ -32,6 +32,10 @@ class CodeLlama(LLM):
             model, use_fast=True, padding_side="left"
         )
 
+        # Add a new pad token if it doesn't exist
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
     # Get response from CodeLlama
     def make_request(self, prompt, n):
         # Seperate the prompt
