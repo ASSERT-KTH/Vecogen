@@ -21,25 +21,31 @@
         out[i+1] != out[i+2] &&
         out[i+1] != out[i+3] &&
         out[i+2] != out[i+3];
-    // ensures out[n-1] != out[0] &&
-        // out[n-1] != out[1] &&
-        // out[n-1] != out[2] &&
-        // out[n-2] != out[0] &&
-        // out[n-2] != out[1] &&
-        // out[n-3] != out[0];
+    ensures out[n-1] != out[0] &&
+        out[n-1] != out[1] &&
+        out[n-1] != out[2] &&
+        out[n-2] != out[0] &&
+        out[n-2] != out[1] &&
+        out[n-3] != out[0];
 */
 void EasterEggs(int n, int *out)
 {
     int pattern[7] = {0, 1, 2, 3, 4, 5, 6};
 
     /*@
-        loop invariant 0 <= i <= n;
-        loop invariant \forall integer x; 0 <= x < i ==> out[x] == pattern[x % 7];
+        loop invariant 0 <= i <= n - 3;
+        loop invariant \forall integer x; 0 <= x < i ==> out[x] == pattern[x % 4];
         loop assigns out[0..n - 1], i;
         loop variant n - i;
     */
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n - 3; i++)
     {
-        out[i] = pattern[i % 7];
+        out[i] = pattern[i % 4];
     }
+
+    //@ assert out[3] == 3;
+
+    out[n - 3] = pattern[4];
+    out[n - 2] = pattern[5];
+    out[n - 1] = pattern[6];
 }
