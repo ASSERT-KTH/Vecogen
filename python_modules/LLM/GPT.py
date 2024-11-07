@@ -1,5 +1,5 @@
 from openai import OpenAI
-from LLM.prompts import seperate_prompt
+from LLM.create_prompt import seperate_prompt
 from LLM.AbstractLLM import LLM
 import tiktoken
 class GPT(LLM):
@@ -39,7 +39,7 @@ class GPT(LLM):
 
         # Return the response
         return response.choices, response.usage.total_tokens, response.model
-    
+
     # Count the number of tokens in a prompt
     def num_tokens_from_string(self, string: str, encoding_name: str):
         """Count the number of tokens in a prompt

@@ -1,0 +1,1 @@
+void calculateMinimumBrainsForStrategy(int N, int *out);

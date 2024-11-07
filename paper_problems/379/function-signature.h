@@ -1,0 +1,1 @@
+void calculateMaxFruitsForCompote(int a, int b, int c, int *out);

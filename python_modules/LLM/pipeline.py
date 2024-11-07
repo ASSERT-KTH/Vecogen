@@ -2,154 +2,76 @@
     verification error message """
 import os
 import json
-from LLM.prompts import initial_prompt, verification_error_prompt
-from LLM.specification import add_specification_to_code
-from helper_files.list_files import list_folders_directory, list_files_directory
+from LLM.create_prompt import create_prompt
+from LLM.code_generation_objects import IterationInformation, CompletionInformation, CodeGenerationProcess
 from Verify_files.check_file import check_file
 from testing.test_function import test_generated_code
+from helper_files.list_files import list_folders_directory, list_files_directory
+from helper_files.specification import add_specifications_to_code
+from helper_files.output_file import output_results
 
-def generate_code(args, improve = False, print_information_iteration = True):
+def generate_code_process(args, print_information_iteration = True):
     """Function to iteratively generate code and check it
+    Returns:
+        code_generation_process: The code generation process
     Args:
         args: The arguments given to the program
-        improve: Boolean that indicates if the code is improved
-        print_information_iteration: Boolean that indicates if the information about the iteration should be printed
+        print_information_iteration: Boolean that indicates if the information\
+        about the iteration should be printed
     """
 
-    # Total completions, total tokens used, and total effective completions
-    total_completions = 0
-    total_tokens_used = 0
-    total_effective_completions = 0
+    # Create a code generation process object
+    code_generation_process = CodeGenerationProcess(args)
 
-    # Create an array to store the information about the iterations
-    information_iteration = []
-    initial_generation_attempts = []
+    # Perform the initial code generation step
+    initial_code_generation_information = initial_code_generation_step(args)
 
-    # Boolean that indicates if the code has been verified
-    verified = False
+    # Add the initial code generation information to the code generation process
+    code_generation_process.add_initial_code_generation_information(initial_code_generation_information)
 
-    # Check if the model continues the code or starts from scratch
-    if improve:
-        prompt, output, verified = improve_code_prompt(args)
-    else:
-        prompt = initial_prompt(args.header_file, args.model, args.max_tokens, args.allowloops, args.prompt_technique)
-    # generate the initial attempts by making prompts of at most x each
-    responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
-    total_completions += len(responses_gpt)
-    total_tokens_used += sum(tokens_used)
+    verified = initial_code_generation_information.is_verified
 
-    # For each response, check the code. Stop if the code is verified
-    for i in range(args.initial_examples_generated):
-        print("-" * 50)
-        print(f"Iteration {i+1} of {args.initial_examples_generated}, initial attempt.")
-        print("-" * 50)
+    # Print information about the initial code generation
+    print(f"After the initial code generation step:\n Verified: {verified}, proved goals: {initial_code_generation_information.best_attempt_metric_percentage}")
 
-        # Get the generated code and tokens used
-        response_gpt = responses_gpt[i].message.content
+    # Create an index for the code improvement iterations
+    i = 0
+    last_iteration = initial_code_generation_information
 
-        # Process the generated code
-        code, verified, output, verified_goals, iteration_info, passed_percentage = \
-            process_code_and_get_iteration_information(args, response_gpt, i, prompt, tokens_used[i], model_used, True)
+    # Do the code improvement steps until the code is verified or the maximum iterations are reached
+    while (i < args.iterations and not verified):
+        print("-" * 100)
+        print(f"Code improvement iteration {i + 1} of {args.iterations}.")
+        print("-" * 100)
 
-        # Add extra information about the generation attempt
-        information_iteration.append(iteration_info)
-        initial_generation_attempts.append([passed_percentage, response_gpt, verified, output])
-        total_effective_completions += 1
+         # Take the best attempt from the initial generation attempts
+        code = last_iteration.best_attempt_code
+        output = last_iteration.best_attempt_feedback
 
-        # If the code is verified, then break
-        if verified:
-            break
+        # Perform the code improvement step
+        code_improvement_information = code_improvement_step(args, i + 1, code, output)
 
-    # Take the best attempt
-    code, verified, output = take_best_attempt(initial_generation_attempts)
+        # Add the code improvement information to the code generation process
+        code_generation_process.add_code_improvement_information(code_improvement_information)
 
-    # print the best result
-    print(f"Verified: {verified}, proved goals: {verified_goals}")
+        # Stop if the code is verified
+        verified = code_improvement_information.is_verified
 
-    # Generate a prompt
-    i = args.initial_examples_generated
-    i_total = args.initial_examples_generated
-    i_reboot = 0
-
-    # If there is an improvement step then get the prompt
-    if args.iterations > 0 and not verified:
-        prompt = verification_error_prompt(args.header_file, code, output, args.model,
-                                            args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
-
-    # Create the initial n initial generation attempts
-    while (i < args.initial_examples_generated + args.iterations and not verified):
-        if print_information_iteration:
-            print("-" * 50)
-            print(f"Iteration {i - args.initial_examples_generated + 1} of " +
-                f"{args.iterations}, generating {args.initial_examples_generated} fixes...")
-            print("-" * 50)
-
-        # Get the output from the LLM
-        responses_gpt, tokens_used, model_used = prompt_using_max_n_examples(args, prompt, 10000)
-        total_completions += len(responses_gpt)
-        total_tokens_used += sum(tokens_used)
-
-        # An array that contains the information about possible attempts for this iteration
-        iteration_attempts = []
-        for j in range(args.initial_examples_generated):
-            response_gpt = responses_gpt[j].message.content
-
-            # Process the generated code
-            code, verified, output, verified_goals, iteration_info, passed_percentage = \
-                process_code_and_get_iteration_information(args, response_gpt, i_total, prompt, tokens_used[j], model_used, \
-                rebooting= args.reboot == i_reboot)
-
-            print(f"iteration {i_total}, verified: {verified}, verified goals: {verified_goals}, passed tests: {passed_percentage}")
-
-            # Add the information to the iteration attempts
-            iteration_attempts.append([passed_percentage, response_gpt, verified, output])
-            information_iteration.append(iteration_info)
-            i_total += 1
-            total_effective_completions += 1
-            if verified:
-                break
-
-        # If the code is verified, then exit the while loop and stop searching for a solution
-        if verified:
-            break
-
-        # Pick the best attempt
-        code, verified, output = take_best_attempt(iteration_attempts)
-
-        # Get the next prompt
-        if not verified and i_reboot == args.reboot:
-            if args.debug:
-                print("Reboot the code generation process.")
-            prompt = initial_prompt(args.header_file, args.model, args.max_tokens,
-                                    args.allowloops, args.prompt_technique)
-            i_reboot = 0
-
-        # Check if the code needs to be improved
-        elif not verified:
-            # Create a new prompt based on the output
-            prompt = verification_error_prompt(args.header_file, code, output, args.model, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
-            i_reboot += 1
-
-        # Increase the counter
+        # Update the last iteration and the counter
+        last_iteration = code_improvement_information
         i += 1
 
-    # Add the final information to the last iteration
-    information_iteration[-1]["total_completions"] = total_completions
-    information_iteration[-1]["total_tokens_used"] = total_tokens_used
-    information_iteration[-1]["total_completions_used"] = total_effective_completions
-
     # Print the results
-    print(f"Total completions: {total_completions}, total tokens used: {total_tokens_used}, " +
-          f"total effective completions: {total_effective_completions}")
-    print(f"Verified: {verified}, proved goals: {verified_goals}")
+    print(f"Total completions used: {code_generation_process.total_completions_used}, total tokens used: {code_generation_process.total_tokens_used}, total effective requested: {code_generation_process.total_completions_requested}")
+    print(f"Verified: {verified}")
     if args.debug:
         print("Results:")
-        for result in information_iteration:
+        for result in code_generation_process.code_improvement_information:
             print(result)
 
     # save the results to a file
-    with open(f"{args.absolute_output_directory}/results.txt", "w", encoding="utf-8") as f:
-        json.dump(information_iteration, f, indent=4)
+    output_results(args, code_generation_process.to_dict())
+    return code_generation_process
 
 # Function that processes the generated code by adding the specification and creating the output file
 def add_specification_and_output_code(args, code):
@@ -159,8 +81,11 @@ def add_specification_and_output_code(args, code):
         code: The code that has been generated
     Returns:
         None
-    Requirements of the arguments:
-    - The output path is absolute"""
+    """
+
+    # Ensure that the code has triple backticks
+    if "```C" not in code:
+        raise ValueError(f"Attempting to add the specification to the code. The code does not contain triple backticks. Code: {code}")
 
     # Get the code from the output of the LLM
     code = code.split("```C")[1]
@@ -170,16 +95,17 @@ def add_specification_and_output_code(args, code):
     code = code.split("\n", 1)[1]
 
     # Add the specification
-    code = add_specification_to_code(args.formal_specification_path, code)
+    code = add_specifications_to_code(args.absolute_formal_specification_path, args.absolute_natural_language_specification_path, args.absolute_function_signature_path, code)
 
     # Output the code to the specified file
-    with open(args.absolute_output_directory + "/" + args.output_file, "w",
+    print(f"Writing the code to the file {args.absolute_output_directory}/{args.output_file_name}")
+    with open(args.absolute_output_directory + "/" + args.output_file_name, "w",
                 encoding="utf-8") as f:
-        args.absolute_c_file = args.absolute_output_directory + "/" + args.output_file
+        args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file_name
         f.write(code)
 
     if args.debug:
-        print(f"Code generated. Written to {args.absolute_output_directory}/{args.output_file}")
+        print(f"Code generated. Written to {args.absolute_output_directory}/{args.output_file_name}")
 
     return code
 
@@ -233,10 +159,10 @@ def generate_code_folder(args):
             os.mkdir(output_dir)
 
         # Run the code without printing the information
-        generate_code(args, print_information_iteration = False)
+        generate_code_process(args, print_information_iteration = False)
 
         # Print the current generated file
-        print("\n \n" + "-" * 50 + "\n \n")
+        print("\n \n" + "-" * 100 + "\n \n")
         print(f"Generated code for folder {folder}.")
 
 # Function that verifies and tests the code that has been generated
@@ -269,12 +195,10 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "information": f"Error with GPT response, could not add specification. Error: {e}"
             }
         }
-        
-        
+
     # Verify the code
-    verified, output, verified_goals = check_file(args.absolute_c_path,
-        args.absolute_header_path, args)
-    
+    verified, output, verified_goals = check_file(args.absolute_c_path, args)
+
     # If the compilation failed, then return the information
     if not verified and verified_goals is None:
         test_information = {
@@ -289,12 +213,12 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         return code, verified, output, "0 / 0", test_information
 
     # See if the folder of the absolute c path has a tests file
-    files_directory = list_files_directory(os.path.dirname(args.absolute_header_path))
+    files_directory = list_files_directory(os.path.dirname(args.absolute_formal_specification_path))
 
     # Check if the tests file exists
     if "tests.c" in files_directory:
         # Get the path to the tests file
-        path_tests = os.path.dirname(args.absolute_header_path) + "/tests.c"
+        path_tests = os.path.dirname(args.absolute_formal_specification_path) + "/tests.c"
         passed_tests, total_tests, test_information =  \
             test_generated_code(args.absolute_c_path, path_tests,
                 f"tests_iteration_{i}", args.temp_folder, args.debug)
@@ -314,9 +238,51 @@ def verify_and_test_code_attempt(args, response_gpt, i):
 
     return code, verified, output, verified_goals, test_information
 
-# Function that creates a prompt based on existing code
-def improve_code_prompt(args):
-    """Function to create a prompt based on the verification error
+# Function for initial code generation
+def initial_code_generation_step(args):
+    """Function to generate the initial code based on the arguments
+    Args:
+        args: The arguments given to the program
+    Returns:
+        responses_gpt: The responses from the LLM
+        tokens_used: The amount of tokens used for each response
+        model_used: The model used, no list is used as only one model is used
+    """
+
+    # Information related to the iterations
+    iteration_info = IterationInformation(0, args.initial_examples_generated, args.model_name)
+
+    # Get the output path
+    prompt = create_prompt(args)
+
+    # generate the initial attempts by making prompts of at most x each
+    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 10000)
+
+    # For each response, check the code. Stop if the code is verified
+    # use enumerate
+    for llm_response_index, response_llm in enumerate(responses_llm):
+        print("-" * 50)
+        print(f"Initial code generation, code completion {llm_response_index + 1} of {len(responses_llm)}.")
+        print("-" * 50)
+
+        # Get the generated code and tokens used
+        response = response_llm.message.content
+
+        # Process the generated code and get information about the completion
+        completion_information = process_code_and_get_completion_information(args, response, 0, prompt, tokens_used[llm_response_index], models_used[llm_response_index])
+
+        # Add the completion to the iteration information
+        iteration_info.add_completion(completion_information)
+
+        # If the code is verified, then stop
+        if completion_information.is_verified:
+            break
+    
+    return iteration_info
+
+# Function that performs one iteration of code improvement
+def code_improvement_step(args, code_improvement_iteration, code, output):
+    """Function to do one iteration of code improvement based on an existing file and and the verification error
     Args:
         args: The arguments given to the program
     Returns:
@@ -325,26 +291,39 @@ def improve_code_prompt(args):
         prompt: The prompt as a string
     """
 
-    # Get the code from the c file
-    with open(args.c_file, "r", encoding="utf-8") as f:
-        code = f.read()
-
-    # Write the c code to the output path
-    with open(f"{args.absolute_output_directory}/{args.output_file}", "w",
-            encoding="utf-8") as f:
-        f.write(code)
-
-    # Verify the file
-    verified, output, _ = check_file(args.absolute_c_path, args.absolute_header_path, args)
+    # Create an iteration object that contains information about the code improvement iteration
+    iteration_info = IterationInformation(code_improvement_iteration, args.initial_examples_generated, args.model_name)
 
     # Get the output path
-    prompt = verification_error_prompt(args.header_file, code, output, \
-                args.model, args.max_tokens, args.allowloops, args.natural_language_only, args.prompt_technique)
+    prompt = create_prompt(args, code, output)
 
-    return verified, output, prompt
+    # generate the initial attempts by making prompts of at most x each
+    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 10000)
+
+    # For each response, check the code. Stop if the code is verified
+    # use enumerate
+    for llm_response_index, response_llm in enumerate(responses_llm):
+        print("-" * 50)
+        print(f"Code Improvement Iteration {code_improvement_iteration}, code completion {llm_response_index + 1} of {len(responses_llm)}.")
+        print("-" * 50)
+
+        # Get the generated code and tokens used
+        response = response_llm.message.content
+
+        # Process the generated code and get information about the completion
+        completion_information = process_code_and_get_completion_information(args, response, code_improvement_iteration, prompt, tokens_used[llm_response_index], models_used[llm_response_index])
+
+        # Add the completion to the iteration information
+        iteration_info.add_completion(completion_information)
+
+        # If the code is verified, then stop
+        if completion_information.is_verified:
+            break
+
+    return iteration_info
 
 # Function that uses the LLM to generate code, whilst only asking for N exmaples at a time
-def prompt_using_max_n_examples(args, prompt, n):
+def prompt_using_max_n_samples(args, prompt, n):
     """Function to generate code using the pipeline and the LLM model
     Args:
         args: The arguments given to the program
@@ -358,7 +337,6 @@ def prompt_using_max_n_examples(args, prompt, n):
     # generate the initial attempts by making prompts of at most x each
     responses_llm = []
     tokens_used = []
-    model_used = []
     i_examples_generated = 0
 
     # Make LLM requests with at most n examples at a time
@@ -384,107 +362,36 @@ def prompt_using_max_n_examples(args, prompt, n):
     return responses_llm, tokens_used, model_used
 
 # Function that processes the code, and gets iteration information, and verifies the goals
-def process_code_and_get_iteration_information(args, response_gpt, i, prompt, 
+def process_code_and_get_completion_information(args, response_gpt, i, prompt,
             tokens_used, model_used, initial_attempt = False, rebooting = False):
     """Function to process the generated code and get iteration information
     Args:
         args: The arguments given to the program
         response_gpt: The response from the GPT model
         i: The iteration number
-        prompt: The prompt that was used
-        tokens_used: The amount of tokens used for each response
-        model_used: The model used for each response
+        prompt: The prompt that has been used
+        tokens_used: The amount of tokens used
+        initial_attempt: Boolean that indicates if this is the initial attempt
+        rebooting: Boolean that indicates if the code has been rebooted
     Returns:
-        code: The code that has been generated
-        verified: Boolean that indicates if the code is verified
-        output: The output of the verification process
-        verified_goals: The proportion of goals that have been verified
-        test_information: The information about the tests
-        iteration_info: The information about the iteration
-        passed_percentage: The percentage of either passed tests (priority) or verified goals
+        completion_information: The information about the completion
     """
 
     # Process the generated code
-    code, verified, output, verified_goals, test_information = \
+    code, verified, verification_output, verified_goals, test_information = \
         verify_and_test_code_attempt(args, response_gpt, i)
 
      # Add extra information about the generation attempt
     if initial_attempt:
-        information = "initial attempt"
+        information = "Initial code generation attempt"
     elif rebooting:
-        information = "rebooted"
+        information = "The code was rebooted"
     elif verified:
-        information = "verified"
+        information = "The code has been verified"
     else:
-        information = "code improved"
+        information = "The code has been improved"
 
-    # Create a dict that will contain information about the iteration
-    iteration_info = {
-        "iteration": i + 1,
-        "prompt": prompt,
-        "gpt_output": response_gpt,
-        "verified": verified,
-        "verified_goals": verified_goals,
-        "test_information": test_information,
-        "temperature": args.temperature,
-        "info": information,
-        "max_tokens": args.max_tokens,
-        "tokens_used": tokens_used,
-        "model": model_used,
-    }
+    # Create an object that will contain information about the completion
+    completion_information = CompletionInformation(i, prompt, response_gpt, verified, verified_goals, test_information, args.temperature, information, args.max_tokens, tokens_used, model_used, code, verification_output)
 
-    # Get the percentage of tests passed if the tests have been run
-    # Otherwise use the verified goals
-    try:
-        if test_information[-1]["summary"]["total"] > 0:
-            passed_percentage = test_information[-1]["summary"]["pass_rate"]
-        else:
-            total_goals = verified_goals.split("/")[1]
-            verified_goals = verified_goals.split("/")[0]
-            if int(total_goals) == 0:
-                passed_percentage = 0
-            else:
-                passed_percentage = int(verified_goals) / int(total_goals)
-    except:
-        print("Error: Could not get the percentage of passed tests or verified goals" +
-              "Test information: {test_information}, verified goals: {verified_goals})")
-        passed_percentage = 0
-
-    return code, verified, output, verified_goals, iteration_info, passed_percentage
-
-# Function that ranks the best attempt according to a passed percentage of test cases
-def take_best_attempt(initial_generation_attempts):
-    """Function to take the best attempt based on the percentage of passed test cases
-    Args:
-        initial_generation_attempts: The initial generation attempts
-            It is a list of tuples of 4 elements that contain:
-            * passed_percentage
-            * response_gpt
-            * verified
-            * output
-    Returns:
-        code: The code that has been generated
-        verified: Boolean that indicates if the code is verified
-        output: The output of the verification process
-    """
-
-    # Best attempt, start with the first one
-    best_attempt = initial_generation_attempts[0]
-
-    # First get if there is a verified attempt
-    verified_attempt = any([x[2] for x in initial_generation_attempts])
-
-    # If there is a verified attempt, then return the first one
-    if verified_attempt:
-        for attempt in initial_generation_attempts:
-            if attempt[2]:
-                return attempt[1], attempt[2], attempt[3]
-    # If there is no verified attempt, then return the one with the most amount of passed tests / goals
-    else:
-        for attempt in initial_generation_attempts:
-            print(attempt, best_attempt)
-            if attempt[0] != "0 / 0" and attempt[0] > best_attempt[0]:
-                best_attempt = attempt
-
-    # Of this best attempt, get the code and boolean if it is verified or not
-    return best_attempt[1], best_attempt[2], best_attempt[3]
+    return completion_information

@@ -1,0 +1,18 @@
+You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. 
+
+-----END_ASSISTANT_INFORMATION-----
+
+{INITIAL_MESSAGE}
+
+{ONE_SHOT_EXAMPLE}
+
+{RULES}
+
+You are given the following problem description. You must return the code in the following format:
+```C
+{NATURAL_LANGUAGE_DESCRIPTION}
+{FORMAL_SPECIFICATION}
+{FUNCTION_SIGNATURE}
+```
+{PREVIOUS_ATTEMPT}
+Please generate the formally verified C code adhering to the problem description.

@@ -27,7 +27,6 @@ def compile_c(args, absolute_path_to_c_file, absolute_path_temp_folder):
     result = subprocess.Popen(["gcc", absolute_path_to_c_file, "-o", path_to_executable, "-c"],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-
     # Capture the command prompt output
     stdout, stderr = result.communicate()
 

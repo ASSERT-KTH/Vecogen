@@ -1,4 +1,4 @@
-from LLM.prompts import seperate_prompt
+from LLM.create_prompt import seperate_prompt
 from LLM.AbstractLLM import LLM
 from groq import Groq
 import os

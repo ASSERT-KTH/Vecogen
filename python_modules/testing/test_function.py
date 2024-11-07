@@ -34,11 +34,11 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE
     )
-    
+
     stdout, stderr = process.communicate()
     stdout = stdout.decode("utf-8")
     stderr = stderr.decode("utf-8")
-    
+
     # If there is an error then return 0 tests passed
     if stderr:
         test_information = {
@@ -49,9 +49,9 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
                 "information": "Compilation failed: " + stderr
             }
         }
-        
+
         return 0, 0, test_information
-    
+
     # If the executable does not exist then wait, since the compilation might still be running
     while not os.path.exists(path_to_executable):
         time.sleep(0.3)
