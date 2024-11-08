@@ -42,9 +42,9 @@ class CompletionInformation:
                 total_goals = verified_goals.split("/")[1]
                 verified_goals = verified_goals.split("/")[0]
                 if int(total_goals) == 0:
-                    self.passed_percentage_goals = 0
+                    self.passed_goals_percentage = 0
                 else:
-                    self.passed_goals_percentage = int(verified_goals) / int(total_goals)            
+                    self.passed_goals_percentage = int(verified_goals) / int(total_goals)
             else:
                 self.passed_goals_percentage = 0
         except:

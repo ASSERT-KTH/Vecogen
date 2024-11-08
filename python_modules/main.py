@@ -141,9 +141,9 @@ def parse_arguments(functions_list):
 
     # Tool arguments
     parser.add_argument("-iter", "--iterations", help="The number of iterations to use for \
-                        the code generation", type=int, default=0)
+                        the code generation", type=int, default=10)
     parser.add_argument('-temp', '--temperature', help="The temperature to use for the code \
-                        generation", type=float, default=0)
+                        generation", type=float, default=1)
     parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
                         generation", type=int, default=4096)
     parser.add_argument('-model', '--model_name', help="The model name to use for the \
@@ -152,8 +152,8 @@ def parse_arguments(functions_list):
                         reboot occurs", default= 999999, type=int)
     parser.add_argument("-al", "--allowloops", help="Allow loops in the generated code",
                         default=False, action=argparse.BooleanOptionalAction, type=bool)
-    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=1, type=int)
-    parser.add_argument("-pt", "--prompt_technique", help="Define the prompt technique used. Currently zero-shot and one-shot are supported.", default="zero-shot", type=str, choices=["zero-shot", "one-shot"])
+    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=10, type=int)
+    parser.add_argument("-pt", "--prompt_technique", help="Define the prompt technique used. Currently zero-shot and one-shot are supported.", default="one-shot", type=str, choices=["zero-shot", "one-shot"])
 
     # Print the version of the tool
     parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')
