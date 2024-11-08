@@ -9,7 +9,7 @@ from testing.test_function import test_generated_code
 from helper_files.list_files import list_folders_directory, list_files_directory
 from helper_files.specification import add_specifications_to_code
 from helper_files.output_file import output_results
-
+from helper_files.verify_input import check_output_path_set, require_problem_specification
 def generate_code_process(args, print_information_iteration = True):
     """Function to iteratively generate code and check it
     Returns:
@@ -135,24 +135,42 @@ def generate_code_folder(args):
     # folders = ["0"]
 
     # Filter the folders based on if it the specific specification file is present
-    folders = [f for f in folders if args.specification_file_name in list_files_directory(args.directory + "/" + f)]
+    folders = list(folders)
+
+    # Save the file names of the specifications
+    natural_language_file_name = args.natural_language_specification
+    formal_specification_file_name = args.formal_specification_file
+    function_signature_file_name = args.function_signature
+
+    # filter the folders that have the formalspecification
+    folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + formal_specification_file_name)]
+
+    # filter the folders that have the function signature
+    folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + function_signature_file_name)]
+
+    # If natural language is included in the arguments, then filter the folders that have the natural language specification
+    if args.natural_language_specification:
+        folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + natural_language_file_name)]
 
     # For each folder in the directory
     for folder in folders:
-        # Set the header files
-        args.header_file = args.directory + "/" + folder + "/" + args.specification_file_name
-        args.formal_specification_path = args.absolute_directory + "/" + folder + "/" +  args.specification_file_name
+        # Set the input and output files
+        args.natural_language_specification = args.directory + "/" + folder + "/" + natural_language_file_name
+        args.formal_specification_file = args.directory + "/" + folder + "/" + formal_specification_file_name
+        args.function_signature = args.directory + "/" + folder + "/" + function_signature_file_name
 
         # Set the output path
-        if not args.output_file:
-            args.output_file = f"output_{args.model_name}.c"
+        try:
+            if not args.output_file:
+                args.output_file = f"output_{args.model_name}.c"
+        except AttributeError:
+            print("No output file specified, using default output file name")
         output_dir = base_directory + "/" + folder
         args.absolute_output_directory = output_dir
-
-        # Set the c file and h file paths
-        args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file
-        args.absolute_header_path = args.absolute_directory + "/" + folder + \
-            "/" + args.specification_file_name
+        
+        # Verify that the input and output is set correctly
+        require_problem_specification(args)
+        check_output_path_set(args)
 
         # Create the output directory if it does not exist yet
         if not os.path.exists(output_dir):

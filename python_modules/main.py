@@ -6,13 +6,10 @@ import os
 import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
-from helper_files.verify_input import require_directory_exists, require_formal_specification_file, \
-    require_c_file, require_solver, require_api_key_gpt, check_output_path_set, ensure_integers, \
-    require_model, require_problem_specification
+from helper_files.verify_input import require_directory_exists, require_c_file, require_solver, require_api_key_gpt, check_output_path_set, ensure_integers,require_model, require_problem_specification, require_output_path
 from helper_files.debug import clear_debug
-from helper_files.specification import add_specifications_to_code
 from Verify_files.check_file import check_file
-from LLM.pipeline import add_specification_and_output_code, code_improvement_step, generate_code_process
+from LLM.pipeline import add_specification_and_output_code, code_improvement_step, generate_code_process, generate_code_folder
 from LLM.create_prompt import create_prompt
 
 def list_files(args):
@@ -80,17 +77,16 @@ def improve_code_step(args):
     else:
         print("The code is already formally verified")
 
-# def generate_folder(args):
-#     """ Generate code from a folder with folders"""
-#     require_solver(args)
-#     require_api_key_gpt()
-#     require_directory_exists(args)
-#     require_specification_file_name(args)
-#     check_output(args)
-#     require_model(args)
+def generate_folder(args):
+    """ Generate code from a folder with folders"""
+    require_solver(args)
+    require_api_key_gpt()
+    require_directory_exists(args)
+    require_model(args)
+    require_output_path(args)
 
-#     # ensure that the output path is absolute
-#     generate_code_folder(args)
+    # ensure that the output path is absolute
+    generate_code_folder(args)
 
 def clear(args):
     """Clears the debugging folders"""
@@ -170,7 +166,7 @@ if __name__ == "__main__":
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
         "improve_code_step": improve_code_step,
-        # "generate_code_folder": generate_folder
+        "generate_code_folder": generate_folder
     }
 
     # Load the environment variables

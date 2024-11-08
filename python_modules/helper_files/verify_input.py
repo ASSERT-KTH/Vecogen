@@ -212,6 +212,24 @@ def require_api_key_gpt():
         print("API key not set")
         sys.exit()
 
+def require_output_path(args):
+    """Function to check if the output path is set
+    Args:
+        args: The arguments given by the user
+    Returns:
+        None"""
+
+    if not args.output_path:
+        print("Please insert an output path using the -o or --output_path option")
+        sys.exit()
+
+    # Deduce the output path from the given arguments
+    args.absolute_output_directory = get_absolute_path(args.output_path)
+
+    # Check if the output path is a director, if not then create it
+    if not os.path.isdir(args.absolute_output_directory):
+        os.makedirs(args.absolute_output_directory)
+
 def check_output_path_set(args):
     """Function to check if the output path is set
     Args:
@@ -320,3 +338,19 @@ def require_model(args):
         args.model = GPT(args)
     else:
         args.model = Groq_LLM(args)
+
+def require_set_specification_names(args):
+    """Function to chec kif the specifications are set correctly for the code generation for folders"""
+    
+    # Check that the formal specification, natural language speification and function signature is set
+    if not args.formal_specification_file:
+        print("Please insert a formal specification file using the -fsf or --formal_specification_file option")
+        sys.exit()
+
+    if not args.natural_language_specification:
+        print("Please insert a natural language specification file using the -nl or --natural_language_specification option")
+        sys.exit()
+
+    if not args.function_signature:
+        print("Please insert a function signature using the -sig or --function_signature option")
+        sys.exit()
