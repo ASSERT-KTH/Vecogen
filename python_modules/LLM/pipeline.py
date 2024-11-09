@@ -195,6 +195,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         output: The output of the verification process
         verified_goals: The proportion of goals that have been verified
         test_information: The information about the tests
+        verification_time_taken: The time taken to verify the code
     """
 
     # Process the generated code by adding the specification
@@ -210,7 +211,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "total": 0,
                 "information": f"Error with GPT response, could not add specification. Error: {e}"
             }
-        }
+        }, 0
 
     # Verify the code
     verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path,
