@@ -1,8 +1,7 @@
-
 # Class for completion information
 class CompletionInformation:
     """Class that contains information about an iteration"""
-    def __init__(self, completion_count, prompt, gpt_output, verified, verified_goals, test_information, temperature, info, max_tokens, tokens_used, model, code, feedback):
+    def __init__(self, completion_count, prompt, gpt_output, verified, verified_goals, test_information, temperature, info, max_tokens, tokens_used, model, code, feedback, verification_time_taken):
 
         # Information about the completion
         self.code_completion_number = completion_count
@@ -24,7 +23,7 @@ class CompletionInformation:
         self.verified_goals_count = verified_goals
         self.test_information = test_information
         self.completion_information = info
-        self.verification_time = 0
+        self.verification_time = verification_time_taken
 
         # Add the information about the passed percentage of the tests and goals
         try:
@@ -80,6 +79,7 @@ class IterationInformation:
         self.iteration_number = iteration
         self.is_verified = False
         self.tokens_used_iteration = 0
+        self.verification_time_iteration = 0
         self.completions_used = 0
         self.completions = []
         self.max_completions_used = max_completions_used
@@ -102,6 +102,7 @@ class IterationInformation:
         self.completions.append(completion_information)
         self.tokens_used_iteration += completion_information.tokens_used
         self.completions_used += 1
+        self.verification_time_iteration += completion_information.verification_time
 
         # Check if the code is verified
         if completion_information.is_verified:
@@ -128,6 +129,7 @@ class IterationInformation:
             "iteration_number": self.iteration_number,
             "is_verified": self.is_verified,
             "tokens_used_iteration": self.tokens_used_iteration,
+            "verification_time_iteration": self.verification_time_iteration,
             "completions_used": self.completions_used,
             "completions": [completion.to_dict() for completion in self.completions],
             "max_completions_used": self.max_completions_used,
@@ -145,6 +147,7 @@ class CodeGenerationProcess:
         self.total_completions_requested = 0
         self.total_completions_used = 0
         self.total_tokens_used = 0
+        self.total_time_taken_verification = 0
         self.max_code_improvement_iterations = args.iterations
         self.initial_code_generation_information = []
         self.code_improvement_information = []
@@ -163,6 +166,7 @@ class CodeGenerationProcess:
         self.total_completions_requested += initial_code_generation_information.max_completions_used
         self.total_completions_used += initial_code_generation_information.completions_used
         self.total_tokens_used += initial_code_generation_information.tokens_used_iteration
+        self.total_time_taken_verification += initial_code_generation_information.verification_time_iteration
 
         # Check if the code is verified
         if initial_code_generation_information.is_verified:
@@ -174,6 +178,7 @@ class CodeGenerationProcess:
             "total_completions_requested": self.total_completions_requested,
             "total_completions_used": self.total_completions_used,
             "total_tokens_used": self.total_tokens_used,
+            "total_time_taken_verification": self.total_time_taken_verification,
             "max_code_improvement_iterations": self.max_code_improvement_iterations,
             "initial_code_generation_information": [info.to_dict() for info in self.initial_code_generation_information],
             "code_improvement_information": [info.to_dict() for info in self.code_improvement_information],

@@ -1,6 +1,7 @@
 """This module is used to verify a C file using Frama-C"""
 import subprocess
 import re
+import time
 from Frama_C.frama_c_parser import get_line_number_in_parsed_code
 from helper_files.debug import debug_to_file
 
@@ -12,10 +13,14 @@ def verify_file(args):
         True if the C file verified successfully, False otherwise
         A message that indicates the problem
         The amount of verified goals
+        The verification time
         """
     # If debugging is enabled then print the folder that the file is being verified in
     if args.debug:
-        print(f"Verifying file...")
+        print("Verifying file...")
+
+    # Start the timer
+    start_time = time.time()
 
     # Create the prompt that is used for frama c
     prompt = f'frama-c  -wp "{args.absolute_c_path}"                            \
@@ -26,8 +31,19 @@ def verify_file(args):
                         {"-wp-smoke-tests" if args.smoke_detector else ""}      \
                         -wp-status'
 
+
     # Call a subroutine to use Frama-C to verify the C file
     result = subprocess.Popen(prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+    # Wait for the process to complete
+    result.wait()
+
+    # End the timer
+    end_time = time.time()
+
+    # Calculate the elapsed time
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time: {elapsed_time} seconds")
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()
@@ -44,9 +60,13 @@ def verify_file(args):
         debug_to_file(args, "../tmp/", "output", stdout_str)
 
     # Get the error cause and the strategy to solve the error
-    return get_error_cause_and_strategy(stdout_str, args.absolute_c_path)
+    verified, error_cause, verified_goals_amount = get_error_cause_and_strategy(
+        stdout_str, args.absolute_c_path)
+
+    return verified, error_cause, verified_goals_amount, elapsed_time
 
 causes = ["Timeout", "Syntax Error", "Fatal Error", "Valid"]
+
 def get_error_cause_and_strategy(output: str, absolute_c_path: str):
     """ Looks at a string that has the output of the verication. It returns the causes
     of the errors. Within the output also a strategy is given to solve the error.
@@ -58,6 +78,7 @@ def get_error_cause_and_strategy(output: str, absolute_c_path: str):
         - A boolean that indicates if the file is valid
         - A list of the problem and the strategy to solve the problem
         - A string that contains the amount of verified goals
+        
         """
 
     # Check if the output has a syntax error

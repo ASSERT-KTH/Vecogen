@@ -129,7 +129,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) < 1350]
+    folders = [f for f in folders if int(f.split('-')[0]) <= 750]
 
     # filter folders based on the number
     # folders = ["0"]
@@ -151,7 +151,7 @@ def generate_code_folder(args):
     # If natural language is included in the arguments, then filter the folders that have the natural language specification
     if args.natural_language_specification:
         folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + natural_language_file_name)]
-
+ 
     # For each folder in the directory
     for folder in folders:
         # Set the input and output files
@@ -161,20 +161,18 @@ def generate_code_folder(args):
 
         # Set the output path
         try:
-            if not args.output_file:
+            if not args.output_file_name:
                 args.output_file = f"output_{args.model_name}.c"
         except AttributeError:
             print("No output file specified, using default output file name")
-        output_dir = base_directory + "/" + folder
-        args.absolute_output_directory = output_dir
-        
+        args.absolute_output_directory = base_directory + "/" + folder
+
         # Verify that the input and output is set correctly
         require_problem_specification(args)
-        check_output_path_set(args)
 
         # Create the output directory if it does not exist yet
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
+        if not os.path.exists(args.absolute_output_directory):
+            os.mkdir(args.absolute_output_directory)
 
         # Run the code without printing the information
         generate_code_process(args, print_information_iteration = False)
@@ -215,7 +213,12 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         }
 
     # Verify the code
-    verified, output, verified_goals = check_file(args.absolute_c_path, args)
+    verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path,
+        args)
+
+    # If debugging is true, then print the time it took to verify the code
+    if args.debug:
+        print(f"Verification time taken: {verification_time_taken}")
 
     # If the compilation failed, then return the information
     if not verified and verified_goals is None:
@@ -227,8 +230,8 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "information": "Compilation failed"
             }
         }
-        
-        return code, verified, output, "0 / 0", test_information
+
+        return code, verified, output, "0 / 0", test_information, verification_time_taken
 
     # See if the folder of the absolute c path has a tests file
     files_directory = list_files_directory(os.path.dirname(args.absolute_formal_specification_path))
@@ -254,7 +257,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
             print(f"No tests found, proved goals: {verified_goals}")   
     print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
 
-    return code, verified, output, verified_goals, test_information
+    return code, verified, output, verified_goals, test_information, verification_time_taken
 
 # Function for initial code generation
 def initial_code_generation_step(args):
@@ -396,7 +399,7 @@ def process_code_and_get_completion_information(args, response_gpt, i, prompt,
     """
 
     # Process the generated code
-    code, verified, verification_output, verified_goals, test_information = \
+    code, verified, verification_output, verified_goals, test_information, verification_time_taken = \
         verify_and_test_code_attempt(args, response_gpt, i)
 
      # Add extra information about the generation attempt
@@ -410,6 +413,8 @@ def process_code_and_get_completion_information(args, response_gpt, i, prompt,
         information = "The code has been improved"
 
     # Create an object that will contain information about the completion
-    completion_information = CompletionInformation(i, prompt, response_gpt, verified, verified_goals, test_information, args.temperature, information, args.max_tokens, tokens_used, model_used, code, verification_output)
+    completion_information = CompletionInformation(i, prompt, response_gpt,  verified,
+        verified_goals, test_information, args.temperature,information, args.max_tokens,
+        tokens_used, model_used, code, verification_output, verification_time_taken)
 
     return completion_information

@@ -3,13 +3,7 @@ from Verify_files.compile_file import compile_c
 from Verify_files.verify_file import verify_file
 
 def check_file(absolute_path_to_c_file, args):
-    """Check a C file in a given directory
-    Args:
-        args: The arguments given to the program
-        file_name_c: The name of the C file
-    Returns:
-        True if the C file verified successfully, False otherwise
-        If the file did not verify, the output of the verification"""
+    """Check a C file in a given directory"""
 
     if args.debug:
         print("Specification and generated file exists, starting to compile...")
@@ -21,7 +15,7 @@ def check_file(absolute_path_to_c_file, args):
     if result is False:
         if args.debug:
             print(f"Compilation failed, Error:\n {output}")
-        return False, output, None
+        return False, output, None, 0
     elif args.debug:
         print("File compiled successfully")
 

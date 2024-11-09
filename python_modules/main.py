@@ -67,7 +67,7 @@ def improve_code_step(args):
         f.write(code)
 
     # Verify the file
-    verified, output, _ = check_file(args.absolute_c_path, args)
+    verified, output, _, _ = check_file(args.absolute_c_path, args)
 
     if not verified:
         print("The code is not formally verified, improving the code")
