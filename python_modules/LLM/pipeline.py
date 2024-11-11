@@ -9,8 +9,9 @@ from testing.test_function import test_generated_code
 from helper_files.list_files import list_folders_directory, list_files_directory
 from helper_files.specification import add_specifications_to_code
 from helper_files.output_file import output_results
-from helper_files.verify_input import check_output_path_set, require_problem_specification
-def generate_code_process(args, print_information_iteration = True):
+from helper_files.verify_input import require_problem_specification
+
+def generate_code_process(args):
     """Function to iteratively generate code and check it
     Returns:
         code_generation_process: The code generation process
@@ -129,7 +130,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    # folders = [f for f in folders if int(f.split('-')[0]) <= 750]
+    folders = [f for f in folders if int(f.split('-')[0]) < 932]
 
     # filter folders based on the number
     # folders = ["0"]
@@ -175,7 +176,7 @@ def generate_code_folder(args):
             os.mkdir(args.absolute_output_directory)
 
         # Run the code without printing the information
-        generate_code_process(args, print_information_iteration = False)
+        generate_code_process(args)
 
         # Print the current generated file
         print("\n \n" + "-" * 100 + "\n \n")
@@ -213,6 +214,17 @@ def verify_and_test_code_attempt(args, response_gpt, i):
             }
         }, 0
 
+    # If no loops are allowed and the code contains a loop, then automatically fail the verification
+    if not args.allowloops and ("for" in response_gpt or "while" in response_gpt):
+        return code, False, "The code contains a loop, but loops are not allowed", "0 / 0", {
+            "summary": {
+                "passed": 0,
+                "failed": 0,
+                "total": 0,
+                "information": "Loops are not allowed, but the code contains a loop"
+            }
+        }, 0 
+
     # Verify the code
     verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path,
         args)
@@ -243,7 +255,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         path_tests = os.path.dirname(args.absolute_formal_specification_path) + "/tests.c"
         passed_tests, total_tests, test_information =  \
             test_generated_code(args.absolute_c_path, path_tests,
-                f"tests_iteration_{i}", args.temp_folder, args.debug)
+                "temp_test_file", args.temp_folder, args.debug)
     else:
         test_information = {
             "summary": {

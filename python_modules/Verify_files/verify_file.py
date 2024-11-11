@@ -23,20 +23,18 @@ def verify_file(args):
     start_time = time.time()
 
     # Create the prompt that is used for frama c
-    prompt = f'frama-c  -wp "{args.absolute_c_path}"                            \
-                        -wp-prover {args.solver}                                \
-                        -wp-steps {args.wp_steps}                               \
-                        -wp-timeout {args.wp_timeout}                           \
-                        -wp-rte                                                 \
-                        {"-wp-smoke-tests" if args.smoke_detector else ""}      \
-                        -wp-status'
-
+    prompt = f"frama-c  -wp '{args.absolute_c_path}'  -wp-prover {args.solver} -wp-steps {args.wp_steps} -wp-timeout {args.wp_timeout} -wp-rte {'-wp-smoke-tests' if args.smoke_detector else ''} -wp-status"
 
     # Call a subroutine to use Frama-C to verify the C file
     result = subprocess.Popen(prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     # Wait for the process to complete
-    result.wait()
+    try:
+        result.wait(600)
+    except subprocess.TimeoutExpired:
+        print("Timeout expired. Killing the process.")
+        result.kill()
+        return False, "Timeout", "0 / 0", 600
 
     # End the timer
     end_time = time.time()

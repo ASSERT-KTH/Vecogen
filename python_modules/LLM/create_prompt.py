@@ -12,13 +12,13 @@ def create_prompt(args, previous_attempt: str = "", previous_attempt_feedback: s
         prompt_replacement_mapping = {
             'INITIAL_MESSAGE' : add_initial_message(args.formal_specification_included, args.natural_language_included),
             'ONE_SHOT_EXAMPLE' : add_one_shot_example(args.prompt_technique, args.natural_language_included, args.formal_specification_included),
-            'RULES' : rules(),
+            'RULES' : rules(args.allowloops),
             'NATURAL_LANGUAGE_DESCRIPTION' : add_natural_language_specification(args.natural_language_specification, args.natural_language_included),
             'FORMAL_SPECIFICATION' : add_formal_specification(args.formal_specification_file, args.formal_specification_included),
             'FUNCTION_SIGNATURE' : add_signature(args.function_signature),    
             'PREVIOUS_ATTEMPT' : add_previous_attempt_feedback(previous_attempt, args.natural_language_included, args.formal_specification_included, previous_attempt_feedback)
         }
-
+        
         return prompt_template.format(**prompt_replacement_mapping)
 
 # Function that adds the initial message to the prompt
@@ -114,7 +114,7 @@ def rules(allow_loops = False):
 
     # If loops are not allowed
     if not allow_loops:
-        rules_array.append("Do not make use of loops")
+        rules_array.append("Do not make use of any type of loops. That is, no for, while, do-while or recursive loops")
 
     # Return the rules
     return "\n * ".join(rules_array)

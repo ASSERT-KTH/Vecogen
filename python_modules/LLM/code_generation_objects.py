@@ -33,7 +33,7 @@ class CompletionInformation:
                 self.passed_tests_percentage = 0
         except:
             print(f"Error: Could not get the percentage of passed tests or verified goals" +
-                "Test information: {test_information}, verified goals: {verified_goals})")
+                f"Test information: {test_information}, verified goals: {verified_goals})")
             self.passed_tests_percentage = 0
 
         try:
@@ -48,8 +48,7 @@ class CompletionInformation:
                 self.passed_goals_percentage = 0
         except:
             self.passed_goals_percentage = 0
-            print(f"Error: Could not get the percentage of passed tests or verified goals" +
-                "Test information: {test_information}, verified goals: {verified_goals})")
+            print(f"Error: Could not get the percentage of passed tests or verified goals.  Test information: {test_information}, verified goals: {verified_goals})")
 
     def to_dict(self):
         """ Function that converts the completion information to a dictionary"""
