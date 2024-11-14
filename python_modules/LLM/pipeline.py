@@ -2,6 +2,7 @@
     verification error message """
 import os
 import json
+import re
 from LLM.create_prompt import create_prompt
 from LLM.code_generation_objects import IterationInformation, CompletionInformation, CodeGenerationProcess
 from Verify_files.check_file import check_file
@@ -130,7 +131,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    folders = [f for f in folders if int(f.split('-')[0]) < 932]
+    #folders = [f for f in folders if int(f.split('-')[0]) != 834]
 
     # filter folders based on the number
     # folders = ["0"]
@@ -152,7 +153,7 @@ def generate_code_folder(args):
     # If natural language is included in the arguments, then filter the folders that have the natural language specification
     if args.natural_language_specification:
         folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + natural_language_file_name)]
- 
+
     # For each folder in the directory
     for folder in folders:
         # Set the input and output files
@@ -215,7 +216,8 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         }, 0
 
     # If no loops are allowed and the code contains a loop, then automatically fail the verification
-    if not args.allowloops and ("for" in response_gpt or "while" in response_gpt):
+    # Also make sure that it is not part of a word, e.g. "forbidden"
+    if not args.allowloops and contains_loop(code):
         return code, False, "The code contains a loop, but loops are not allowed", "0 / 0", {
             "summary": {
                 "passed": 0,
@@ -223,7 +225,7 @@ def verify_and_test_code_attempt(args, response_gpt, i):
                 "total": 0,
                 "information": "Loops are not allowed, but the code contains a loop"
             }
-        }, 0 
+        }, 0
 
     # Verify the code
     verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path,
@@ -303,7 +305,7 @@ def initial_code_generation_step(args):
         response = response_llm.message.content
 
         # Process the generated code and get information about the completion
-        completion_information = process_code_and_get_completion_information(args, response, 0, prompt, tokens_used[llm_response_index], models_used[llm_response_index])
+        completion_information = process_code_and_get_completion_information(args, response, 0, prompt, tokens_used[llm_response_index], models_used)
 
         # Add the completion to the iteration information
         iteration_info.add_completion(completion_information)
@@ -311,7 +313,7 @@ def initial_code_generation_step(args):
         # If the code is verified, then stop
         if completion_information.is_verified:
             break
-    
+
     return iteration_info
 
 # Function that performs one iteration of code improvement
@@ -431,3 +433,12 @@ def process_code_and_get_completion_information(args, response_gpt, i, prompt,
         tokens_used, model_used, code, verification_output, verification_time_taken)
 
     return completion_information
+
+def contains_loop(code):
+    # Remove single-line comments
+    code = re.sub(r'//.*', '', code)
+    # Remove multi-line comments
+    code = re.sub(r'/\*.*?\*/', '', code, flags=re.DOTALL)
+    # Check for loops
+    loop_pattern = re.compile(r'\b(for|while)\b')
+    return bool(loop_pattern.search(code))

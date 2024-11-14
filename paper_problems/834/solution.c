@@ -9,7 +9,7 @@
  */
 
 /*@ predicate IsValidSolution(integer n, integer x, integer y, integer result) =
-    x >= 0 &&
+    result >= 0 &&
     ((real)(result + x) / n) >= ((real) y / 100);
 */
 

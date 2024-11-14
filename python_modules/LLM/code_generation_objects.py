@@ -120,7 +120,7 @@ class IterationInformation:
             self.best_attempt_index = completion_information.code_completion_number
             self.best_attempt_feedback = completion_information.feedback
             self.best_attempt_metric_percentage = completion_information.passed_goals_percentage
-            self.best_attempt_code = completion_information.code
+            self.best_attempt_code = completion_information.gpt_output
 
     def to_dict(self):
         """ Function that converts the iteration information to a dictionary"""
@@ -196,6 +196,7 @@ class CodeGenerationProcess:
         self.total_completions_requested += code_improvement_information.max_completions_used
         self.total_completions_used += code_improvement_information.completions_used
         self.total_tokens_used += code_improvement_information.tokens_used_iteration
+        self.total_time_taken_verification += code_improvement_information.verification_time_iteration
 
         # Check if the code is verified
         if code_improvement_information.is_verified:

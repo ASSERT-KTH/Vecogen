@@ -18,7 +18,6 @@ def create_prompt(args, previous_attempt: str = "", previous_attempt_feedback: s
             'FUNCTION_SIGNATURE' : add_signature(args.function_signature),    
             'PREVIOUS_ATTEMPT' : add_previous_attempt_feedback(previous_attempt, args.natural_language_included, args.formal_specification_included, previous_attempt_feedback)
         }
-        
         return prompt_template.format(**prompt_replacement_mapping)
 
 # Function that adds the initial message to the prompt
@@ -127,11 +126,11 @@ def add_previous_attempt_feedback(previous_attempt: str, natural_language_includ
 
     # If only natural language is included then give a message that the previous attempt did not verify, but no formal specification was given
     if natural_language_included and not formal_specification_included:
-        return "The previous code attempt did not verify: \n" + previous_attempt + "Please improve the code such that it formally verifies."
+        return "The previous code attempt did not verify: \n" + previous_attempt + "Improve the code such that it formally verifies."
 
     # If a formal specification is included, then give a message that the previous attempt did not verify
     if formal_specification_included:
-        return "The previous code attempt did not verify: \n" + previous_attempt + " The following feedback was given: \n" + previous_attempt_feedback + "Please improve the code such that it formally verifies."
+        return "The previous code attempt did not verify: \n```C" + previous_attempt + "``` The following feedback was given: \n" + previous_attempt_feedback + "\nPlease improve the code such that it formally verifies."
 
 def replace_loops(use_loops):
     """ Function that returns a string based on the use_loops boolean
