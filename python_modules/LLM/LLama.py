@@ -1,10 +1,13 @@
-from openai import OpenAI
+from types import SimpleNamespace
+import tiktoken
+import json
 from LLM.create_prompt import seperate_prompt
 from LLM.AbstractLLM import LLM
-import tiktoken
-class GPT(LLM):
+from llamaapi import LlamaAPI
+
+class LLama(LLM):
     def __init__(self, args, api_key):
-        self.client = OpenAI(api_key=api_key)
+        self.client = LlamaAPI(api_token=api_key)
         self.args = args
 
     # Get response from GPT
@@ -18,24 +21,28 @@ class GPT(LLM):
             The response from the OpenAI API
             The amount of tokens used in the request
             The exact model used in the request"""
+
         # Seperate the prompt into the assistant and user prompt
         assistant_prompt, user_prompt = seperate_prompt(prompt)
 
-        message=[{"role": "system", "content": assistant_prompt},
-                {"role": "user", "content": user_prompt}]
-        temperature=self.args.temperature
-        max_tokens=self.args.max_tokens
-        frequency_penalty=0.0
+        # Build the API request
+        api_request_json = {
+            "model": self.args.model_name,
+            "messages": [
+                {"role": "system", "content": assistant_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": self.args.temperature,
+            "max_tokens": self.args.max_tokens,
+            "n": n,
+            "stream": False
+        }
+        
+        # Execute the request
+        response_dict = self.client.run(api_request_json).json()
 
-        # Make the request
-        response = self.client.chat.completions.create(
-            model= self.args.model_name,
-            messages = message,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            frequency_penalty=frequency_penalty,
-            n = n,
-        )
+        # Convert to SimpleNamespace for attribute-style access
+        response = json.loads(json.dumps(response_dict), object_hook=lambda d: SimpleNamespace(**d))
 
         # Return the response
         return response.choices, response.usage.total_tokens, response.model

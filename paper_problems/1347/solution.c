@@ -39,6 +39,7 @@
     requires 1 <= f <= 100000 && 1 <= g <= 100000 && 1 <= h <= 100000;
     requires ExistsSolution(b, c, d, f, g, h);
     assigns *out_a, *out_b, *out_c, *out_d, *out_e, *out_f, *out_g, *out_h, *out_i;
+    ensures *out_b == b && *out_c == c && *out_d == d && *out_f == f && *out_g == g && *out_h == h;
     ensures IsValidSolution(*out_a, *out_b, *out_c, *out_d, *out_e, *out_f, *out_g, *out_h, *out_i);
 */
 void restoreMagicSquare(int a, int b, int c, int d, int e, int f, int g, int h, int i, int *out_a, int *out_b, int *out_c, int *out_d, int *out_e, int *out_f, int *out_g, int *out_h, int *out_i)

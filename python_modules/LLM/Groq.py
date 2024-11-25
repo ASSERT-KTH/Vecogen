@@ -1,16 +1,11 @@
 from LLM.create_prompt import seperate_prompt
 from LLM.AbstractLLM import LLM
 from groq import Groq
-import os
 
 class Groq_LLM(LLM):
-    def __init__(self, args):
-
-        self.client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
-)
-
+    def __init__(self, args, api_key):
         self.args = args
+        self.client = Groq(api_key=api_key)
 
     # Get response from GPT
     def make_request(self, prompt, n):
@@ -39,7 +34,7 @@ class Groq_LLM(LLM):
             temperature=temperature,
             max_tokens=max_tokens,
             frequency_penalty=frequency_penalty,
-            n = n,
+            n = n
         )
 
         # Return the response

@@ -26,5 +26,6 @@
     requires 1 <= f <= 100000 && 1 <= g <= 100000 && 1 <= h <= 100000;
     requires ExistsSolution(b, c, d, f, g, h);
     assigns *out_a, *out_b, *out_c, *out_d, *out_e, *out_f, *out_g, *out_h, *out_i;
+    ensures *out_b == b && *out_c == c && *out_d == d && *out_f == f && *out_g == g && *out_h == h;
     ensures IsValidSolution(*out_a, *out_b, *out_c, *out_d, *out_e, *out_f, *out_g, *out_h, *out_i);
 */

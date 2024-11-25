@@ -6,6 +6,8 @@ from helper_files.list_files import get_absolute_path
 from Frama_C.solvers import solvers
 from LLM.GPT import GPT
 from LLM.Groq import Groq_LLM
+from LLM.LLama import LLama
+
 def require_directory(args):
     """Function to check if a directory is given in the arguments
     Args:
@@ -200,18 +202,6 @@ def require_solver(args):
               following solvers: {available_solvers}")
         sys.exit()
 
-def require_api_key_gpt():
-    """Function to check if the API key for the OPENAI GPT is set
-    Args:
-        None
-    Returns:
-        None"""
-    api_key_gpt = os.getenv("OPENAI_API_KEY")
-
-    if api_key_gpt is None:
-        print("API key not set")
-        sys.exit()
-
 def require_output_path(args):
     """Function to check if the output path is set
     Args:
@@ -326,7 +316,7 @@ def require_model(args):
         sys.exit()
 
     # Check if the model is available
-    available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o', 'CodeLlama']
+    # available_models = ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o', 'LLama']
     # if args.model_name not in available_models:
     #     print(f"The model {args.model_name} is not available, please use one of \
     #         the following models: {available_models}")
@@ -334,10 +324,20 @@ def require_model(args):
 
     # Put the model in the args, and create an instance
     if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
-        require_api_key_gpt()
-        args.model = GPT(args)
+        # If the api key is not set, then give an error
+        if os.getenv("OPENAI_API_KEY") is None:
+            sys.exit()
+        args.model = GPT(args, os.getenv("OPENAI_API_KEY"))
+    elif args.model_name in ['llama3.1-70b', 'llama3.1-8b', 'llama3.1-405b']:
+        # If the api key is not set, then give an error
+        if os.getenv("LLAMA_API_KEY") is None:
+            sys.exit()
+        args.model = LLama(args, os.getenv("LLAMA_API_KEY"))
     else:
-        args.model = Groq_LLM(args)
+        if os.getenv("GROQ_API_KEY") is None:
+            sys.exit()
+        args.model = Groq_LLM(args, os.getenv("GROQ_API_KEY"))
+
 
 def require_set_specification_names(args):
     """Function to chec kif the specifications are set correctly for the code generation for folders"""

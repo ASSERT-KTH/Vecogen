@@ -86,11 +86,14 @@ def add_specification_and_output_code(args, code):
     """
 
     # Ensure that the code has triple backticks
-    if "```C" not in code:
+    if "```C" not in code and "```c" not in code:
         raise ValueError(f"Attempting to add the specification to the code. The code does not contain triple backticks. Code: {code}")
 
     # Get the code from the output of the LLM
-    code = code.split("```C")[1]
+    if "```C" in code:
+        code = code.split("```C")[1]
+    else:
+        code = code.split("```c")[1]
     code = code.split("```")[0]
 
     # Remove everything before the first newline, the function signature
@@ -131,7 +134,7 @@ def generate_code_folder(args):
     folders.sort(key=lambda x: int(x.split('-')[0]))
 
     # Filter the folders if needed
-    #folders = [f for f in folders if int(f.split('-')[0]) != 834]
+    #folders = [f for f in folders if int(f.split('-')[0]) == 932]
 
     # filter folders based on the number
     # folders = ["0"]
@@ -292,7 +295,7 @@ def initial_code_generation_step(args):
     prompt = create_prompt(args)
 
     # generate the initial attempts by making prompts of at most x each
-    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 10000)
+    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 9999)
 
     # For each response, check the code. Stop if the code is verified
     # use enumerate
@@ -334,7 +337,7 @@ def code_improvement_step(args, code_improvement_iteration, code, output):
     prompt = create_prompt(args, code, output)
 
     # generate the initial attempts by making prompts of at most x each
-    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 10000)
+    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 9999)
 
     # For each response, check the code. Stop if the code is verified
     # use enumerate

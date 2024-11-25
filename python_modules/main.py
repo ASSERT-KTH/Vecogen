@@ -6,7 +6,7 @@ import os
 import argparse
 from dotenv import load_dotenv
 from helper_files.list_files import list_files_directory
-from helper_files.verify_input import require_directory_exists, require_c_file, require_solver, require_api_key_gpt, check_output_path_set, ensure_integers,require_model, require_problem_specification, require_output_path
+from helper_files.verify_input import require_directory_exists, require_c_file, require_solver, check_output_path_set, ensure_integers,require_model, require_problem_specification, require_output_path
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
 from LLM.pipeline import add_specification_and_output_code, code_improvement_step, generate_code_process, generate_code_folder
@@ -36,7 +36,6 @@ def generate_initial_prompt(args):
 def generate_code(args):
     """ Generate code using the pipeline and the LLM"""
     require_solver(args)
-    require_api_key_gpt()
     require_problem_specification(args)
     check_output_path_set(args)
     require_model(args)
@@ -51,7 +50,6 @@ def generate_code(args):
 def improve_code_step(args):
     """ Improve existing code using the pipeline and the LLM"""
     require_solver(args)
-    require_api_key_gpt()
     require_c_file(args)
     require_problem_specification(args)
     check_output_path_set(args)
@@ -80,7 +78,6 @@ def improve_code_step(args):
 def generate_folder(args):
     """ Generate code from a folder with folders"""
     require_solver(args)
-    require_api_key_gpt()
     require_directory_exists(args)
     require_model(args)
     require_output_path(args)
