@@ -1,9 +1,7 @@
 python-dotenv
-torch
 openai
-transformers
 tiktoken
-torchvision
 groq
 torchaudio
 accelerate
+LlamaAPI

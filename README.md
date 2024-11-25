@@ -7,9 +7,10 @@ A project that uses LLMs to generate formally verified code. The input are forma
 - Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
 - Frama-c (https://frama-c.com/)
 - Why3 (https://why3.lri.fr/)
-- .env file in the root directory with a OPENAI API key, "OPENAI_API_KEY = {key}" 
+- Provers in the Why3 platform, i.e. Alt-Ergo, CVC4, and Z3
+- .env file in the root directory with a API keys for the used services of OPENAI and GROQ, OPENAI_API_KEY = "..." and GROQ_API_KEY = "..."
 
-# Solvers 
+# Provers 
 - alt-ergo 2.4.3 (https://alt-ergo.lri.fr/)
 - CVC4 1.7 (https://cvc4.github.io/)
 - Z3 4.8.6  
@@ -30,46 +31,103 @@ python main.py function
 ```
 
 # Currently implemented functions
-- 'verify_dir'      : Verifies the first .c and .h file. 
-- 'verify'          : Verifies the given .c and .h file. 
+- 'verify'          : Verifies the given C file (-c) using a formal specification (-fsf) file. 
 - 'list_dir'        : Lists the files given in a directory, where the directory is described by the -d flag
+- 'improve_code_step': Only executes one code improvement step on the given formal specification and program candidate
 - 'generate_prompt' : Generates a prompt for the user to given an .h file
-- 'generate_code"   : Generates the code for the given .h file using Large Language models. Requires the API key to be set.
+- 'generate_code'   : Generates the code for the given .h file using Large Language models. Requires the API key to be set.
+- 'generate_code_folder: Recursively generate code for each subfolder in a given directory
 
-# Existing flags
-- '-c' : The .c file
-- '-he': The .h file to verify
-- '-fsf': The formal specification header file to use for verification purposes. If not set, then uses header_file instead
-- '-d' : The directory
-- '-s' : The solvers to be used
-- '-p' : The prompt to be used
-- '-wpt': The timeout for the wp solvers
-- '-wps': The maximum amount of steps for the wp solvers
-- '-sd' : The smoke detector option for the solvers. Checks consistency of the solvers
-- '-iter': The amount of iterations for the code generation
-- '-temp': The temperature for the code generation
-- '-mt': The maximum amount of tokens for the code generation
-- '-o': The output path for the generated code
-- '-debug': The debug option that prints the output of the solvers
-- '-model': The model to be used for the code generation
-- '-clear': The clear option that clears all debug files
-- '-reboot': The amount of iterations before a reboot occurs. A reboot starts from the original prompt.
-- '-al': The option to allow loops or not
-- '-ieg': The amount of initial examples generated for each problem
-- '-sfn': The name of the specification file in the folder. Used for generating code in folders
-- '-nl': The option to only use natural language in the prompting. This means that any formal feedback is not used when iterative prompting.
-- '-pt': The prompt technique used for the code generation. Options are 'zero-shot' and 'one-shot'. Default is 'zero-shot'
+# Flags Documentation
 
-# Example of usages. Make sure you are in the python_modules directory
-- python3 main.py verify_folder -d ../no_loop_problems/0
-    This command will verify the first .c and .h file in the folder no_loop_problems/0
-- python3 main.py verify -c ../no_loop_problems/0/solution.c -he ../no_loop_problems/0/specification.h
-    This command will verify the given .c and .h file
-- python3 main.py generate_code -he ../no_loop_problems/0/specification.h
-    This command will generate the code for the given .h file
+## General Flags
+### `--function`
+- **Description**: Specifies the function to execute (e.g., `list_files`, `verify`).
+- **Type**: `str`
+- **Default**: Required
 
-python3 main.py generate_code -he ../no_loop_problems/284/specification.h -ieg 5 -temp 0.8  -iter 10 -reboot 5
+### `--debug`
+- **Description**: Enables debug mode, providing verbose logging.
+- **Type**: `bool`
+- **Default**: `False`
 
-python3 main.py generate_code -he ../no_loop_problems/301/specification.h -ieg 5 -temp 0.8 -iter 10 -reboot 5 -o ../output/gpt4/301/ -model gpt-4
+### `--clear`
+- **Description**: Clears debug files in the specified output path.
+- **Type**: `bool`
+- **Default**: `False`
 
-python3 main.py generate_code_folder -d ../no_loop_problems/ -ieg 1 -iter 1 -temp 1  -reboot 5 -wpt 5 -o ../output/3.5-1-1-1-all -output-file generated_code.c
+## Input/Output Flags
+### `--directory`
+- **Description**: Path to the directory for file operations.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--c_file`
+- **Description**: Path to the C file to be verified or improved.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--formal_specification_file`
+- **Description**: Path to the formal specification file for verification.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--output_path`
+- **Description**: Path to save output files, such as generated code or verification results.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--output_file_name`
+- **Description**: Name of the output file for generated code.
+- **Type**: `str`
+- **Default**: `None`
+
+## Code Generation Flags
+### `--natural_language_specification`
+- **Description**: Natural language description of the task for code generation.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--function_signature`
+- **Description**: Function signature for the code to be generated.
+- **Type**: `str`
+- **Default**: `None`
+
+### `--specification_type`
+- **Description**: Specifies the type of specification for code generation (`natural`, `formal`, or `both`).
+- **Type**: `str`
+- **Default**: `both`
+
+### `--model_name`
+- **Description**: Name of the LLM model to use for code generation (e.g., `gpt-3.5-turbo`).
+- **Type**: `str`
+- **Default**: `gpt-3.5-turbo`
+
+### `--temperature`
+- **Description**: Sampling temperature for the LLM; higher values generate more diverse outputs.
+- **Type**: `float`
+- **Default**: `1.0`
+
+### `--max_tokens`
+- **Description**: Maximum number of tokens to generate in the output.
+- **Type**: `int`
+- **Default**: `4096`
+
+### `--allowloops`
+- **Description**: Enables or disables loops in the generated code.
+- **Type**: `bool`
+- **Default**: `False`
+
+### `--iterations`
+- **Description**: Number of iterations to use for code generation or improvement.
+- **Type**: `int`
+- **Default**: `10`
+
+
+## Verification Flags
+
+
+# Example of usage. Make sure you are in the python_modules directory
+python3 main.py generate_code_folder -d ../paper_problems/ -ieg 10 -iter 10 -temp 1 -wpt 5 -o ../output/llama3.1-8b-10-10-1-one-shot-both -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both
+
+This generates code for all problems in a folders
