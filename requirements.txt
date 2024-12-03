@@ -1,7 +1,5 @@
 python-dotenv
 openai
 tiktoken
+llamaapi
 groq
-torchaudio
-accelerate
-LlamaAPI
