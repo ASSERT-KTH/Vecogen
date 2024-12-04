@@ -128,7 +128,7 @@ python main.py function
 
 
 # Example of usage. Make sure you are in the python_modules directory
-python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-4o -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-4o
+python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-3.5-turbo -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-3.5-turbo
 
 This generates code for all problems in a folders
 
@@ -137,6 +137,14 @@ This generates code for all problems in a folders
 docker pull
 
 2. Create the .env file with the API keys for the services used
+OPENAI_API_KEY=XXX
+GROQ_API_KEY=XXX
 
 3. Run the docker image using the env file
 docker run --env-file .env -it 
+
+4. Go to the python_modules directory
+cd python_modules
+
+5. Run the code generation process
+python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-3.5-turbo -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-3.5-turbo
