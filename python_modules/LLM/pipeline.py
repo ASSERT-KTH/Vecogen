@@ -64,8 +64,8 @@ def generate_code_process(args):
         i += 1
 
     # Print the results
-    print(f"Total completions used: {code_generation_process.total_completions_used}, total tokens used: {code_generation_process.total_tokens_used}, total effective requested: {code_generation_process.total_completions_requested}")
-    print(f"Verified: {verified}")
+    print(f"Total completions used: {code_generation_process.total_completions_used}, total tokens used: {code_generation_process.total_tokens_used}, total time taken: {code_generation_process.total_time_taken_verification}.")
+    print(f"Has the code been successfully verified: {verified}")
     if args.debug:
         print("Results:")
         for result in code_generation_process.code_improvement_information:
@@ -103,7 +103,8 @@ def add_specification_and_output_code(args, code):
     code = add_specifications_to_code(args.absolute_formal_specification_path, args.absolute_natural_language_specification_path, args.absolute_function_signature_path, code)
 
     # Output the code to the specified file
-    print(f"Writing the code to the file {args.absolute_output_directory}/{args.output_file_name}")
+    if args.debug:
+        print(f"Writing the code to the file {args.absolute_output_directory}/{args.output_file_name}")
     with open(args.absolute_output_directory + "/" + args.output_file_name, "w",
                 encoding="utf-8") as f:
         args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file_name
@@ -163,6 +164,8 @@ def generate_code_folder(args):
         args.natural_language_specification = args.directory + "/" + folder + "/" + natural_language_file_name
         args.formal_specification_file = args.directory + "/" + folder + "/" + formal_specification_file_name
         args.function_signature = args.directory + "/" + folder + "/" + function_signature_file_name
+        
+        print(f"Starting to generate code for folder {folder}....")
 
         # Set the output path
         try:
@@ -184,7 +187,7 @@ def generate_code_folder(args):
 
         # Print the current generated file
         print("\n \n" + "-" * 100 + "\n \n")
-        print(f"Generated code for folder {folder}.")
+        print(f"Generated code for folder {folder}. \n\n")
 
 # Function that verifies and tests the code that has been generated
 def verify_and_test_code_attempt(args, response_gpt, i):
@@ -272,8 +275,8 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         }
         passed_tests, total_tests = 0, 0
         if args.debug:
-            print(f"No tests found, proved goals: {verified_goals}")   
-    print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
+            print(f"No tests found, proved goals: {verified_goals}") 
+    print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}. Used {verification_time_taken} seconds to verify.")
 
     return code, verified, output, verified_goals, test_information, verification_time_taken
 

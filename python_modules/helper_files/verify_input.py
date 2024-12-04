@@ -326,15 +326,18 @@ def require_model(args):
     if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
         # If the api key is not set, then give an error
         if os.getenv("OPENAI_API_KEY") is None:
+            print("Please set the OPENAI_API_KEY environment variable")
             sys.exit()
         args.model = GPT(args, os.getenv("OPENAI_API_KEY"))
     elif args.model_name in ['llama3.1-70b', 'llama3.1-8b', 'llama3.1-405b']:
         # If the api key is not set, then give an error
         if os.getenv("LLAMA_API_KEY") is None:
+            print("Please set the LLAMA_API_KEY environment variable")
             sys.exit()
         args.model = LLama(args, os.getenv("LLAMA_API_KEY"))
     else:
         if os.getenv("GROQ_API_KEY") is None:
+            print("Please set the GROQ_API_KEY environment variable")
             sys.exit()
         args.model = Groq_LLM(args, os.getenv("GROQ_API_KEY"))
 

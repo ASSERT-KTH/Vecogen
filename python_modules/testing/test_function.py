@@ -78,7 +78,6 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     path_to_executable = os.path.normpath(os.path.join(output_path, test_file_name))
 
     # Compile the file and the test cases
-    print("Step 1. Compiling the test function")
     command = [
         "gcc",
         path_file,
@@ -92,7 +91,6 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
         stdout, stderr, returncode = execute_command_with_timeout(command, timeout=120)
         if debug:
             print("Compilation output:", stdout)
-        print("Compilation complete!")
     except subprocess.TimeoutExpired as e:
         print("Compilation timed out!")
         return 0, 0, {"summary": {"passed": 0, "failed": 0, "total": 0, "information": f"Compilation timed out: {str(e)}"}}
@@ -103,8 +101,6 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     except Exception as e:
         print(f"An unexpected error occurred during compilation: {e}")
         return 0, 0, {"summary": {"passed": 0, "failed": 0, "total": 0, "information": f"Compilation error: {str(e)}"}}
-
-    print("Step 2. Compiled. Now running the test cases")
 
     # Run the test cases
     command = [path_to_executable, f"{path_to_executable}.json"]
@@ -124,8 +120,6 @@ def test_generated_code(path_file, path_test, test_file_name, output_path, debug
     except Exception as e:
         print(f"An unexpected error occurred during test execution: {e}")
         return 0, 0, {"summary": {"passed": 0, "failed": 0, "total": 0, "information": f"Execution error: {str(e)}"}}
-
-    print("Step 3. Test cases run. Now reading the output")
 
     # Verify the JSON file existence
     json_file_path = path_to_executable + ".json"

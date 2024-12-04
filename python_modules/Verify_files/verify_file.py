@@ -41,7 +41,6 @@ def verify_file(args):
 
     # Calculate the elapsed time
     elapsed_time = end_time - start_time
-    print(f"Elapsed time: {elapsed_time} seconds")
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()
