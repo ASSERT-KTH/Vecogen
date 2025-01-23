@@ -29,7 +29,7 @@ This generates code for all problems in a folders
 ## Running the tool using Docker
 1. Clone the docker image
 ```
-docker pull vecogen/vecogen
+docker pull merlijnsevenhuijsen/vecogen
 ```
 
 2. Create the .env file with the API keys for the services used
@@ -40,7 +40,7 @@ GROQ_API_KEY=XXX
 
 3. Run the docker image using the env file
 ```
-docker run --env-file .env -it vecogen/vecogen
+docker run --env-file .env -it merlijnsevenhuijsen/vecogen
 ```
 
 4. Go to the python_modules directory
