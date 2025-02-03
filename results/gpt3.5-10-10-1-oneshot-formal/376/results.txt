@@ -1,0 +1,1515 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 5,
+    "total_tokens_used": 3763,
+    "total_time_taken_verification": 143.61009335517883,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 3763,
+            "verification_time_iteration": 143.61009335517883,
+            "completions_used": 5,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in formal specification. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "g",
+                    "gpt_output": "```C\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    int exp_mod = n % 4;\n    long result;\n\n    if (exp_mod == 0) {\n        result = 6;\n    } else if (exp_mod == 1) {\n        result = 8;\n    } else if (exp_mod == 2) {\n        result = 4;\n    } else {\n        result = 2;\n    }\n\n    *out = result;\n}\n```",
+                    "tokens_used": 3763,
+                    "code": "/*\n    There exists an island called Arpa\u2019s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa\u2019s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.\n\n    Input\n    The input contains one integer n ( 0 \u2264 n \u2264 10^9 ).\n\n    Output\n    Output single integer \u2014 the last digit of 1378^n .\n*/\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out) {\n    int exp_mod = n % 4;\n    long result;\n\n    if (exp_mod == 0) {\n        result = 6;\n    } else if (exp_mod == 1) {\n        result = 8;\n    } else if (exp_mod == 2) {\n        result = 4;\n    } else {\n        result = 2;\n    }\n\n    *out = result;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 14.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:     ensures *out == (long) \\pow(1378, n) % 10;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "13 / 14",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 1000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 4
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 1000000000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 5
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 6
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 999999999
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 13781378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 51202278
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 999999998
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 999999997
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 12193721
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 6,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 989898989
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 8
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 9
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 10
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 11
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 13
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 15
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 16
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 999999996
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 999999995
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 999999994
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 29,
+                                "failed": 1,
+                                "pass_rate": 0.97
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 29.009281158447266,
+                    "passed_tests_percentage": 0.97,
+                    "passed_goals_percentage": 0.9285714285714286
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in formal specification. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "p",
+                    "gpt_output": "```C\n/*@ axiomatic power_function {\n    ...\n}*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    int mod = n % 4;\n    \n    switch (mod) {\n        case 0:\n            *out = 6;\n            break;\n        case 1:\n            *out = 8;\n            break;\n        case 2:\n            *out = 4;\n            break;\n        case 3:\n            *out = 2;\n            break;\n        default: // This should never be reached\n            *out = -1;\n    }\n}\n```",
+                    "tokens_used": 0,
+                    "code": "/*\n    There exists an island called Arpa\u2019s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa\u2019s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.\n\n    Input\n    The input contains one integer n ( 0 \u2264 n \u2264 10^9 ).\n\n    Output\n    Output single integer \u2014 the last digit of 1378^n .\n*/\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out) {\n    int mod = n % 4;\n    \n    switch (mod) {\n        case 0:\n            *out = 6;\n            break;\n        case 1:\n            *out = 8;\n            break;\n        case 2:\n            *out = 4;\n            break;\n        case 3:\n            *out = 2;\n            break;\n        default: // This should never be reached\n            *out = -1;\n    }\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 23.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:     ensures *out == (long) \\pow(1378, n) % 10;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "21 / 23",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 1000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 4
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 1000000000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 5
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 6
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 999999999
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 13781378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 51202278
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 999999998
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 999999997
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 12193721
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 6,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 989898989
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 8
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 9
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 10
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 11
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 13
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 15
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 16
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 999999996
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 999999995
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 999999994
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 29,
+                                "failed": 1,
+                                "pass_rate": 0.97
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 28.59624195098877,
+                    "passed_tests_percentage": 0.97,
+                    "passed_goals_percentage": 0.9130434782608695
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in formal specification. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "t",
+                    "gpt_output": "```C\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    int remainder = n % 4;\n\n    if (remainder == 0)\n    {\n        *out = 6;\n    }\n    else if (remainder == 1)\n    {\n        *out = 8;\n    }\n    else if (remainder == 2)\n    {\n        *out = 4;\n    }\n    else\n    {\n        *out = 2;\n    }\n}\n```  ",
+                    "tokens_used": 0,
+                    "code": "/*\n    There exists an island called Arpa\u2019s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa\u2019s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.\n\n    Input\n    The input contains one integer n ( 0 \u2264 n \u2264 10^9 ).\n\n    Output\n    Output single integer \u2014 the last digit of 1378^n .\n*/\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out) {\n    int remainder = n % 4;\n\n    if (remainder == 0)\n    {\n        *out = 6;\n    }\n    else if (remainder == 1)\n    {\n        *out = 8;\n    }\n    else if (remainder == 2)\n    {\n        *out = 4;\n    }\n    else\n    {\n        *out = 2;\n    }\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 16.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:     ensures *out == (long) \\pow(1378, n) % 10;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "15 / 16",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 1000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 4
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 1000000000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 5
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 6
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 999999999
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 13781378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 51202278
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 999999998
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 999999997
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 12193721
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 6,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 989898989
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 8
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 9
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 10
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 11
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 13
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 15
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 16
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 999999996
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 999999995
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 999999994
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 29,
+                                "failed": 1,
+                                "pass_rate": 0.97
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 28.703283071517944,
+                    "passed_tests_percentage": 0.97,
+                    "passed_goals_percentage": 0.9375
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in formal specification. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "-",
+                    "gpt_output": "```C\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    if (n % 4 == 0) {\n        *out = 6;\n    } else if (n % 4 == 1) {\n        *out = 8;\n    } else if (n % 4 == 2) {\n        *out = 4;\n    } else {\n        *out = 2;\n    }\n}\n```  ",
+                    "tokens_used": 0,
+                    "code": "/*\n    There exists an island called Arpa\u2019s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa\u2019s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.\n\n    Input\n    The input contains one integer n ( 0 \u2264 n \u2264 10^9 ).\n\n    Output\n    Output single integer \u2014 the last digit of 1378^n .\n*/\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out) {\n    if (n % 4 == 0) {\n        *out = 6;\n    } else if (n % 4 == 1) {\n        *out = 8;\n    } else if (n % 4 == 2) {\n        *out = 4;\n    } else {\n        *out = 2;\n    }\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 16.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:     ensures *out == (long) \\pow(1378, n) % 10;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "15 / 16",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 1000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 4
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 1000000000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 5
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 6
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 999999999
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 13781378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 51202278
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 999999998
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 999999997
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 12193721
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 6,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 989898989
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 8
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 9
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 10
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 11
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 13
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 15
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 16
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 999999996
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 999999995
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 999999994
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 29,
+                                "failed": 1,
+                                "pass_rate": 0.97
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 28.64905571937561,
+                    "passed_tests_percentage": 0.97,
+                    "passed_goals_percentage": 0.9375
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in formal specification. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "3",
+                    "gpt_output": "```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    int lastDigit;\n\n    if (n == 0) {\n        lastDigit = 1;\n    } else {\n        int modN = n % 4;\n        switch (modN) {\n            case 1:\n                lastDigit = 8;\n                break;\n            case 2:\n                lastDigit = 4;\n                break;\n            case 3:\n                lastDigit = 2;\n                break;\n            default:\n                lastDigit = 6;\n        }\n    }\n\n    *out = lastDigit;\n}\n```",
+                    "tokens_used": 0,
+                    "code": "/*\n    There exists an island called Arpa\u2019s land, some beautiful girls live there, as ugly ones do. Mehrdad wants to become minister of Arpa\u2019s land. Arpa has prepared an exam. Exam has only one question, given n , print the last digit of 1378^n . Mehrdad has become quite confused and wants you to help him. Please help, although it's a naive cheat.\n\n    Input\n    The input contains one integer n ( 0 \u2264 n \u2264 10^9 ).\n\n    Output\n    Output single integer \u2014 the last digit of 1378^n .\n*/\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out) {\n    int lastDigit;\n\n    if (n == 0) {\n        lastDigit = 1;\n    } else {\n        int modN = n % 4;\n        switch (modN) {\n            case 1:\n                lastDigit = 8;\n                break;\n            case 2:\n                lastDigit = 4;\n                break;\n            case 3:\n                lastDigit = 2;\n                break;\n            default:\n                lastDigit = 6;\n        }\n    }\n\n    *out = lastDigit;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "28 / 28",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 1000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 4
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 1000000000
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 5
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 6
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 999999999
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 13781378
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 51202278
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 999999998
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 999999997
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 12193721
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 989898989
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 8
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 9
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 10
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 11
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 13
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 15
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 16
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 999999996
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 999999995
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 999999994
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 28.652231454849243,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-3.5-turbo",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```C\n\n/*@ axiomatic power_function {\n    axiom power_zero: \\forall integer n; n == 0 ==> (long) \\pow(1378, n) % 10 == 1;\n    axiom power_mod_one: \\forall integer n; n % 4 == 1 ==> (long) \\pow(1378, n) % 10 == 8;\n    axiom power_mod_two: \\forall integer n; n % 4 == 2 ==> (long) \\pow(1378, n) % 10 == 4;\n    axiom power_mod_three: \\forall integer n; n % 4 == 3 ==> (long) \\pow(1378, n) % 10 == 2;\n    axiom power_mod_zero: \\forall integer n; n % 4 == 0 && n != 0 ==> (long) \\pow(1378, n) % 10 == 6;\n  }\n*/\n\n/*@\n    requires \\valid(out);\n    requires 0 <= n <= 1000000000;\n    assigns *out;\n    ensures *out == (long) \\pow(1378, n) % 10;\n*/\nvoid findLastDigitOfPower(int n, int *out)\n{\n    int lastDigit;\n\n    if (n == 0) {\n        lastDigit = 1;\n    } else {\n        int modN = n % 4;\n        switch (modN) {\n            case 1:\n                lastDigit = 8;\n                break;\n            case 2:\n                lastDigit = 4;\n                break;\n            case 3:\n                lastDigit = 2;\n                break;\n            default:\n                lastDigit = 6;\n        }\n    }\n\n    *out = lastDigit;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

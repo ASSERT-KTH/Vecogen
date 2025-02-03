@@ -1,0 +1,327 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 1688,
+    "total_time_taken_verification": 5.12979793548584,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 1688,
+            "verification_time_iteration": 5.12979793548584,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\nHere is an example of the task:\n```C\n/*\n    Check if a given number falls within a specified range between two integers low and high, inclusive. Additionally it checks if a given integer x is a multiple of another integer div.  If either condition is not satisfied, the function returns false. This operation ensures that x adheres to specific numeric constraints related to both value and divisibility.\n\n    input:\n        The function takes four integers x, low, high and div. x is the number to be checked, and low and high are the lower and upper bounds of the range, respectively. The function also takes an integer div which is the number to be checked for divisibility.\n\n    output:\n        One output will be given which returns true if both conditions are met, i.e., if x is within the range [low, high] and simultaneously a multiple of div.\n*/\n/*\n    requires div != 0;\n    requires \\valid(out);\n    assigns *out;\n    ensures *out == (x >= low && x <= high && x % div == 0);\n*/\nvoid checkConstraints(int x, int low, int high, int div, int *out)\n{\n    *out = (x >= low && x <= high && x % div == 0);\n}\n```\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    Tonight is brain dinner night and all zombies will gather together to scarf down some delicious brains. The artful Heidi plans to crash the party, incognito, disguised as one of them. Her objective is to get away with at least one brain, so she can analyze the zombies' mindset back home and gain a strategic advantage. They will be N guests tonight: N - 1 real zombies and a fake one, our Heidi. The living-dead love hierarchies as much as they love brains: each one has a unique rank in the range 1 to N - 1 , and Heidi, who still appears slightly different from the others, is attributed the highest rank, N . Tonight there will be a chest with brains on display and every attendee sees how many there are. These will then be split among the attendees according to the following procedure: The zombie of the highest rank makes a suggestion on who gets how many brains (every brain is an indivisible entity). A vote follows. If at least half of the attendees accept the offer, the brains are shared in the suggested way and the feast begins. But if majority is not reached, then the highest-ranked zombie is killed, and the next zombie in hierarchy has to make a suggestion. If he is killed too, then the third highest-ranked makes one, etc. (It's enough to have exactly half of the votes \u2013 in case of a tie, the vote of the highest-ranked alive zombie counts twice, and he will of course vote in favor of his own suggestion in order to stay alive.) You should know that zombies are very greedy and sly, and they know this too \u2013 basically all zombie brains are alike. Consequently, a zombie will never accept an offer which is suboptimal for him. That is, if an offer is not strictly better than a potential later offer, he will vote against it. And make no mistake: while zombies may normally seem rather dull, tonight their intellects are perfect. Each zombie's priorities for tonight are, in descending order: survive the event (they experienced death already once and know it is no fun), get as many brains as possible. Heidi goes first and must make an offer which at least half of the attendees will accept, and which allocates at least one brain for Heidi herself. What is the smallest number of brains that have to be in the chest for this to be possible?\n\n    Input\n    The input contains one integer: N , the number of attendees ( 1 \u2264 N \u2264 10 9 ).\n\n    Output\n    Output one integer: the smallest number of brains in the chest which allows Heidi to take one brain home.\n*/\n/*@ predicate isValidSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 == out;\n*/\n\n/*@ predicate existsSmallerSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 < out;\n*/\n\n/*@\n    requires \\valid(out);\n    requires 1 <= N <= 1000000000;\n    assigns *out;\n    ensures isValidSolution(N, *out);\n    ensures !existsSmallerSolution(N, *out);\n*/\nvoid calculateMinimumBrainsForStrategy(int N, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "g",
+                    "gpt_output": "```C\nvoid calculateMinimumBrainsForStrategy(int N, int *out)\n{\n    *out = (N + 1) / 2;\n}\n```  ",
+                    "tokens_used": 1688,
+                    "code": "/*\n    Tonight is brain dinner night and all zombies will gather together to scarf down some delicious brains. The artful Heidi plans to crash the party, incognito, disguised as one of them. Her objective is to get away with at least one brain, so she can analyze the zombies' mindset back home and gain a strategic advantage. They will be N guests tonight: N - 1 real zombies and a fake one, our Heidi. The living-dead love hierarchies as much as they love brains: each one has a unique rank in the range 1 to N - 1 , and Heidi, who still appears slightly different from the others, is attributed the highest rank, N . Tonight there will be a chest with brains on display and every attendee sees how many there are. These will then be split among the attendees according to the following procedure: The zombie of the highest rank makes a suggestion on who gets how many brains (every brain is an indivisible entity). A vote follows. If at least half of the attendees accept the offer, the brains are shared in the suggested way and the feast begins. But if majority is not reached, then the highest-ranked zombie is killed, and the next zombie in hierarchy has to make a suggestion. If he is killed too, then the third highest-ranked makes one, etc. (It's enough to have exactly half of the votes \u2013 in case of a tie, the vote of the highest-ranked alive zombie counts twice, and he will of course vote in favor of his own suggestion in order to stay alive.) You should know that zombies are very greedy and sly, and they know this too \u2013 basically all zombie brains are alike. Consequently, a zombie will never accept an offer which is suboptimal for him. That is, if an offer is not strictly better than a potential later offer, he will vote against it. And make no mistake: while zombies may normally seem rather dull, tonight their intellects are perfect. Each zombie's priorities for tonight are, in descending order: survive the event (they experienced death already once and know it is no fun), get as many brains as possible. Heidi goes first and must make an offer which at least half of the attendees will accept, and which allocates at least one brain for Heidi herself. What is the smallest number of brains that have to be in the chest for this to be possible?\n\n    Input\n    The input contains one integer: N , the number of attendees ( 1 \u2264 N \u2264 10 9 ).\n\n    Output\n    Output one integer: the smallest number of brains in the chest which allows Heidi to take one brain home.\n*/\n/*@ predicate isValidSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 == out;\n*/\n\n/*@ predicate existsSmallerSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 < out;\n*/\n\n/*@\n    requires \\valid(out);\n    requires 1 <= N <= 1000000000;\n    assigns *out;\n    ensures isValidSolution(N, *out);\n    ensures !existsSmallerSolution(N, *out);\n*/\nvoid calculateMinimumBrainsForStrategy(int N, int *out) {\n    *out = (N + 1) / 2;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "8 / 8",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "N": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "N": 4
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "N": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "N": 3
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "N": 5
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "N": 6
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "N": 7
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "N": 8
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "N": 9
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "N": 10
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "N": 11
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "N": 12
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "N": 13
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "N": 14
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "N": 15
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "N": 16
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "N": 17
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "N": 18
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "N": 19
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "N": 20
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "N": 100
+                            },
+                            "expected_output": 50,
+                            "received_output": 50,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "N": 9999
+                            },
+                            "expected_output": 5000,
+                            "received_output": 5000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "N": 21736
+                            },
+                            "expected_output": 10868,
+                            "received_output": 10868,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "N": 873467
+                            },
+                            "expected_output": 436734,
+                            "received_output": 436734,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "N": 4124980
+                            },
+                            "expected_output": 2062490,
+                            "received_output": 2062490,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "N": 536870910
+                            },
+                            "expected_output": 268435455,
+                            "received_output": 268435455,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "N": 536870912
+                            },
+                            "expected_output": 268435456,
+                            "received_output": 268435456,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "N": 876543210
+                            },
+                            "expected_output": 438271605,
+                            "received_output": 438271605,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "N": 987654321
+                            },
+                            "expected_output": 493827161,
+                            "received_output": 493827161,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "N": 1000000000
+                            },
+                            "expected_output": 500000000,
+                            "received_output": 500000000,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 5.12979793548584,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-3.5-turbo",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "/*\n    Tonight is brain dinner night and all zombies will gather together to scarf down some delicious brains. The artful Heidi plans to crash the party, incognito, disguised as one of them. Her objective is to get away with at least one brain, so she can analyze the zombies' mindset back home and gain a strategic advantage. They will be N guests tonight: N - 1 real zombies and a fake one, our Heidi. The living-dead love hierarchies as much as they love brains: each one has a unique rank in the range 1 to N - 1 , and Heidi, who still appears slightly different from the others, is attributed the highest rank, N . Tonight there will be a chest with brains on display and every attendee sees how many there are. These will then be split among the attendees according to the following procedure: The zombie of the highest rank makes a suggestion on who gets how many brains (every brain is an indivisible entity). A vote follows. If at least half of the attendees accept the offer, the brains are shared in the suggested way and the feast begins. But if majority is not reached, then the highest-ranked zombie is killed, and the next zombie in hierarchy has to make a suggestion. If he is killed too, then the third highest-ranked makes one, etc. (It's enough to have exactly half of the votes \u2013 in case of a tie, the vote of the highest-ranked alive zombie counts twice, and he will of course vote in favor of his own suggestion in order to stay alive.) You should know that zombies are very greedy and sly, and they know this too \u2013 basically all zombie brains are alike. Consequently, a zombie will never accept an offer which is suboptimal for him. That is, if an offer is not strictly better than a potential later offer, he will vote against it. And make no mistake: while zombies may normally seem rather dull, tonight their intellects are perfect. Each zombie's priorities for tonight are, in descending order: survive the event (they experienced death already once and know it is no fun), get as many brains as possible. Heidi goes first and must make an offer which at least half of the attendees will accept, and which allocates at least one brain for Heidi herself. What is the smallest number of brains that have to be in the chest for this to be possible?\n\n    Input\n    The input contains one integer: N , the number of attendees ( 1 \u2264 N \u2264 10 9 ).\n\n    Output\n    Output one integer: the smallest number of brains in the chest which allows Heidi to take one brain home.\n*/\n/*@ predicate isValidSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 == out;\n*/\n\n/*@ predicate existsSmallerSolution(integer N, integer out) =\n    \\exists integer zombies_vote_yes, zombies_vote_no;\n    0 <= zombies_vote_yes <= N &&\n    0 <= zombies_vote_no <= N &&\n    zombies_vote_yes + zombies_vote_no + 1 == N &&\n    zombies_vote_yes + 1 >= ((real) N) / 2 &&\n    zombies_vote_yes + 1 < out;\n*/\n\n/*@\n    requires \\valid(out);\n    requires 1 <= N <= 1000000000;\n    assigns *out;\n    ensures isValidSolution(N, *out);\n    ensures !existsSmallerSolution(N, *out);\n*/\nvoid calculateMinimumBrainsForStrategy(int N, int *out) {\n    *out = (N + 1) / 2;\n}\n",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

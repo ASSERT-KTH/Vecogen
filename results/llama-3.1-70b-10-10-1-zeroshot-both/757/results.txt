@@ -1,0 +1,2375 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 7,
+    "total_tokens_used": 5511,
+    "total_time_taken_verification": 98.44970536231995,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 5511,
+            "verification_time_iteration": 98.44970536231995,
+            "completions_used": 7,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    *out = \n        (c * d) / n < ((k * l) / (nl * n)) ? ((c * d) / n) : (((k * l) / (nl * n)) < (p / (np * n)) ? ((k * l) / (nl * n)) : (p / (np * n)));\n}\n```",
+                    "tokens_used": 747,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    *out = \n        (c * d) / n < ((k * l) / (nl * n)) ? ((c * d) / n) : (((k * l) / (nl * n)) < (p / (np * n)) ? ((k * l) / (nl * n)) : (p / (np * n)));\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 51.\n The following lines caused the timeouts:\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "50 / 51",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 5,
+                                "c": 10,
+                                "d": 8,
+                                "p": 100,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 5,
+                                "k": 100,
+                                "l": 10,
+                                "c": 1,
+                                "d": 19,
+                                "p": 90,
+                                "nl": 4,
+                                "np": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 10,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 25,
+                                "d": 23,
+                                "p": 1,
+                                "nl": 50,
+                                "np": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 57,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 4,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 3,
+                                "c": 5,
+                                "d": 5,
+                                "p": 10,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 4,
+                                "c": 5,
+                                "d": 6,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 5,
+                                "c": 4,
+                                "d": 5,
+                                "p": 7,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 6,
+                                "c": 5,
+                                "d": 7,
+                                "p": 8,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 5,
+                                "c": 5,
+                                "d": 3,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 6,
+                                "c": 7,
+                                "d": 3,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 21,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 1,
+                                "k": 6,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "k": 5,
+                                "l": 3,
+                                "c": 7,
+                                "d": 6,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "k": 6,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 5,
+                                "nl": 2,
+                                "np": 2
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 2,
+                                "k": 5,
+                                "l": 3,
+                                "c": 5,
+                                "d": 6,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 1,
+                                "k": 5,
+                                "l": 5,
+                                "c": 4,
+                                "d": 7,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 7,
+                                "c": 6,
+                                "d": 5,
+                                "p": 9,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 8,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 7,
+                                "c": 3,
+                                "d": 4,
+                                "p": 10,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 6,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1000,
+                            "received_output": 1000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 17,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 3,
+                                "np": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 115,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 17,
+                                "np": 15
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 1,
+                                "k": 587,
+                                "l": 981,
+                                "c": 1,
+                                "d": 2,
+                                "p": 1,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 2,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1,
+                                "l": 2,
+                                "c": 1,
+                                "d": 2,
+                                "p": 2,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 27,
+                                "passed": 23,
+                                "failed": 4,
+                                "pass_rate": 0.85
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 15.328891038894653,
+                    "passed_tests_percentage": 0.85,
+                    "passed_goals_percentage": 0.9803921568627451
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid minToast(int *t1, int *t2, int *out) {\n    *out = (*t1 < *t2) ? *t1 : *t2;\n}\n\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int t1, t2, t3;\n\n    t1 = (k * l) / (nl * n);\n    t2 = (c * d) / n;\n    t3 = p / (np * n);\n\n    minToast(&t1, &t2, &t3);\n    minToast(&t2, &t3, out);\n}\n```",
+                    "tokens_used": 788,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    *out = (*t1 < *t2) ? *t1 : *t2;\n}\n\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int t1, t2, t3;\n\n    t1 = (k * l) / (nl * n);\n    t2 = (c * d) / n;\n    t3 = p / (np * n);\n\n    minToast(&t1, &t2, &t3);\n    minToast(&t2, &t3, out);\n}\n",
+                    "feedback": "/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: In function \u2018calculateMaximumToastsPerFriend\u2019:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:14: error: \u2018t1\u2019 undeclared (first use in this function)\n   28 |     *out = (*t1 < *t2) ? *t1 : *t2;\n      |              ^~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:14: note: each undeclared identifier is reported only once for each function it appears in\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:20: error: \u2018t2\u2019 undeclared (first use in this function)\n   28 |     *out = (*t1 < *t2) ? *t1 : *t2;\n      |                    ^~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: At top level:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:31:6: error: redefinition of \u2018calculateMaximumToastsPerFriend\u2019\n   31 | void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:27:6: note: previous definition of \u2018calculateMaximumToastsPerFriend\u2019 with type \u2018void(int,  int,  int,  int,  int,  int,  int,  int,  int *)\u2019\n   27 | void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: In function \u2018calculateMaximumToastsPerFriend\u2019:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:38:5: warning: implicit declaration of function \u2018minToast\u2019 [-Wimplicit-function-declaration]\n   38 |     minToast(&t1, &t2, &t3);\n      |     ^~~~~~~~\n",
+                    "is_verified": false,
+                    "verified_goals_count": "0 / 0",
+                    "test_information": {
+                        "summary": {
+                            "passed": 0,
+                            "failed": 0,
+                            "total": 0,
+                            "information": "Compilation failed"
+                        }
+                    },
+                    "completion_information": "The code has been improved",
+                    "verification_time": 0,
+                    "passed_tests_percentage": 0,
+                    "passed_goals_percentage": 0
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out)\n{\n    int limes = c * d;\n    int max_limes_toasts = limes / n;\n\n    int drinks = k * l;\n    int max_drinks_toasts = drinks / nl / n;\n\n    int salts = p;\n    int max_salts_toasts = salts / np / n;\n\n    *out = (int) ((unsigned int) (max_limes_toasts < max_drinks_toasts ? max_limes_toasts : max_drinks_toasts) < max_salts_toasts\n                 ? (unsigned int) (max_limes_toasts < max_drinks_toasts ? max_limes_toasts : max_drinks_toasts)\n                 : max_salts_toasts);\n}\n```",
+                    "tokens_used": 817,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int limes = c * d;\n    int max_limes_toasts = limes / n;\n\n    int drinks = k * l;\n    int max_drinks_toasts = drinks / nl / n;\n\n    int salts = p;\n    int max_salts_toasts = salts / np / n;\n\n    *out = (int) ((unsigned int) (max_limes_toasts < max_drinks_toasts ? max_limes_toasts : max_drinks_toasts) < max_salts_toasts\n                 ? (unsigned int) (max_limes_toasts < max_drinks_toasts ? max_limes_toasts : max_drinks_toasts)\n                 : max_salts_toasts);\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 3 of 35.\n The following lines caused the timeouts:\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "32 / 35",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 5,
+                                "c": 10,
+                                "d": 8,
+                                "p": 100,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 5,
+                                "k": 100,
+                                "l": 10,
+                                "c": 1,
+                                "d": 19,
+                                "p": 90,
+                                "nl": 4,
+                                "np": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 10,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 25,
+                                "d": 23,
+                                "p": 1,
+                                "nl": 50,
+                                "np": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 4,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 3,
+                                "c": 5,
+                                "d": 5,
+                                "p": 10,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 4,
+                                "c": 5,
+                                "d": 6,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 5,
+                                "c": 4,
+                                "d": 5,
+                                "p": 7,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 6,
+                                "c": 5,
+                                "d": 7,
+                                "p": 8,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 5,
+                                "c": 5,
+                                "d": 3,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 6,
+                                "c": 7,
+                                "d": 3,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 1,
+                                "k": 6,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "k": 5,
+                                "l": 3,
+                                "c": 7,
+                                "d": 6,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "k": 6,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 5,
+                                "nl": 2,
+                                "np": 2
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 2,
+                                "k": 5,
+                                "l": 3,
+                                "c": 5,
+                                "d": 6,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 1,
+                                "k": 5,
+                                "l": 5,
+                                "c": 4,
+                                "d": 7,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 7,
+                                "c": 6,
+                                "d": 5,
+                                "p": 9,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 8,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 7,
+                                "c": 3,
+                                "d": 4,
+                                "p": 10,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1000,
+                            "received_output": 1000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 17,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 3,
+                                "np": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 115,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 17,
+                                "np": 15
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 1,
+                                "k": 587,
+                                "l": 981,
+                                "c": 1,
+                                "d": 2,
+                                "p": 1,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1,
+                                "l": 2,
+                                "c": 1,
+                                "d": 2,
+                                "p": 2,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 27,
+                                "passed": 27,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 25.7262282371521,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9142857142857143
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int temp1 = c * d;\n    int temp2 = k * l / nl;\n    int temp3 = p / np;\n    int min_temp1 = (temp1 / n);\n    int min_temp2 = (temp2 / n);\n    int min_temp3 = (temp3 / n);\n    int result;\n\n    if (min_temp1 <= min_temp2) {\n        result = (min_temp1 <= min_temp3) ? min_temp1 : min_temp3;\n    } else {\n        result = (min_temp2 <= min_temp3) ? min_temp2 : min_temp3;\n    }\n\n    *out = result;\n}\n```",
+                    "tokens_used": 806,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int temp1 = c * d;\n    int temp2 = k * l / nl;\n    int temp3 = p / np;\n    int min_temp1 = (temp1 / n);\n    int min_temp2 = (temp2 / n);\n    int min_temp3 = (temp3 / n);\n    int result;\n\n    if (min_temp1 <= min_temp2) {\n        result = (min_temp1 <= min_temp3) ? min_temp1 : min_temp3;\n    } else {\n        result = (min_temp2 <= min_temp3) ? min_temp2 : min_temp3;\n    }\n\n    *out = result;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 3 of 32.\n The following lines caused the timeouts:\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "29 / 32",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 5,
+                                "c": 10,
+                                "d": 8,
+                                "p": 100,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 5,
+                                "k": 100,
+                                "l": 10,
+                                "c": 1,
+                                "d": 19,
+                                "p": 90,
+                                "nl": 4,
+                                "np": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 10,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 25,
+                                "d": 23,
+                                "p": 1,
+                                "nl": 50,
+                                "np": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 4,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 3,
+                                "c": 5,
+                                "d": 5,
+                                "p": 10,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 4,
+                                "c": 5,
+                                "d": 6,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 5,
+                                "c": 4,
+                                "d": 5,
+                                "p": 7,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 6,
+                                "c": 5,
+                                "d": 7,
+                                "p": 8,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 5,
+                                "c": 5,
+                                "d": 3,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 6,
+                                "c": 7,
+                                "d": 3,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 1,
+                                "k": 6,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "k": 5,
+                                "l": 3,
+                                "c": 7,
+                                "d": 6,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "k": 6,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 5,
+                                "nl": 2,
+                                "np": 2
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 2,
+                                "k": 5,
+                                "l": 3,
+                                "c": 5,
+                                "d": 6,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 1,
+                                "k": 5,
+                                "l": 5,
+                                "c": 4,
+                                "d": 7,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 7,
+                                "c": 6,
+                                "d": 5,
+                                "p": 9,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 8,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 7,
+                                "c": 3,
+                                "d": 4,
+                                "p": 10,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1000,
+                            "received_output": 1000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 17,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 3,
+                                "np": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 115,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 17,
+                                "np": 15
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 1,
+                                "k": 587,
+                                "l": 981,
+                                "c": 1,
+                                "d": 2,
+                                "p": 1,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1,
+                                "l": 2,
+                                "c": 1,
+                                "d": 2,
+                                "p": 2,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 27,
+                                "passed": 27,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 24.721838235855103,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.90625
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    *out = ((c * d) / n) < ((k * l) / (n * nl)) ? ((c * d) / n) : ((k * l) / (n * nl));\n    *out = *out < (p / (n * np)) ? *out : (p / (n * np));\n}\n```",
+                    "tokens_used": 743,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    *out = ((c * d) / n) < ((k * l) / (n * nl)) ? ((c * d) / n) : ((k * l) / (n * nl));\n    *out = *out < (p / (n * np)) ? *out : (p / (n * np));\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 50.\n The following lines caused the timeouts:\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "49 / 50",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 5,
+                                "c": 10,
+                                "d": 8,
+                                "p": 100,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 5,
+                                "k": 100,
+                                "l": 10,
+                                "c": 1,
+                                "d": 19,
+                                "p": 90,
+                                "nl": 4,
+                                "np": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 10,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 25,
+                                "d": 23,
+                                "p": 1,
+                                "nl": 50,
+                                "np": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 4,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 3,
+                                "c": 5,
+                                "d": 5,
+                                "p": 10,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 4,
+                                "c": 5,
+                                "d": 6,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 5,
+                                "c": 4,
+                                "d": 5,
+                                "p": 7,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 6,
+                                "c": 5,
+                                "d": 7,
+                                "p": 8,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 5,
+                                "c": 5,
+                                "d": 3,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 6,
+                                "c": 7,
+                                "d": 3,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 1,
+                                "k": 6,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "k": 5,
+                                "l": 3,
+                                "c": 7,
+                                "d": 6,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "k": 6,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 5,
+                                "nl": 2,
+                                "np": 2
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 2,
+                                "k": 5,
+                                "l": 3,
+                                "c": 5,
+                                "d": 6,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 1,
+                                "k": 5,
+                                "l": 5,
+                                "c": 4,
+                                "d": 7,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 7,
+                                "c": 6,
+                                "d": 5,
+                                "p": 9,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 8,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 7,
+                                "c": 3,
+                                "d": 4,
+                                "p": 10,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1000,
+                            "received_output": 1000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 17,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 3,
+                                "np": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 115,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 17,
+                                "np": 15
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 1,
+                                "k": 587,
+                                "l": 981,
+                                "c": 1,
+                                "d": 2,
+                                "p": 1,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1,
+                                "l": 2,
+                                "c": 1,
+                                "d": 2,
+                                "p": 2,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 27,
+                                "passed": 27,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 18.695388078689575,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.98
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nint min_of_four(int a, int b, int c, int d) {\n    return (a < b) ? (a < c) ? ((a < d) ? a : d) : ((c < d) ? c : d) : (b < c) ? ((b < d) ? b : d) : ((c < d) ? c : d);\n}\n\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int l0 = c * d;\n    int d0 = k * l;\n    int p0 = p;\n    *out = min_of_four(d0 / nl, l0, p0 / np, 1000000) / n;\n}\n```",
+                    "tokens_used": 805,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    return (a < b) ? (a < c) ? ((a < d) ? a : d) : ((c < d) ? c : d) : (b < c) ? ((b < d) ? b : d) : ((c < d) ? c : d);\n}\n\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int l0 = c * d;\n    int d0 = k * l;\n    int p0 = p;\n    *out = min_of_four(d0 / nl, l0, p0 / np, 1000000) / n;\n}\n",
+                    "feedback": "/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: In function \u2018calculateMaximumToastsPerFriend\u2019:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:13: error: \u2018a\u2019 undeclared (first use in this function)\n   28 |     return (a < b) ? (a < c) ? ((a < d) ? a : d) : ((c < d) ? c : d) : (b < c) ? ((b < d) ? b : d) : ((c < d) ? c : d);\n      |             ^\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:13: note: each undeclared identifier is reported only once for each function it appears in\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:17: error: \u2018b\u2019 undeclared (first use in this function)\n   28 |     return (a < b) ? (a < c) ? ((a < d) ? a : d) : ((c < d) ? c : d) : (b < c) ? ((b < d) ? b : d) : ((c < d) ? c : d);\n      |                 ^\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:28:12: warning: \u2018return\u2019 with a value, in function returning void\n   28 |     return (a < b) ? (a < c) ? ((a < d) ? a : d) : ((c < d) ? c : d) : (b < c) ? ((b < d) ? b : d) : ((c < d) ? c : d);\n      |            ^\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:27:6: note: declared here\n   27 | void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: At top level:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:31:6: error: redefinition of \u2018calculateMaximumToastsPerFriend\u2019\n   31 | void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:27:6: note: previous definition of \u2018calculateMaximumToastsPerFriend\u2019 with type \u2018void(int,  int,  int,  int,  int,  int,  int,  int,  int *)\u2019\n   27 | void calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c: In function \u2018calculateMaximumToastsPerFriend\u2019:\n/mnt/c/Users/MAL Sevenhuijsen/Documents/School/Master/S4/Thesis/Generate-formally-verified-code-usin-LLMs/python_modules/../output/llama-3.1-70b-10-10-1-zero-shot-both/757/generated_code.c:35:12: warning: implicit declaration of function \u2018min_of_four\u2019 [-Wimplicit-function-declaration]\n   35 |     *out = min_of_four(d0 / nl, l0, p0 / np, 1000000) / n;\n      |            ^~~~~~~~~~~\n",
+                    "is_verified": false,
+                    "verified_goals_count": "0 / 0",
+                    "test_information": {
+                        "summary": {
+                            "passed": 0,
+                            "failed": 0,
+                            "total": 0,
+                            "information": "Compilation failed"
+                        }
+                    },
+                    "completion_information": "The code has been improved",
+                    "verification_time": 0,
+                    "passed_tests_percentage": 0,
+                    "passed_goals_percentage": 0
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert software engineer that is asked to implement a function for formally specified problems in the safety-critical domain. \n\n-----END_ASSISTANT_INFORMATION-----\n\nYou are given a specification in natural language and a formal specification in ACSL. You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C.\n\n\n\nYou must adhere to the following rules:\n * Do not add an explanation to the code\n * Only give the output function, do not repeat the specification\n * Do not make use of any type of loops. That is, no for, while, do-while or recursive loops\n\nYou are given the following problem description. You must return the code in the following format:\n```C\n/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out);\n```\n\nPlease generate the formally verified C code adhering to the problem description.",
+                    "max_tokens_used": 4096,
+                    "model_used": "llama-3.1-70b-versatile",
+                    "gpt_output": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int const max_toasts_by_drink = (k * l) / (n * nl);\n    int const max_toasts_by_lime = (c * d) / n;\n    int const max_toasts_by_salt = p / (n * np);\n\n    *out = (max_toasts_by_drink < max_toasts_by_lime) ? \n           (max_toasts_by_drink < max_toasts_by_salt ? max_toasts_by_drink : max_toasts_by_salt) \n           : (max_toasts_by_lime < max_toasts_by_salt ? max_toasts_by_lime : max_toasts_by_salt);\n}\n```",
+                    "tokens_used": 805,
+                    "code": "/*\n    This winter is so cold in Nvodsk! A group of n friends decided to buy k bottles of a soft drink called \"Take-It-Light\" to warm up a bit. Each bottle has l milliliters of the drink. Also they bought c limes and cut each of them into d slices. After that they found p grams of salt. To make a toast, each friend needs nl milliliters of the drink, a slice of lime and np grams of salt. The friends want to make as many toasts as they can, provided they all drink the same amount. How many toasts can each friend make?\n\n    Input\n    The input contains positive integers n, k, l, c, d, p, nl, np, not exceeding 1000 and no less than 1 . The numbers are separated by exactly one space.\n\n    Output\n    Output a single integer \u2014 the number of toasts each friend can make.\n*/\n/*@\n    requires \\valid(out);\n    requires 1 <= n <= 1000;\n    requires 1 <= k <= 1000;\n    requires 1 <= l <= 1000;\n    requires 1 <= c <= 1000;\n    requires 1 <= d <= 1000;\n    requires 1 <= p <= 1000;\n    requires 1 <= nl <= 1000;\n    requires 1 <= np <= 1000;\n    assigns *out;\n    ensures *out >= 0;\n    ensures limes_are_enough: c * d >= *out * n;\n    ensures drinks_are_enough: k * l >= *out * n * nl;\n    ensures salts_are_enough: p >= *out * n * np;\n    ensures largest_solution: (\\forall integer x; x > *out ==> c * d < x * n || k * l < x * n * nl || p < x * n * np);\n*/\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int const max_toasts_by_drink = (k * l) / (n * nl);\n    int const max_toasts_by_lime = (c * d) / n;\n    int const max_toasts_by_salt = p / (n * np);\n\n    *out = (max_toasts_by_drink < max_toasts_by_lime) ? \n           (max_toasts_by_drink < max_toasts_by_salt ? max_toasts_by_drink : max_toasts_by_salt) \n           : (max_toasts_by_lime < max_toasts_by_salt ? max_toasts_by_lime : max_toasts_by_salt);\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "34 / 34",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 5,
+                                "c": 10,
+                                "d": 8,
+                                "p": 100,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 5,
+                                "k": 100,
+                                "l": 10,
+                                "c": 1,
+                                "d": 19,
+                                "p": 90,
+                                "nl": 4,
+                                "np": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 10,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 25,
+                                "d": 23,
+                                "p": 1,
+                                "nl": 50,
+                                "np": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 4,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 3,
+                                "c": 5,
+                                "d": 5,
+                                "p": 10,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 4,
+                                "c": 5,
+                                "d": 6,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 5,
+                                "c": 4,
+                                "d": 5,
+                                "p": 7,
+                                "nl": 3,
+                                "np": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 6,
+                                "c": 5,
+                                "d": 7,
+                                "p": 8,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 5,
+                                "c": 5,
+                                "d": 3,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 1,
+                                "k": 4,
+                                "l": 6,
+                                "c": 7,
+                                "d": 3,
+                                "p": 5,
+                                "nl": 1,
+                                "np": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 1,
+                                "k": 6,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 8,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "k": 5,
+                                "l": 3,
+                                "c": 7,
+                                "d": 6,
+                                "p": 10,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "k": 6,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 1,
+                                "k": 7,
+                                "l": 5,
+                                "c": 5,
+                                "d": 5,
+                                "p": 5,
+                                "nl": 2,
+                                "np": 2
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 2,
+                                "k": 5,
+                                "l": 3,
+                                "c": 5,
+                                "d": 6,
+                                "p": 9,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "k": 4,
+                                "l": 3,
+                                "c": 5,
+                                "d": 3,
+                                "p": 6,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 1,
+                                "k": 5,
+                                "l": 5,
+                                "c": 4,
+                                "d": 7,
+                                "p": 6,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 2,
+                                "k": 3,
+                                "l": 7,
+                                "c": 6,
+                                "d": 5,
+                                "p": 9,
+                                "nl": 3,
+                                "np": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 2,
+                                "k": 6,
+                                "l": 5,
+                                "c": 3,
+                                "d": 3,
+                                "p": 8,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 2,
+                                "k": 4,
+                                "l": 7,
+                                "c": 3,
+                                "d": 4,
+                                "p": 10,
+                                "nl": 2,
+                                "np": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1000,
+                            "received_output": 1000,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 17,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 3,
+                                "np": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 115,
+                                "k": 1000,
+                                "l": 1000,
+                                "c": 1000,
+                                "d": 1000,
+                                "p": 1000,
+                                "nl": 17,
+                                "np": 15
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 1,
+                                "k": 587,
+                                "l": 981,
+                                "c": 1,
+                                "d": 2,
+                                "p": 1,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 1,
+                                "k": 1,
+                                "l": 2,
+                                "c": 1,
+                                "d": 2,
+                                "p": 2,
+                                "nl": 1,
+                                "np": 1
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 27,
+                                "passed": 27,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 13.977359771728516,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "llama-3.1-70b-versatile",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nvoid calculateMaximumToastsPerFriend(int n, int k, int l, int c, int d, int p, int nl, int np, int *out) {\n    int const max_toasts_by_drink = (k * l) / (n * nl);\n    int const max_toasts_by_lime = (c * d) / n;\n    int const max_toasts_by_salt = p / (n * np);\n\n    *out = (max_toasts_by_drink < max_toasts_by_lime) ? \n           (max_toasts_by_drink < max_toasts_by_salt ? max_toasts_by_drink : max_toasts_by_salt) \n           : (max_toasts_by_lime < max_toasts_by_salt ? max_toasts_by_lime : max_toasts_by_salt);\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}
