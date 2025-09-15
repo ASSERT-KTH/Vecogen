@@ -1,0 +1,1790 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 2,
+    "total_tokens_used": 1284,
+    "total_time_taken_verification": 13.703287363052368,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 1284,
+            "verification_time_iteration": 13.703287363052368,
+            "completions_used": 2,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nACSL FORMAL SPECIFICATION:\n```c\n/*@\npredicate can_reach(int x1, int y1, int x2, int y2, int x, int y) =\n    \\let dx = x2 - x1;\n    \\let dy = y2 - y1;\n    dx % x == 0 &&\n    dy % y == 0 &&\n    \\abs((dx / x) % 2) == \\abs((dy / y) % 2);\n*/\n\n/*@\nrequires -100000 <= x1 <= 100000;\n    requires -100000 <= y1 <= 100000;\n    requires -100000 <= x2 <= 100000;\n    requires -100000 <= y2 <= 100000;\n    requires 1 <= x <= 100000;\n    requires 1 <= y <= 100000;\n    assigns \\nothing;\n    ensures \\result == 1 ==> can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 ==> !can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 || \\result == 1;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y) {\n    int dx = x2 - x1;\n    int dy = y2 - y1;\n    return dx % x == 0 && dy % y == 0 && ((dx / x) % 2 == (dy / y) % 2 || -(dx / x) % 2 == -(dy / y) % 2);\n}\n```",
+                    "tokens_used": 621,
+                    "code": "/*Captain Bill the Hummingbird and his crew recieved an interesting challenge offer. Some stranger gave them a map, potion of teleportation and said that only this potion might help them to reach the treasure. Bottle with potion has two values x and y written on it. These values define four moves which can be performed using the potion: Map shows that the position of Captain Bill the Hummingbird is (x1, y1) and the position of the treasure is (x2 , y2) . You task is to tell Captain Bill the Hummingbird whether he should accept this challenge or decline. If it is possible for Captain to reach the treasure using the potion then output 1 , otherwise 0 (without quotes). The potion can be used infinite amount of times.\n\n    Input\n    The input contains six integer numbers x1 , y1 , x2 , y2 (-100000 <= x1 , y1 , x2 , y2 <= 100000) \u2014 positions of Captain Bill the Hummingbird and treasure respectively and also integer numbers x, y (1 <= x, y <= 100000 ) \u2014 values on the potion bottle.\n\n    Output\n    Return 1 if it is possible for Captain to reach the treasure using the potion, otherwise return 0. Examples\n*/\n\n/*@\npredicate can_reach(int x1, int y1, int x2, int y2, int x, int y) =\n    \\let dx = x2 - x1;\n    \\let dy = y2 - y1;\n    dx % x == 0 &&\n    dy % y == 0 &&\n    \\abs((dx / x) % 2) == \\abs((dy / y) % 2);\n*/\n\n/*@\nrequires -100000 <= x1 <= 100000;\n    requires -100000 <= y1 <= 100000;\n    requires -100000 <= x2 <= 100000;\n    requires -100000 <= y2 <= 100000;\n    requires 1 <= x <= 100000;\n    requires 1 <= y <= 100000;\n    assigns \\nothing;\n    ensures \\result == 1 ==> can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 ==> !can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 || \\result == 1;\n*/\n\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y) {\n    int dx = x2 - x1;\n    int dy = y2 - y1;\n    return dx % x == 0 && dy % y == 0 && ((dx / x) % 2 == (dy / y) % 2 || -(dx / x) % 2 == -(dy / y) % 2);\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 26.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:     ensures \\result == 0 ==> !can_reach(x1, y1, x2, y2, x, y);\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "25 / 26",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 6,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 3,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "input": {
+                                "x1": 5,
+                                "y1": 4,
+                                "x2": 6,
+                                "y2": -10,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "input": {
+                                "x1": 6,
+                                "y1": -3,
+                                "x2": -7,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "input": {
+                                "x1": 2,
+                                "y1": -5,
+                                "x2": -8,
+                                "y2": 8,
+                                "x": 2,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 0,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 6,
+                            "input": {
+                                "x1": 70,
+                                "y1": -81,
+                                "x2": -17,
+                                "y2": 80,
+                                "x": 87,
+                                "y": 23
+                            },
+                            "expected_output": 1,
+                            "received_output": 0,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 7,
+                            "input": {
+                                "x1": 41,
+                                "y1": 366,
+                                "x2": 218,
+                                "y2": -240,
+                                "x": 3456,
+                                "y": 1234
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "input": {
+                                "x1": -61972,
+                                "y1": -39646,
+                                "x2": -42371,
+                                "y2": -24854,
+                                "x": 573,
+                                "y": 238
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "input": {
+                                "x1": -84870,
+                                "y1": -42042,
+                                "x2": 94570,
+                                "y2": 98028,
+                                "x": 8972,
+                                "y": 23345
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "input": {
+                                "x1": -58533,
+                                "y1": -50999,
+                                "x2": -1007,
+                                "y2": -59169,
+                                "x": 8972,
+                                "y": 23345
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "input": {
+                                "x1": -100000,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 100000,
+                                "y": 100000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "input": {
+                                "x1": -100000,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "input": {
+                                "x1": 5,
+                                "y1": 2,
+                                "x2": 5,
+                                "y2": 3,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "input": {
+                                "x1": 5,
+                                "y1": 5,
+                                "x2": 5,
+                                "y2": 5,
+                                "x": 5,
+                                "y": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 1000,
+                                "y2": 1000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 1,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 4,
+                                "y2": 4,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "input": {
+                                "x1": 100000,
+                                "y1": 100000,
+                                "x2": 99999,
+                                "y2": 99999,
+                                "x": 100000,
+                                "y": 100000
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 1,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "input": {
+                                "x1": 2,
+                                "y1": 9,
+                                "x2": 4,
+                                "y2": 0,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 0,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 21,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 9,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "input": {
+                                "x1": 14,
+                                "y1": 88,
+                                "x2": 14,
+                                "y2": 88,
+                                "x": 100,
+                                "y": 500
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "input": {
+                                "x1": -1,
+                                "y1": 0,
+                                "x2": 3,
+                                "y2": 0,
+                                "x": 4,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 8,
+                                "y2": 9,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "input": {
+                                "x1": -2,
+                                "y1": 5,
+                                "x2": 7,
+                                "y2": -6,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 0,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 26,
+                            "input": {
+                                "x1": 3,
+                                "y1": 7,
+                                "x2": -8,
+                                "y2": 8,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "input": {
+                                "x1": -4,
+                                "y1": -8,
+                                "x2": -6,
+                                "y2": -1,
+                                "x": 1,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "input": {
+                                "x1": 0,
+                                "y1": 8,
+                                "x2": 6,
+                                "y2": 2,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "input": {
+                                "x1": -5,
+                                "y1": -2,
+                                "x2": -8,
+                                "y2": -2,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "input": {
+                                "x1": 1,
+                                "y1": 4,
+                                "x2": -5,
+                                "y2": 0,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "input": {
+                                "x1": 8,
+                                "y1": -4,
+                                "x2": 4,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "input": {
+                                "x1": 5,
+                                "y1": 2,
+                                "x2": 2,
+                                "y2": 4,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "input": {
+                                "x1": 2,
+                                "y1": 0,
+                                "x2": -4,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "input": {
+                                "x1": -2,
+                                "y1": 6,
+                                "x2": -5,
+                                "y2": -4,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "input": {
+                                "x1": -6,
+                                "y1": 5,
+                                "x2": 10,
+                                "y2": 6,
+                                "x": 2,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "input": {
+                                "x1": 3,
+                                "y1": -7,
+                                "x2": 1,
+                                "y2": -8,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "input": {
+                                "x1": 4,
+                                "y1": 1,
+                                "x2": 4,
+                                "y2": -4,
+                                "x": 9,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "input": {
+                                "x1": 9,
+                                "y1": -3,
+                                "x2": -9,
+                                "y2": -3,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "input": {
+                                "x1": -6,
+                                "y1": -6,
+                                "x2": -10,
+                                "y2": -5,
+                                "x": 6,
+                                "y": 7
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "input": {
+                                "x1": -5,
+                                "y1": -2,
+                                "x2": 2,
+                                "y2": 2,
+                                "x": 1,
+                                "y": 7
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "input": {
+                                "x1": 9,
+                                "y1": 0,
+                                "x2": 8,
+                                "y2": 1,
+                                "x": 7,
+                                "y": 10
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "input": {
+                                "x1": -1,
+                                "y1": 6,
+                                "x2": -7,
+                                "y2": -6,
+                                "x": 6,
+                                "y": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "input": {
+                                "x1": 2,
+                                "y1": 2,
+                                "x2": -3,
+                                "y2": -3,
+                                "x": 3,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "input": {
+                                "x1": 2,
+                                "y1": -6,
+                                "x2": 7,
+                                "y2": 2,
+                                "x": 2,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "input": {
+                                "x1": -6,
+                                "y1": 2,
+                                "x2": -7,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "input": {
+                                "x1": -5,
+                                "y1": -5,
+                                "x2": -1,
+                                "y2": -5,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "input": {
+                                "x1": 0,
+                                "y1": 5,
+                                "x2": 3,
+                                "y2": -6,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "input": {
+                                "x1": 0,
+                                "y1": -6,
+                                "x2": 2,
+                                "y2": -1,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "input": {
+                                "x1": -6,
+                                "y1": 6,
+                                "x2": -5,
+                                "y2": -4,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 0,
+                            "passed": false
+                        },
+                        {
+                            "test_case": 50,
+                            "input": {
+                                "x1": 7,
+                                "y1": -7,
+                                "x2": 1,
+                                "y2": -7,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "input": {
+                                "x1": 99966,
+                                "y1": -99952,
+                                "x2": -99966,
+                                "y2": 99923,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "input": {
+                                "x1": 99921,
+                                "y1": 99980,
+                                "x2": -99956,
+                                "y2": -99907,
+                                "x": 3,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "input": {
+                                "x1": 100000,
+                                "y1": 100000,
+                                "x2": -100000,
+                                "y2": -100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "input": {
+                                "x1": 1,
+                                "y1": 0,
+                                "x2": 2,
+                                "y2": 0,
+                                "x": 5,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "input": {
+                                "x1": -3,
+                                "y1": 0,
+                                "x2": -8,
+                                "y2": 0,
+                                "x": 7,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "input": {
+                                "x1": -9,
+                                "y1": 4,
+                                "x2": -5,
+                                "y2": -1,
+                                "x": 8,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "input": {
+                                "x1": -99999,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": -100,
+                                "y2": -100,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "input": {
+                                "x1": 9,
+                                "y1": -5,
+                                "x2": -3,
+                                "y2": -2,
+                                "x": 1,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "input": {
+                                "x1": 1,
+                                "y1": -10,
+                                "x2": -10,
+                                "y2": 5,
+                                "x": 7,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "input": {
+                                "x1": 6,
+                                "y1": -9,
+                                "x2": -1,
+                                "y2": -9,
+                                "x": 1,
+                                "y": 9
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 61,
+                                "passed": 56,
+                                "failed": 5,
+                                "pass_rate": 0.92
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 10.884411096572876,
+                    "passed_tests_percentage": 0.92,
+                    "passed_goals_percentage": 0.9615384615384616
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nACSL FORMAL SPECIFICATION:\n```c\n/*@\npredicate can_reach(int x1, int y1, int x2, int y2, int x, int y) =\n    \\let dx = x2 - x1;\n    \\let dy = y2 - y1;\n    dx % x == 0 &&\n    dy % y == 0 &&\n    \\abs((dx / x) % 2) == \\abs((dy / y) % 2);\n*/\n\n/*@\nrequires -100000 <= x1 <= 100000;\n    requires -100000 <= y1 <= 100000;\n    requires -100000 <= x2 <= 100000;\n    requires -100000 <= y2 <= 100000;\n    requires 1 <= x <= 100000;\n    requires 1 <= y <= 100000;\n    assigns \\nothing;\n    ensures \\result == 1 ==> can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 ==> !can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 || \\result == 1;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y) {\n    int dx = x2 - x1;\n    int dy = y2 - y1;\n    \n    if (dx % x != 0 || dy % y != 0) {\n        return 0;\n    }\n    \n    int dx_div_x = dx / x;\n    int dy_div_y = dy / y;\n    \n    if ((dx_div_x % 2 + 2) % 2 != (dy_div_y % 2 + 2) % 2) {\n        return 0;\n    }\n    \n    return 1;\n}\n```",
+                    "tokens_used": 663,
+                    "code": "/*Captain Bill the Hummingbird and his crew recieved an interesting challenge offer. Some stranger gave them a map, potion of teleportation and said that only this potion might help them to reach the treasure. Bottle with potion has two values x and y written on it. These values define four moves which can be performed using the potion: Map shows that the position of Captain Bill the Hummingbird is (x1, y1) and the position of the treasure is (x2 , y2) . You task is to tell Captain Bill the Hummingbird whether he should accept this challenge or decline. If it is possible for Captain to reach the treasure using the potion then output 1 , otherwise 0 (without quotes). The potion can be used infinite amount of times.\n\n    Input\n    The input contains six integer numbers x1 , y1 , x2 , y2 (-100000 <= x1 , y1 , x2 , y2 <= 100000) \u2014 positions of Captain Bill the Hummingbird and treasure respectively and also integer numbers x, y (1 <= x, y <= 100000 ) \u2014 values on the potion bottle.\n\n    Output\n    Return 1 if it is possible for Captain to reach the treasure using the potion, otherwise return 0. Examples\n*/\n\n/*@\npredicate can_reach(int x1, int y1, int x2, int y2, int x, int y) =\n    \\let dx = x2 - x1;\n    \\let dy = y2 - y1;\n    dx % x == 0 &&\n    dy % y == 0 &&\n    \\abs((dx / x) % 2) == \\abs((dy / y) % 2);\n*/\n\n/*@\nrequires -100000 <= x1 <= 100000;\n    requires -100000 <= y1 <= 100000;\n    requires -100000 <= x2 <= 100000;\n    requires -100000 <= y2 <= 100000;\n    requires 1 <= x <= 100000;\n    requires 1 <= y <= 100000;\n    assigns \\nothing;\n    ensures \\result == 1 ==> can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 ==> !can_reach(x1, y1, x2, y2, x, y);\n    ensures \\result == 0 || \\result == 1;\n*/\n\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y) {\n    int dx = x2 - x1;\n    int dy = y2 - y1;\n    \n    if (dx % x != 0 || dy % y != 0) {\n        return 0;\n    }\n    \n    int dx_div_x = dx / x;\n    int dy_div_y = dy / y;\n    \n    if ((dx_div_x % 2 + 2) % 2 != (dy_div_y % 2 + 2) % 2) {\n        return 0;\n    }\n    \n    return 1;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "20 / 20",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 6,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 3,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "input": {
+                                "x1": 5,
+                                "y1": 4,
+                                "x2": 6,
+                                "y2": -10,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "input": {
+                                "x1": 6,
+                                "y1": -3,
+                                "x2": -7,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "input": {
+                                "x1": 2,
+                                "y1": -5,
+                                "x2": -8,
+                                "y2": 8,
+                                "x": 2,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "input": {
+                                "x1": 70,
+                                "y1": -81,
+                                "x2": -17,
+                                "y2": 80,
+                                "x": 87,
+                                "y": 23
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "input": {
+                                "x1": 41,
+                                "y1": 366,
+                                "x2": 218,
+                                "y2": -240,
+                                "x": 3456,
+                                "y": 1234
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "input": {
+                                "x1": -61972,
+                                "y1": -39646,
+                                "x2": -42371,
+                                "y2": -24854,
+                                "x": 573,
+                                "y": 238
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "input": {
+                                "x1": -84870,
+                                "y1": -42042,
+                                "x2": 94570,
+                                "y2": 98028,
+                                "x": 8972,
+                                "y": 23345
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "input": {
+                                "x1": -58533,
+                                "y1": -50999,
+                                "x2": -1007,
+                                "y2": -59169,
+                                "x": 8972,
+                                "y": 23345
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "input": {
+                                "x1": -100000,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 100000,
+                                "y": 100000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "input": {
+                                "x1": -100000,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "input": {
+                                "x1": 5,
+                                "y1": 2,
+                                "x2": 5,
+                                "y2": 3,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "input": {
+                                "x1": 5,
+                                "y1": 5,
+                                "x2": 5,
+                                "y2": 5,
+                                "x": 5,
+                                "y": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 1000,
+                                "y2": 1000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 1,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 4,
+                                "y2": 4,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "input": {
+                                "x1": 100000,
+                                "y1": 100000,
+                                "x2": 99999,
+                                "y2": 99999,
+                                "x": 100000,
+                                "y": 100000
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "input": {
+                                "x1": 1,
+                                "y1": 1,
+                                "x2": 1,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "input": {
+                                "x1": 2,
+                                "y1": 9,
+                                "x2": 4,
+                                "y2": 0,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 0,
+                                "y2": 9,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "input": {
+                                "x1": 14,
+                                "y1": 88,
+                                "x2": 14,
+                                "y2": 88,
+                                "x": 100,
+                                "y": 500
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "input": {
+                                "x1": -1,
+                                "y1": 0,
+                                "x2": 3,
+                                "y2": 0,
+                                "x": 4,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": 8,
+                                "y2": 9,
+                                "x": 2,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "input": {
+                                "x1": -2,
+                                "y1": 5,
+                                "x2": 7,
+                                "y2": -6,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "input": {
+                                "x1": 3,
+                                "y1": 7,
+                                "x2": -8,
+                                "y2": 8,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "input": {
+                                "x1": -4,
+                                "y1": -8,
+                                "x2": -6,
+                                "y2": -1,
+                                "x": 1,
+                                "y": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "input": {
+                                "x1": 0,
+                                "y1": 8,
+                                "x2": 6,
+                                "y2": 2,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "input": {
+                                "x1": -5,
+                                "y1": -2,
+                                "x2": -8,
+                                "y2": -2,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "input": {
+                                "x1": 1,
+                                "y1": 4,
+                                "x2": -5,
+                                "y2": 0,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "input": {
+                                "x1": 8,
+                                "y1": -4,
+                                "x2": 4,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "input": {
+                                "x1": 5,
+                                "y1": 2,
+                                "x2": 2,
+                                "y2": 4,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "input": {
+                                "x1": 2,
+                                "y1": 0,
+                                "x2": -4,
+                                "y2": 6,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "input": {
+                                "x1": -2,
+                                "y1": 6,
+                                "x2": -5,
+                                "y2": -4,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "input": {
+                                "x1": -6,
+                                "y1": 5,
+                                "x2": 10,
+                                "y2": 6,
+                                "x": 2,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "input": {
+                                "x1": 3,
+                                "y1": -7,
+                                "x2": 1,
+                                "y2": -8,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "input": {
+                                "x1": 4,
+                                "y1": 1,
+                                "x2": 4,
+                                "y2": -4,
+                                "x": 9,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "input": {
+                                "x1": 9,
+                                "y1": -3,
+                                "x2": -9,
+                                "y2": -3,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "input": {
+                                "x1": -6,
+                                "y1": -6,
+                                "x2": -10,
+                                "y2": -5,
+                                "x": 6,
+                                "y": 7
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "input": {
+                                "x1": -5,
+                                "y1": -2,
+                                "x2": 2,
+                                "y2": 2,
+                                "x": 1,
+                                "y": 7
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "input": {
+                                "x1": 9,
+                                "y1": 0,
+                                "x2": 8,
+                                "y2": 1,
+                                "x": 7,
+                                "y": 10
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "input": {
+                                "x1": -1,
+                                "y1": 6,
+                                "x2": -7,
+                                "y2": -6,
+                                "x": 6,
+                                "y": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "input": {
+                                "x1": 2,
+                                "y1": 2,
+                                "x2": -3,
+                                "y2": -3,
+                                "x": 3,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "input": {
+                                "x1": 2,
+                                "y1": -6,
+                                "x2": 7,
+                                "y2": 2,
+                                "x": 2,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "input": {
+                                "x1": -6,
+                                "y1": 2,
+                                "x2": -7,
+                                "y2": -7,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "input": {
+                                "x1": -5,
+                                "y1": -5,
+                                "x2": -1,
+                                "y2": -5,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "input": {
+                                "x1": 0,
+                                "y1": 5,
+                                "x2": 3,
+                                "y2": -6,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "input": {
+                                "x1": 0,
+                                "y1": -6,
+                                "x2": 2,
+                                "y2": -1,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "input": {
+                                "x1": -6,
+                                "y1": 6,
+                                "x2": -5,
+                                "y2": -4,
+                                "x": 1,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 50,
+                            "input": {
+                                "x1": 7,
+                                "y1": -7,
+                                "x2": 1,
+                                "y2": -7,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "input": {
+                                "x1": 99966,
+                                "y1": -99952,
+                                "x2": -99966,
+                                "y2": 99923,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "input": {
+                                "x1": 99921,
+                                "y1": 99980,
+                                "x2": -99956,
+                                "y2": -99907,
+                                "x": 3,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "input": {
+                                "x1": 100000,
+                                "y1": 100000,
+                                "x2": -100000,
+                                "y2": -100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "input": {
+                                "x1": 1,
+                                "y1": 0,
+                                "x2": 2,
+                                "y2": 0,
+                                "x": 5,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "input": {
+                                "x1": -3,
+                                "y1": 0,
+                                "x2": -8,
+                                "y2": 0,
+                                "x": 7,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "input": {
+                                "x1": -9,
+                                "y1": 4,
+                                "x2": -5,
+                                "y2": -1,
+                                "x": 8,
+                                "y": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "input": {
+                                "x1": -99999,
+                                "y1": -100000,
+                                "x2": 100000,
+                                "y2": 100000,
+                                "x": 1,
+                                "y": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "input": {
+                                "x1": 0,
+                                "y1": 0,
+                                "x2": -100,
+                                "y2": -100,
+                                "x": 2,
+                                "y": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "input": {
+                                "x1": 9,
+                                "y1": -5,
+                                "x2": -3,
+                                "y2": -2,
+                                "x": 1,
+                                "y": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "input": {
+                                "x1": 1,
+                                "y1": -10,
+                                "x2": -10,
+                                "y2": 5,
+                                "x": 7,
+                                "y": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "input": {
+                                "x1": 6,
+                                "y1": -9,
+                                "x2": -1,
+                                "y2": -9,
+                                "x": 1,
+                                "y": 9
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 61,
+                                "passed": 61,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 2.818876266479492,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint can_reach_treasure(int x1, int y1, int x2, int y2, int x, int y) {\n    int dx = x2 - x1;\n    int dy = y2 - y1;\n    \n    if (dx % x != 0 || dy % y != 0) {\n        return 0;\n    }\n    \n    int dx_div_x = dx / x;\n    int dy_div_y = dy / y;\n    \n    if ((dx_div_x % 2 + 2) % 2 != (dy_div_y % 2 + 2) % 2) {\n        return 0;\n    }\n    \n    return 1;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

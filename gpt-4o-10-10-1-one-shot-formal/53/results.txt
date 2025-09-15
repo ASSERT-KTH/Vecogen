@@ -1,0 +1,980 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 593,
+    "total_time_taken_verification": 1.3161587715148926,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 593,
+            "verification_time_iteration": 1.3161587715148926,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nACSL FORMAL SPECIFICATION:\n```c\n/*@\npredicate isValidSolution(integer a, integer b, integer c, integer out) =\n    \\exists integer a_used, b_used, c_used;\n    0 <= a_used <= a &&\n    0 <= b_used <= b &&\n    0 <= c_used <= c &&\n    4 * a_used == 2 * b_used == c_used &&\n    a_used + b_used + c_used == out;\n*/\n\n/*@\npredicate existsLargerSolution(integer a, integer b, integer c, integer out) =\n    \\exists integer a_used, b_used, c_used;\n    0 <= a_used <= a &&\n    0 <= b_used <= b &&\n    0 <= c_used <= c &&\n    4 * a_used == 2 * b_used == c_used &&\n    a_used + b_used + c_used > out;\n*/\n\n/*@\nrequires 1 <= a <= 1000;\n    requires 1 <= b <= 1000;\n    requires 1 <= c <= 1000;\n    assigns \\nothing;\n    ensures isValidSolution(a, b, c, \\result);\n    ensures !existsLargerSolution(a, b, c, \\result);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint calculateMaxFruitsForCompote(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint calculateMaxFruitsForCompote(int a, int b, int c) {\n    int a_used = a, b_used = b / 2, c_used = c / 4;\n    int limit = a_used;\n\n    if (b_used < limit) limit = b_used;\n    if (c_used < limit) limit = c_used;\n\n    return 7 * limit;\n}\n```",
+                    "tokens_used": 593,
+                    "code": "/*Nikolay has a lemons, b apples and c pears. He decided to cook a compote. According to the recipe the fruits should be in the ratio 1: 2: 4 . It means that for each lemon in the compote should be exactly 2 apples and exactly 4 pears. You can't crumble up, break up or cut these fruits into pieces. These fruits \u2014 lemons, apples and pears \u2014 should be put in the compote as whole fruits. Your task is to determine the maximum total number of lemons, apples and pears from which Nikolay can cook the compote. It is possible that Nikolay can't use any fruits, in this case print 0 .\n\n    Input\n    The input contains a positive integer a (1 <= a <= 1000) \u2014 the number of lemons Nikolay has. The second input parameter contains the positive integer b (1 <= b <= 1000) \u2014 the number of apples Nikolay has. The third input parameter  contains the positive integer c (1 <= c <= 1000) \u2014 the number of pears Nikolay has.\n\n    Output\n    Return the maximum total number of lemons, apples and pears from which Nikolay can cook the compote.\n*/\n\n/*@\npredicate isValidSolution(integer a, integer b, integer c, integer out) =\n    \\exists integer a_used, b_used, c_used;\n    0 <= a_used <= a &&\n    0 <= b_used <= b &&\n    0 <= c_used <= c &&\n    4 * a_used == 2 * b_used == c_used &&\n    a_used + b_used + c_used == out;\n*/\n\n/*@\npredicate existsLargerSolution(integer a, integer b, integer c, integer out) =\n    \\exists integer a_used, b_used, c_used;\n    0 <= a_used <= a &&\n    0 <= b_used <= b &&\n    0 <= c_used <= c &&\n    4 * a_used == 2 * b_used == c_used &&\n    a_used + b_used + c_used > out;\n*/\n\n/*@\nrequires 1 <= a <= 1000;\n    requires 1 <= b <= 1000;\n    requires 1 <= c <= 1000;\n    assigns \\nothing;\n    ensures isValidSolution(a, b, c, \\result);\n    ensures !existsLargerSolution(a, b, c, \\result);\n*/\n\nint calculateMaxFruitsForCompote(int a, int b, int c) {\n    int a_used = a, b_used = b / 2, c_used = c / 4;\n    int limit = a_used;\n\n    if (b_used < limit) limit = b_used;\n    if (c_used < limit) limit = c_used;\n\n    return 7 * limit;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "9 / 9",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 2,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 4,
+                                "b": 7,
+                                "c": 13
+                            },
+                            "expected_output": 21,
+                            "received_output": 21,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 4
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 1000,
+                                "c": 1000
+                            },
+                            "expected_output": 1750,
+                            "received_output": 1750,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 1,
+                                "b": 1,
+                                "c": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 1000,
+                                "c": 1000
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 1,
+                                "c": 1000
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 2,
+                                "c": 1000
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 500,
+                                "c": 1000
+                            },
+                            "expected_output": 1750,
+                            "received_output": 1750,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 1000,
+                                "c": 4
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": 1000,
+                                "b": 1000,
+                                "c": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": 4,
+                                "b": 8,
+                                "c": 12
+                            },
+                            "expected_output": 21,
+                            "received_output": 21,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": 10,
+                                "b": 20,
+                                "c": 40
+                            },
+                            "expected_output": 70,
+                            "received_output": 70,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 200,
+                                "c": 399
+                            },
+                            "expected_output": 693,
+                            "received_output": 693,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 200,
+                                "b": 400,
+                                "c": 800
+                            },
+                            "expected_output": 1400,
+                            "received_output": 1400,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 199,
+                                "b": 400,
+                                "c": 800
+                            },
+                            "expected_output": 1393,
+                            "received_output": 1393,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 201,
+                                "b": 400,
+                                "c": 800
+                            },
+                            "expected_output": 1400,
+                            "received_output": 1400,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 200,
+                                "b": 399,
+                                "c": 800
+                            },
+                            "expected_output": 1393,
+                            "received_output": 1393,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 200,
+                                "b": 401,
+                                "c": 800
+                            },
+                            "expected_output": 1400,
+                            "received_output": 1400,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 200,
+                                "b": 400,
+                                "c": 799
+                            },
+                            "expected_output": 1393,
+                            "received_output": 1393,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 200,
+                                "b": 400,
+                                "c": 801
+                            },
+                            "expected_output": 1400,
+                            "received_output": 1400,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 139,
+                                "b": 252,
+                                "c": 871
+                            },
+                            "expected_output": 882,
+                            "received_output": 882,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 109,
+                                "b": 346,
+                                "c": 811
+                            },
+                            "expected_output": 763,
+                            "received_output": 763,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 237,
+                                "b": 487,
+                                "c": 517
+                            },
+                            "expected_output": 903,
+                            "received_output": 903,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 161,
+                                "b": 331,
+                                "c": 725
+                            },
+                            "expected_output": 1127,
+                            "received_output": 1127,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 39,
+                                "b": 471,
+                                "c": 665
+                            },
+                            "expected_output": 273,
+                            "received_output": 273,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 9,
+                                "b": 270,
+                                "c": 879
+                            },
+                            "expected_output": 63,
+                            "received_output": 63,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "inputs": {
+                                "a": 137,
+                                "b": 422,
+                                "c": 812
+                            },
+                            "expected_output": 959,
+                            "received_output": 959,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "inputs": {
+                                "a": 15,
+                                "b": 313,
+                                "c": 525
+                            },
+                            "expected_output": 105,
+                            "received_output": 105,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "inputs": {
+                                "a": 189,
+                                "b": 407,
+                                "c": 966
+                            },
+                            "expected_output": 1323,
+                            "received_output": 1323,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "inputs": {
+                                "a": 18,
+                                "b": 268,
+                                "c": 538
+                            },
+                            "expected_output": 126,
+                            "received_output": 126,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "inputs": {
+                                "a": 146,
+                                "b": 421,
+                                "c": 978
+                            },
+                            "expected_output": 1022,
+                            "received_output": 1022,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "inputs": {
+                                "a": 70,
+                                "b": 311,
+                                "c": 685
+                            },
+                            "expected_output": 490,
+                            "received_output": 490,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "inputs": {
+                                "a": 244,
+                                "b": 405,
+                                "c": 625
+                            },
+                            "expected_output": 1092,
+                            "received_output": 1092,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "inputs": {
+                                "a": 168,
+                                "b": 454,
+                                "c": 832
+                            },
+                            "expected_output": 1176,
+                            "received_output": 1176,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "inputs": {
+                                "a": 46,
+                                "b": 344,
+                                "c": 772
+                            },
+                            "expected_output": 322,
+                            "received_output": 322,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "inputs": {
+                                "a": 174,
+                                "b": 438,
+                                "c": 987
+                            },
+                            "expected_output": 1218,
+                            "received_output": 1218,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "inputs": {
+                                "a": 144,
+                                "b": 387,
+                                "c": 693
+                            },
+                            "expected_output": 1008,
+                            "received_output": 1008,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "inputs": {
+                                "a": 22,
+                                "b": 481,
+                                "c": 633
+                            },
+                            "expected_output": 154,
+                            "received_output": 154,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "inputs": {
+                                "a": 196,
+                                "b": 280,
+                                "c": 848
+                            },
+                            "expected_output": 980,
+                            "received_output": 980,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "inputs": {
+                                "a": 190,
+                                "b": 454,
+                                "c": 699
+                            },
+                            "expected_output": 1218,
+                            "received_output": 1218,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "inputs": {
+                                "a": 231,
+                                "b": 464,
+                                "c": 928
+                            },
+                            "expected_output": 1617,
+                            "received_output": 1617,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "inputs": {
+                                "a": 151,
+                                "b": 308,
+                                "c": 616
+                            },
+                            "expected_output": 1057,
+                            "received_output": 1057,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "inputs": {
+                                "a": 88,
+                                "b": 182,
+                                "c": 364
+                            },
+                            "expected_output": 616,
+                            "received_output": 616,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "inputs": {
+                                "a": 12,
+                                "b": 26,
+                                "c": 52
+                            },
+                            "expected_output": 84,
+                            "received_output": 84,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "inputs": {
+                                "a": 204,
+                                "b": 412,
+                                "c": 824
+                            },
+                            "expected_output": 1428,
+                            "received_output": 1428,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 50,
+                            "inputs": {
+                                "a": 127,
+                                "b": 256,
+                                "c": 512
+                            },
+                            "expected_output": 889,
+                            "received_output": 889,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "inputs": {
+                                "a": 224,
+                                "b": 446,
+                                "c": 896
+                            },
+                            "expected_output": 1561,
+                            "received_output": 1561,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "inputs": {
+                                "a": 146,
+                                "b": 291,
+                                "c": 584
+                            },
+                            "expected_output": 1015,
+                            "received_output": 1015,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "inputs": {
+                                "a": 83,
+                                "b": 164,
+                                "c": 332
+                            },
+                            "expected_output": 574,
+                            "received_output": 574,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "inputs": {
+                                "a": 20,
+                                "b": 38,
+                                "c": 80
+                            },
+                            "expected_output": 133,
+                            "received_output": 133,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "inputs": {
+                                "a": 198,
+                                "b": 393,
+                                "c": 792
+                            },
+                            "expected_output": 1372,
+                            "received_output": 1372,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "inputs": {
+                                "a": 120,
+                                "b": 239,
+                                "c": 480
+                            },
+                            "expected_output": 833,
+                            "received_output": 833,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "inputs": {
+                                "a": 208,
+                                "b": 416,
+                                "c": 831
+                            },
+                            "expected_output": 1449,
+                            "received_output": 1449,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "inputs": {
+                                "a": 130,
+                                "b": 260,
+                                "c": 517
+                            },
+                            "expected_output": 903,
+                            "received_output": 903,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "inputs": {
+                                "a": 67,
+                                "b": 134,
+                                "c": 267
+                            },
+                            "expected_output": 462,
+                            "received_output": 462,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "inputs": {
+                                "a": 245,
+                                "b": 490,
+                                "c": 979
+                            },
+                            "expected_output": 1708,
+                            "received_output": 1708,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "inputs": {
+                                "a": 182,
+                                "b": 364,
+                                "c": 727
+                            },
+                            "expected_output": 1267,
+                            "received_output": 1267,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 62,
+                            "inputs": {
+                                "a": 104,
+                                "b": 208,
+                                "c": 413
+                            },
+                            "expected_output": 721,
+                            "received_output": 721,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 63,
+                            "inputs": {
+                                "a": 10,
+                                "b": 2,
+                                "c": 100
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 64,
+                            "inputs": {
+                                "a": 2,
+                                "b": 100,
+                                "c": 100
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 65,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 8
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 66,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 8
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 67,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 200
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 68,
+                            "inputs": {
+                                "a": 5,
+                                "b": 4,
+                                "c": 16
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 69,
+                            "inputs": {
+                                "a": 1,
+                                "b": 10,
+                                "c": 10
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 70,
+                            "inputs": {
+                                "a": 1,
+                                "b": 4,
+                                "c": 8
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 71,
+                            "inputs": {
+                                "a": 100,
+                                "b": 4,
+                                "c": 1000
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 72,
+                            "inputs": {
+                                "a": 2,
+                                "b": 6,
+                                "c": 12
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 73,
+                            "inputs": {
+                                "a": 10,
+                                "b": 7,
+                                "c": 4
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 74,
+                            "inputs": {
+                                "a": 2,
+                                "b": 10,
+                                "c": 100
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 75,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 4
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 76,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 999
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 77,
+                            "inputs": {
+                                "a": 1,
+                                "b": 10,
+                                "c": 20
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 78,
+                            "inputs": {
+                                "a": 100,
+                                "b": 18,
+                                "c": 20
+                            },
+                            "expected_output": 35,
+                            "received_output": 35,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 79,
+                            "inputs": {
+                                "a": 100,
+                                "b": 1,
+                                "c": 100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 80,
+                            "inputs": {
+                                "a": 3,
+                                "b": 7,
+                                "c": 80
+                            },
+                            "expected_output": 21,
+                            "received_output": 21,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 81,
+                            "inputs": {
+                                "a": 2,
+                                "b": 8,
+                                "c": 24
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 82,
+                            "inputs": {
+                                "a": 1,
+                                "b": 100,
+                                "c": 100
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 83,
+                            "inputs": {
+                                "a": 2,
+                                "b": 1,
+                                "c": 8
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 84,
+                            "inputs": {
+                                "a": 10,
+                                "b": 5,
+                                "c": 23
+                            },
+                            "expected_output": 14,
+                            "received_output": 14,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 84,
+                                "passed": 84,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 1.3161587715148926,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint calculateMaxFruitsForCompote(int a, int b, int c) {\n    int a_used = a, b_used = b / 2, c_used = c / 4;\n    int limit = a_used;\n\n    if (b_used < limit) limit = b_used;\n    if (c_used < limit) limit = c_used;\n\n    return 7 * limit;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

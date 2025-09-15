@@ -1,0 +1,296 @@
+{
+    "total_completions_requested": 1,
+    "total_completions_used": 1,
+    "total_tokens_used": 935,
+    "total_time_taken_verification": 7.058773517608643,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 935,
+            "verification_time_iteration": 7.058773517608643,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 0.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*The only king stands on the standard chess board. You are given his position in format column and row, where column is the column from 'a' to 'h' and row is the row from '1' to '8'. Find the number of moves permitted for the king. \n\n    Input\n    The input contains the king's position in the format column and row (1\u20138). The column is given by as an integer from 1 to 8 representing 'a' to 'h', the row is given by a digit from '1' to '8'.\n\n    Output\n    Return the integer which represents the number of moves permitted for the king.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\n// Given a column (1\u20138) and row (1\u20138), compute how many of the\n    // eight possible king\u2010moves stay on the board.\n    logic integer king_moves_pos(integer col, integer row) =\n        (col > 1            ? 1 : 0)  // left\n        + (col < 8            ? 1 : 0)  // right\n        + (row > 1            ? 1 : 0)  // down\n        + (row < 8            ? 1 : 0)  // up\n        + (col > 1 && row > 1 ? 1 : 0)  // down-left\n        + (col < 8 && row > 1 ? 1 : 0)  // down-right\n        + (col > 1 && row < 8 ? 1 : 0)  // up-left\n        + (col < 8 && row < 8 ? 1 : 0); // up-right\n*/\n\n/*@\nrequires 1 <= col <= 8;\n    requires 1 <= row <= 8;\n    assigns \\nothing;\n    ensures \\result == king_moves_pos(col, row);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint countKingMoves(int col, int row);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint countKingMoves(int col, int row) {\n    return (col > 1 ? 1 : 0) \n         + (col < 8 ? 1 : 0) \n         + (row > 1 ? 1 : 0) \n         + (row < 8 ? 1 : 0) \n         + (col > 1 && row > 1 ? 1 : 0) \n         + (col < 8 && row > 1 ? 1 : 0) \n         + (col > 1 && row < 8 ? 1 : 0) \n         + (col < 8 && row < 8 ? 1 : 0);\n}\n```",
+                    "tokens_used": 935,
+                    "code": "/*The only king stands on the standard chess board. You are given his position in format column and row, where column is the column from 'a' to 'h' and row is the row from '1' to '8'. Find the number of moves permitted for the king. \n\n    Input\n    The input contains the king's position in the format column and row (1\u20138). The column is given by as an integer from 1 to 8 representing 'a' to 'h', the row is given by a digit from '1' to '8'.\n\n    Output\n    Return the integer which represents the number of moves permitted for the king.\n*/\n\n/*@\n// Given a column (1\u20138) and row (1\u20138), compute how many of the\n    // eight possible king\u2010moves stay on the board.\n    logic integer king_moves_pos(integer col, integer row) =\n        (col > 1            ? 1 : 0)  // left\n        + (col < 8            ? 1 : 0)  // right\n        + (row > 1            ? 1 : 0)  // down\n        + (row < 8            ? 1 : 0)  // up\n        + (col > 1 && row > 1 ? 1 : 0)  // down-left\n        + (col < 8 && row > 1 ? 1 : 0)  // down-right\n        + (col > 1 && row < 8 ? 1 : 0)  // up-left\n        + (col < 8 && row < 8 ? 1 : 0); // up-right\n*/\n\n/*@\nrequires 1 <= col <= 8;\n    requires 1 <= row <= 8;\n    assigns \\nothing;\n    ensures \\result == king_moves_pos(col, row);\n*/\n\nint countKingMoves(int col, int row) {\n    return (col > 1 ? 1 : 0) \n         + (col < 8 ? 1 : 0) \n         + (row > 1 ? 1 : 0) \n         + (row < 8 ? 1 : 0) \n         + (col > 1 && row > 1 ? 1 : 0) \n         + (col < 8 && row > 1 ? 1 : 0) \n         + (col > 1 && row < 8 ? 1 : 0) \n         + (col < 8 && row < 8 ? 1 : 0);\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "38 / 38",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "input": {
+                                "col": 5,
+                                "row": 4
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "input": {
+                                "col": 1,
+                                "row": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "input": {
+                                "col": 8,
+                                "row": 8
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "input": {
+                                "col": 1,
+                                "row": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "input": {
+                                "col": 7,
+                                "row": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "input": {
+                                "col": 5,
+                                "row": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "input": {
+                                "col": 2,
+                                "row": 2
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "input": {
+                                "col": 3,
+                                "row": 7
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "input": {
+                                "col": 8,
+                                "row": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "input": {
+                                "col": 3,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "input": {
+                                "col": 8,
+                                "row": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "input": {
+                                "col": 8,
+                                "row": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "input": {
+                                "col": 1,
+                                "row": 8
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "input": {
+                                "col": 6,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "input": {
+                                "col": 8,
+                                "row": 1
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "input": {
+                                "col": 6,
+                                "row": 2
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "input": {
+                                "col": 5,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "input": {
+                                "col": 8,
+                                "row": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "input": {
+                                "col": 2,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "input": {
+                                "col": 7,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "input": {
+                                "col": 4,
+                                "row": 8
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "input": {
+                                "col": 8,
+                                "row": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "input": {
+                                "col": 2,
+                                "row": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "input": {
+                                "col": 1,
+                                "row": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 24,
+                                "passed": 24,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 7.058773517608643,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 1,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint countKingMoves(int col, int row) {\n    return (col > 1 ? 1 : 0) \n         + (col < 8 ? 1 : 0) \n         + (row > 1 ? 1 : 0) \n         + (row < 8 ? 1 : 0) \n         + (col > 1 && row > 1 ? 1 : 0) \n         + (col < 8 && row > 1 ? 1 : 0) \n         + (col > 1 && row < 8 ? 1 : 0) \n         + (col < 8 && row < 8 ? 1 : 0);\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

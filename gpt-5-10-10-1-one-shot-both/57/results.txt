@@ -1,0 +1,436 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 3203,
+    "total_time_taken_verification": 3.743532180786133,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 3203,
+            "verification_time_iteration": 3.743532180786133,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*Today is Wednesday, the third day of the week. What's more interesting is that tomorrow is the last day of the year 2015. Limak is a little polar bear. He enjoyed this year a lot. Now, he is so eager to the coming year 2016. Limak wants to prove how responsible a bear he is. He is going to regularly save candies for the entire year 2016! He considers various saving plans. He can save one candy either on some fixed day of the week or on some fixed day of the month. Limak chose one particular plan. He isn't sure how many candies he will save in the 2016 with his plan. Please, calculate it and tell him.\n\n    Input\n    The input consists of two integers, one that depicts the day and the second one depicts the mode. The mode refers to either week (mode == 0) or month (mode == 1). The day of the week can be of size ( 1 <= x <= 7 ) denotes the day of the week. The 1-st day is Monday and the 7-th one is Sunday.  The second mode is mode of month,  where day ( 1 <= x <= 31 ) denotes the day of the month.\n\n    Output\n    Return one integer \u2014 the number of candies Limak will save in the year 2016.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nlogic integer num_candies_by_weekday(integer x) =\n        366 / 7 + (int) ((x + 2) % 7 < 366 % 7);\n\n    logic integer MonthTable(integer month) =\n        month == 1  ? 31 :\n        month == 2  ? 29 :\n        month == 3  ? 31 :\n        month == 4  ? 30 :\n        month == 5  ? 31 :\n        month == 6  ? 30 :\n        month == 7  ? 31 :\n        month == 8  ? 31 :\n        month == 9  ? 30 :\n        month == 10 ? 31 :\n        month == 11 ? 30 :\n        month == 12 ? 31 :\n        0;\n\n    logic integer num_candies_by_monthday(integer month, int n) =\n        (month <= 0) ? 0  : (MonthTable(month) >= n ? 1 : 0) + num_candies_by_monthday(month - 1, n);\n*/\n\n/*@\nrequires mode == 0 || mode == 1;\n    requires (mode == 0) ==> 1 <= day <= 7;\n    requires (mode == 1) ==> 1 <= day <= 31;\n    // mode == 0 \u2192 weekday mode, mode == 1 \u2192 monthday mode\n    assigns \\nothing;\n    ensures (mode == 0) ==> \\result == num_candies_by_weekday(day);\n    ensures (mode == 1) ==> \\result == num_candies_by_monthday(12, day);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint count_candies(int day, int mode);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-5-2025-08-07",
+                    "gpt_output": "```c\nint count_candies(int day, int mode)\n{\n    if (mode == 0) {\n        return 366 / 7 + (((day + 2) % 7) < (366 % 7));\n    } else {\n        return (31 >= day) + (29 >= day) + (31 >= day) + (30 >= day) +\n               (31 >= day) + (30 >= day) + (31 >= day) + (31 >= day) +\n               (30 >= day) + (31 >= day) + (30 >= day) + (31 >= day);\n    }\n}\n```",
+                    "tokens_used": 3203,
+                    "code": "/*Today is Wednesday, the third day of the week. What's more interesting is that tomorrow is the last day of the year 2015. Limak is a little polar bear. He enjoyed this year a lot. Now, he is so eager to the coming year 2016. Limak wants to prove how responsible a bear he is. He is going to regularly save candies for the entire year 2016! He considers various saving plans. He can save one candy either on some fixed day of the week or on some fixed day of the month. Limak chose one particular plan. He isn't sure how many candies he will save in the 2016 with his plan. Please, calculate it and tell him.\n\n    Input\n    The input consists of two integers, one that depicts the day and the second one depicts the mode. The mode refers to either week (mode == 0) or month (mode == 1). The day of the week can be of size ( 1 <= x <= 7 ) denotes the day of the week. The 1-st day is Monday and the 7-th one is Sunday.  The second mode is mode of month,  where day ( 1 <= x <= 31 ) denotes the day of the month.\n\n    Output\n    Return one integer \u2014 the number of candies Limak will save in the year 2016.\n*/\n\n/*@\nlogic integer num_candies_by_weekday(integer x) =\n        366 / 7 + (int) ((x + 2) % 7 < 366 % 7);\n\n    logic integer MonthTable(integer month) =\n        month == 1  ? 31 :\n        month == 2  ? 29 :\n        month == 3  ? 31 :\n        month == 4  ? 30 :\n        month == 5  ? 31 :\n        month == 6  ? 30 :\n        month == 7  ? 31 :\n        month == 8  ? 31 :\n        month == 9  ? 30 :\n        month == 10 ? 31 :\n        month == 11 ? 30 :\n        month == 12 ? 31 :\n        0;\n\n    logic integer num_candies_by_monthday(integer month, int n) =\n        (month <= 0) ? 0  : (MonthTable(month) >= n ? 1 : 0) + num_candies_by_monthday(month - 1, n);\n*/\n\n/*@\nrequires mode == 0 || mode == 1;\n    requires (mode == 0) ==> 1 <= day <= 7;\n    requires (mode == 1) ==> 1 <= day <= 31;\n    // mode == 0 \u2192 weekday mode, mode == 1 \u2192 monthday mode\n    assigns \\nothing;\n    ensures (mode == 0) ==> \\result == num_candies_by_weekday(day);\n    ensures (mode == 1) ==> \\result == num_candies_by_monthday(12, day);\n*/\n\nint count_candies(int day, int mode) {\n    if (mode == 0) {\n        return 366 / 7 + (((day + 2) % 7) < (366 % 7));\n    } else {\n        return (31 >= day) + (29 >= day) + (31 >= day) + (30 >= day) +\n               (31 >= day) + (30 >= day) + (31 >= day) + (31 >= day) +\n               (30 >= day) + (31 >= day) + (30 >= day) + (31 >= day);\n    }\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "30 / 30",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "day": 4,
+                                "mode": 0
+                            },
+                            "expected_output": 52,
+                            "received_output": 52,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "day": 30,
+                                "mode": 1
+                            },
+                            "expected_output": 11,
+                            "received_output": 11,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "day": 17,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "day": 31,
+                                "mode": 1
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "day": 6,
+                                "mode": 0
+                            },
+                            "expected_output": 53,
+                            "received_output": 53,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "day": 1,
+                                "mode": 0
+                            },
+                            "expected_output": 52,
+                            "received_output": 52,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "day": 2,
+                                "mode": 0
+                            },
+                            "expected_output": 52,
+                            "received_output": 52,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "day": 3,
+                                "mode": 0
+                            },
+                            "expected_output": 52,
+                            "received_output": 52,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "day": 5,
+                                "mode": 0
+                            },
+                            "expected_output": 53,
+                            "received_output": 53,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "day": 7,
+                                "mode": 0
+                            },
+                            "expected_output": 52,
+                            "received_output": 52,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "day": 1,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "day": 2,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "day": 3,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "day": 4,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "day": 5,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "day": 6,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "day": 7,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "day": 8,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "day": 9,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "day": 10,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "day": 11,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "day": 12,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "day": 13,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "day": 14,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "day": 15,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "day": 16,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "day": 18,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "day": 19,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "day": 20,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "day": 21,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "inputs": {
+                                "day": 22,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "inputs": {
+                                "day": 23,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "inputs": {
+                                "day": 24,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "inputs": {
+                                "day": 25,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "inputs": {
+                                "day": 26,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "inputs": {
+                                "day": 27,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "inputs": {
+                                "day": 28,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "inputs": {
+                                "day": 29,
+                                "mode": 1
+                            },
+                            "expected_output": 12,
+                            "received_output": 12,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 38,
+                                "passed": 38,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 3.743532180786133,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-5",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint count_candies(int day, int mode)\n{\n    if (mode == 0) {\n        return 366 / 7 + (((day + 2) % 7) < (366 % 7));\n    } else {\n        return (31 >= day) + (29 >= day) + (31 >= day) + (30 >= day) +\n               (31 >= day) + (30 >= day) + (31 >= day) + (31 >= day) +\n               (30 >= day) + (31 >= day) + (30 >= day) + (31 >= day);\n    }\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

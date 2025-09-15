@@ -1,0 +1,326 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 3699,
+    "total_time_taken_verification": 2.869603395462036,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 3699,
+            "verification_time_iteration": 2.869603395462036,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*\n    In a scenario where you need to analyze the calendar months, the goal is to determine the number of months that contain 30 days. The task involves evaluating the months in order starting from January; the numerical representation ranges from 1 to 12 and repeats cyclically when the count exceeds 12.\n\n    Input\n    The input consists of a single integer variable representing the number of months to consider, which must be within the range of 0 to INT_MAX, inclusive.\n\n    Output\n    The output is a single integer value that indicates the count of months, from January up to the specified number of months, that have exactly 30 days. The result will be a non-negative integer.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@ logic integer MonthTable(integer m) =\n      m == 1  ? 31 :\n      m == 2  ? 28 :\n      m == 3  ? 31 :\n      m == 4  ? 30 :\n      m == 5  ? 31 :\n      m == 6  ? 30 :\n      m == 7  ? 31 :\n      m == 8  ? 31 :\n      m == 9  ? 30 :\n      m == 10 ? 31 :\n      m == 11 ? 30 :\n      m == 12 ? 31 :\n      0;\n*/\n\n/*@ // # of 30-day months in the first n months of a year (0<=n<=12).\n    logic integer Count30_prefix(integer n) =\n        (n>0  && MonthTable(1)  ==30 ? 1:0) +\n        (n>1  && MonthTable(2)  ==30 ? 1:0) +\n        (n>2  && MonthTable(3)  ==30 ? 1:0) +\n        (n>3  && MonthTable(4)  ==30 ? 1:0) +\n        (n>4  && MonthTable(5)  ==30 ? 1:0) +\n        (n>5  && MonthTable(6)  ==30 ? 1:0) +\n        (n>6  && MonthTable(7)  ==30 ? 1:0) +\n        (n>7  && MonthTable(8)  ==30 ? 1:0) +\n        (n>8  && MonthTable(9)  ==30 ? 1:0) +\n        (n>9  && MonthTable(10) ==30 ? 1:0) +\n        (n>10 && MonthTable(11) ==30 ? 1:0) +\n        (n>11 && MonthTable(12) ==30 ? 1:0);\n*/\n\n/*@ // Total # of 30-day months among the first n months from January.\n    logic integer Count30_total(integer n) =\n      (n/12) * Count30_prefix(12) + Count30_prefix(n % 12);\n*/\n\n/*@ requires 0 <= month <= INT_MAX;\n    assigns \\nothing;\n    ensures \\result == Count30_total(month);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint CountMonthsWith30Days(int month);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "deepseek/deepseek-r1-0528",
+                    "gpt_output": "```C\nint CountMonthsWith30Days(int month) {\n    int cycles = month / 12;\n    int remainder = month % 12;\n    int count = 0;\n    if (remainder >= 11) count = 4;\n    else if (remainder >= 9) count = 3;\n    else if (remainder >= 6) count = 2;\n    else if (remainder >= 4) count = 1;\n    else count = 0;\n    return cycles * 4 + count;\n}\n```",
+                    "tokens_used": 3699,
+                    "code": "#include <limits.h>\n\n/*\n    In a scenario where you need to analyze the calendar months, the goal is to determine the number of months that contain 30 days. The task involves evaluating the months in order starting from January; the numerical representation ranges from 1 to 12 and repeats cyclically when the count exceeds 12.\n\n    Input\n    The input consists of a single integer variable representing the number of months to consider, which must be within the range of 0 to INT_MAX, inclusive.\n\n    Output\n    The output is a single integer value that indicates the count of months, from January up to the specified number of months, that have exactly 30 days. The result will be a non-negative integer.\n*/\n\n/*@ logic integer MonthTable(integer m) =\n      m == 1  ? 31 :\n      m == 2  ? 28 :\n      m == 3  ? 31 :\n      m == 4  ? 30 :\n      m == 5  ? 31 :\n      m == 6  ? 30 :\n      m == 7  ? 31 :\n      m == 8  ? 31 :\n      m == 9  ? 30 :\n      m == 10 ? 31 :\n      m == 11 ? 30 :\n      m == 12 ? 31 :\n      0;\n*/\n\n/*@ // # of 30-day months in the first n months of a year (0<=n<=12).\n    logic integer Count30_prefix(integer n) =\n        (n>0  && MonthTable(1)  ==30 ? 1:0) +\n        (n>1  && MonthTable(2)  ==30 ? 1:0) +\n        (n>2  && MonthTable(3)  ==30 ? 1:0) +\n        (n>3  && MonthTable(4)  ==30 ? 1:0) +\n        (n>4  && MonthTable(5)  ==30 ? 1:0) +\n        (n>5  && MonthTable(6)  ==30 ? 1:0) +\n        (n>6  && MonthTable(7)  ==30 ? 1:0) +\n        (n>7  && MonthTable(8)  ==30 ? 1:0) +\n        (n>8  && MonthTable(9)  ==30 ? 1:0) +\n        (n>9  && MonthTable(10) ==30 ? 1:0) +\n        (n>10 && MonthTable(11) ==30 ? 1:0) +\n        (n>11 && MonthTable(12) ==30 ? 1:0);\n*/\n\n/*@ // Total # of 30-day months among the first n months from January.\n    logic integer Count30_total(integer n) =\n      (n/12) * Count30_prefix(12) + Count30_prefix(n % 12);\n*/\n\n/*@ requires 0 <= month <= INT_MAX;\n    assigns \\nothing;\n    ensures \\result == Count30_total(month);\n*/\n\nint CountMonthsWith30Days(int month) {\n    int cycles = month / 12;\n    int remainder = month % 12;\n    int count = 0;\n    if (remainder >= 11) count = 4;\n    else if (remainder >= 9) count = 3;\n    else if (remainder >= 6) count = 2;\n    else if (remainder >= 4) count = 1;\n    else count = 0;\n    return cycles * 4 + count;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "13 / 13",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "x": -3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "x": -1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "x": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "x": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "x": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "x": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "x": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "x": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "x": 6
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "x": 7
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "x": 8
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "x": 9
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "x": 10
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "x": 11
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "x": 12
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "x": 13
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "x": 14
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "x": 17
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "x": 19
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "x": 20
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "x": 23
+                            },
+                            "expected_output": 8,
+                            "received_output": 8,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "x": 30
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "x": 31
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "x": 59
+                            },
+                            "expected_output": 20,
+                            "received_output": 20,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "x": 60
+                            },
+                            "expected_output": 20,
+                            "received_output": 20,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "x": 100
+                            },
+                            "expected_output": 33,
+                            "received_output": 33,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "x": 365
+                            },
+                            "expected_output": 121,
+                            "received_output": 121,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "x": 1000
+                            },
+                            "expected_output": 333,
+                            "received_output": 333,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "x": 2147483646
+                            },
+                            "expected_output": 715827882,
+                            "received_output": 715827882,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "x": 2147483647
+                            },
+                            "expected_output": 715827882,
+                            "received_output": 715827882,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 2.869603395462036,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "deepseek/deepseek-r1-0528",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```C\nint CountMonthsWith30Days(int month) {\n    int cycles = month / 12;\n    int remainder = month % 12;\n    int count = 0;\n    if (remainder >= 11) count = 4;\n    else if (remainder >= 9) count = 3;\n    else if (remainder >= 6) count = 2;\n    else if (remainder >= 4) count = 1;\n    else count = 0;\n    return cycles * 4 + count;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

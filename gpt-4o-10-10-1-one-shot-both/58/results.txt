@@ -1,0 +1,930 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 1132,
+    "total_time_taken_verification": 1.8006842136383057,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 1132,
+            "verification_time_iteration": 1.8006842136383057,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\nstruct SantaSpot {\n    int lane;\n    int desk;\n    char side;\n};\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*Santa Claus is the first who came to the Christmas Olympiad, and he is going to be the first to take his place at a desk! In the classroom there are n lanes of m desks each, and there are two working places at each of the desks. The lanes are numbered from 1 to n from the left to the right, the desks in a lane are numbered from 1 to m starting from the blackboard.\n\n    Note\n    that the lanes go perpendicularly to the blackboard, not along it. The organizers numbered all the working places from 1 to 2*n*m . The places are numbered by lanes (i. e. all the places of the first lane go first, then all the places of the second lane, and so on), in a lane the places are numbered starting from the nearest to the blackboard (i. e. from the first desk in the lane), at each desk, the place on the left is numbered before the place on the right. The picture illustrates the first and the second samples. Santa Clause knows that his place has number k . Help him to determine at which lane at which desk he should sit, and whether his place is on the left or on the right!\n\n    Input\n    The input contains three integers n , m and k (1 <= n, m <= 10000, 1 <= k <= 2*n*m) \u2014 the number of lanes, the number of desks in each lane and the number of Santa Claus' place.\n\n    Output\n    Return a struct with three fields: the number of lane r , the number of desk d , and a character s , which stands for the side of the desk Santa Claus. The character s should be \" L \", if Santa Clause should sit on the left, and \" R \" if his place is on the right.\n*/\n\n\n/*Struct to hold the decoded spot\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\n// Compute the global place number for (lane,desk,side) in an n\u00d7m classroom\n    logic integer place_index(integer lane, integer desk, char side,\n                              integer n, integer m) =\n      ((lane - 1) * m + (desk - 1)) * 2\n      + (side == 'L' ? 1 : 2);\n*/\n\n/*@\nrequires 1 <= n <= 10000;\n    requires 1 <= m <= 10000;\n    requires 1 <= k <= 2 * n * m;\n    assigns \\nothing;\n    ensures 1 <= \\result.lane && \\result.lane <= n;\n    ensures 1 <= \\result.desk  && \\result.desk  <= m;\n    ensures \\result.side == 'L' || \\result.side == 'R';\n    ensures place_index(\\result.lane, \\result.desk, \\result.side, n, m) == k;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nstruct SantaSpot verify_santa_spot(int n, int m, int k);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nstruct SantaSpot verify_santa_spot(int n, int m, int k) {\n    int total_desks_per_lane = m * 2;\n    int lane = (k - 1) / total_desks_per_lane + 1;\n    int desk_in_lane = ((k - 1) % total_desks_per_lane) / 2 + 1;\n    char side = ((k - 1) % 2) == 0 ? 'L' : 'R';\n\n    struct SantaSpot spot = { lane, desk_in_lane, side };\n    return spot;\n}\n```",
+                    "tokens_used": 1132,
+                    "code": "struct SantaSpot {\n    int lane;\n    int desk;\n    char side;\n};\n\n/*Santa Claus is the first who came to the Christmas Olympiad, and he is going to be the first to take his place at a desk! In the classroom there are n lanes of m desks each, and there are two working places at each of the desks. The lanes are numbered from 1 to n from the left to the right, the desks in a lane are numbered from 1 to m starting from the blackboard.\n\n    Note\n    that the lanes go perpendicularly to the blackboard, not along it. The organizers numbered all the working places from 1 to 2*n*m . The places are numbered by lanes (i. e. all the places of the first lane go first, then all the places of the second lane, and so on), in a lane the places are numbered starting from the nearest to the blackboard (i. e. from the first desk in the lane), at each desk, the place on the left is numbered before the place on the right. The picture illustrates the first and the second samples. Santa Clause knows that his place has number k . Help him to determine at which lane at which desk he should sit, and whether his place is on the left or on the right!\n\n    Input\n    The input contains three integers n , m and k (1 <= n, m <= 10000, 1 <= k <= 2*n*m) \u2014 the number of lanes, the number of desks in each lane and the number of Santa Claus' place.\n\n    Output\n    Return a struct with three fields: the number of lane r , the number of desk d , and a character s , which stands for the side of the desk Santa Claus. The character s should be \" L \", if Santa Clause should sit on the left, and \" R \" if his place is on the right.\n*/\n\n\n/*Struct to hold the decoded spot\n*/\n\n/*@\n// Compute the global place number for (lane,desk,side) in an n\u00d7m classroom\n    logic integer place_index(integer lane, integer desk, char side,\n                              integer n, integer m) =\n      ((lane - 1) * m + (desk - 1)) * 2\n      + (side == 'L' ? 1 : 2);\n*/\n\n/*@\nrequires 1 <= n <= 10000;\n    requires 1 <= m <= 10000;\n    requires 1 <= k <= 2 * n * m;\n    assigns \\nothing;\n    ensures 1 <= \\result.lane && \\result.lane <= n;\n    ensures 1 <= \\result.desk  && \\result.desk  <= m;\n    ensures \\result.side == 'L' || \\result.side == 'R';\n    ensures place_index(\\result.lane, \\result.desk, \\result.side, n, m) == k;\n*/\n\nstruct SantaSpot verify_santa_spot(int n, int m, int k) {\n    int total_desks_per_lane = m * 2;\n    int lane = (k - 1) / total_desks_per_lane + 1;\n    int desk_in_lane = ((k - 1) % total_desks_per_lane) / 2 + 1;\n    char side = ((k - 1) % 2) == 0 ? 'L' : 'R';\n\n    struct SantaSpot spot = { lane, desk_in_lane, side };\n    return spot;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "19 / 19",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "n": 4,
+                                "m": 3,
+                                "k": 9
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "n": 4,
+                                "m": 3,
+                                "k": 24
+                            },
+                            "expected_output": {
+                                "lane": 4,
+                                "desk": 3,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 4,
+                                "desk": 3,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "n": 2,
+                                "m": 4,
+                                "k": 4
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "n": 3,
+                                "m": 10,
+                                "k": 24
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "n": 10,
+                                "m": 3,
+                                "k": 59
+                            },
+                            "expected_output": {
+                                "lane": 10,
+                                "desk": 3,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 10,
+                                "desk": 3,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 160845880
+                            },
+                            "expected_output": {
+                                "lane": 8043,
+                                "desk": 2940,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 8043,
+                                "desk": 2940,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "n": 1,
+                                "m": 1,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "n": 1,
+                                "m": 1,
+                                "k": 2
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "n": 1,
+                                "m": 10000,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "n": 1,
+                                "m": 10000,
+                                "k": 20000
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 10000,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 10000,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 1,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 1,
+                                "k": 10000
+                            },
+                            "expected_output": {
+                                "lane": 5000,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 5000,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 1,
+                                "k": 20000
+                            },
+                            "expected_output": {
+                                "lane": 10000,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 10000,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 2
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 3
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 4
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 5
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 6
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 7
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 8
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 9
+                            },
+                            "expected_output": {
+                                "lane": 3,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 3,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 10
+                            },
+                            "expected_output": {
+                                "lane": 3,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 3,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 11
+                            },
+                            "expected_output": {
+                                "lane": 3,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 3,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "n": 3,
+                                "m": 2,
+                                "k": 12
+                            },
+                            "expected_output": {
+                                "lane": 3,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 3,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "n": 300,
+                                "m": 2000,
+                                "k": 1068628
+                            },
+                            "expected_output": {
+                                "lane": 268,
+                                "desk": 314,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 268,
+                                "desk": 314,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "n": 300,
+                                "m": 2000,
+                                "k": 584756
+                            },
+                            "expected_output": {
+                                "lane": 147,
+                                "desk": 378,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 147,
+                                "desk": 378,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "n": 300,
+                                "m": 2000,
+                                "k": 268181
+                            },
+                            "expected_output": {
+                                "lane": 68,
+                                "desk": 91,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 68,
+                                "desk": 91,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 9999,
+                                "k": 186450844
+                            },
+                            "expected_output": {
+                                "lane": 9324,
+                                "desk": 4745,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 9324,
+                                "desk": 4745,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 9999,
+                                "k": 197114268
+                            },
+                            "expected_output": {
+                                "lane": 9857,
+                                "desk": 6990,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 9857,
+                                "desk": 6990,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 9999,
+                                "k": 112390396
+                            },
+                            "expected_output": {
+                                "lane": 5621,
+                                "desk": 818,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 5621,
+                                "desk": 818,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 2
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 100000001
+                            },
+                            "expected_output": {
+                                "lane": 5001,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 5001,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 199999999
+                            },
+                            "expected_output": {
+                                "lane": 10000,
+                                "desk": 10000,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 10000,
+                                "desk": 10000,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "inputs": {
+                                "n": 10000,
+                                "m": 10000,
+                                "k": 200000000
+                            },
+                            "expected_output": {
+                                "lane": 10000,
+                                "desk": 10000,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 10000,
+                                "desk": 10000,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "inputs": {
+                                "n": 1,
+                                "m": 2,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "inputs": {
+                                "n": 1,
+                                "m": 2,
+                                "k": 2
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "inputs": {
+                                "n": 1,
+                                "m": 2,
+                                "k": 3
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "inputs": {
+                                "n": 1,
+                                "m": 2,
+                                "k": 4
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 2,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "inputs": {
+                                "n": 2,
+                                "m": 1,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "inputs": {
+                                "n": 2,
+                                "m": 1,
+                                "k": 2
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "inputs": {
+                                "n": 2,
+                                "m": 1,
+                                "k": 3
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "inputs": {
+                                "n": 2,
+                                "m": 1,
+                                "k": 4
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "R"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "inputs": {
+                                "n": 4,
+                                "m": 3,
+                                "k": 7
+                            },
+                            "expected_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 2,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "inputs": {
+                                "n": 1,
+                                "m": 1,
+                                "k": 1
+                            },
+                            "expected_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "received_output": {
+                                "lane": 1,
+                                "desk": 1,
+                                "side": "L"
+                            },
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 46,
+                                "passed": 46,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 1.8006842136383057,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nstruct SantaSpot verify_santa_spot(int n, int m, int k) {\n    int total_desks_per_lane = m * 2;\n    int lane = (k - 1) / total_desks_per_lane + 1;\n    int desk_in_lane = ((k - 1) % total_desks_per_lane) / 2 + 1;\n    char side = ((k - 1) % 2) == 0 ? 'L' : 'R';\n\n    struct SantaSpot spot = { lane, desk_in_lane, side };\n    return spot;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

@@ -1,0 +1,914 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 1529,
+    "total_time_taken_verification": 8.301905155181885,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 1529,
+            "verification_time_iteration": 8.301905155181885,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\n--- CONTEXT (for reference only) ---\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*There is a card game called \"Durak\", which means \"Fool\" in Russian. The game is quite popular in the countries that used to form USSR. The problem does not state all the game's rules explicitly \u2014 you can find them later yourselves if you want. To play durak you need a pack of 36 cards. Each card has a suit (\" S \", \" H \", \" D \" and \" C \") and a rank (in the increasing order \" 6 \", \" 7 \", \" 8 \", \" 9 \", \" T \", \" J \", \" Q \", \" K \" and \" A \"). At the beginning of the game one suit is arbitrarily chosen as trump. The players move like that: one player puts one or several of his cards on the table and the other one should beat each of them with his cards. A card beats another one if both cards have similar suits and the first card has a higher rank then the second one. Besides, a trump card can beat any non-trump card whatever the cards\u2019 ranks are. In all other cases you can not beat the second card with the first one. You are given the trump suit and two different cards. Determine whether the first one beats the second one or not.\n\n    Input\n    The first input contains the tramp suit. It is \" S \", \" H \", \" D \" or \" C \". The second and third input contains the description of the two different cards. Each card is described by one word consisting of two symbols. The first symbol stands for the rank (\" 6 \", \" 7 \", \" 8 \", \" 9 \", \" T \", \" J \", \" Q \", \" K \" and \" A \"), and the second one stands for the suit (\" S \", \" H \", \" D \" and \" C \").\n\n    Output\n    Return 1 if the first cards beats the second one. Otherwise, return 0.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nlogic integer rank_value(char r) =\n        (r == '6') ? 0 :\n        (r == '7') ? 1 :\n        (r == '8') ? 2 :\n        (r == '9') ? 3 :\n        (r == 'T') ? 4 :\n        (r == 'J') ? 5 :\n        (r == 'Q') ? 6 :\n        (r == 'K') ? 7 :\n        (r == 'A') ? 8 : -1;\n\n    logic char rank(char* card) = card[0];\n    logic char suit(char* card) = card[1];\n\n    predicate beats(char trump, char* card1, char* card2) =\n        (suit(card1) == suit(card2) &&\n         rank_value(rank(card1)) > rank_value(rank(card2)))\n      || (suit(card1) == trump && suit(card2) != trump);\n*/\n\n/*@\nrequires \\valid_read(card1 + (0 .. 1));\n    requires \\valid_read(card2 + (0 .. 1));\n    requires trump == 'S' || trump == 'H' || trump == 'D' || trump == 'C';\n    requires card1[0] == '6' || card1[0] == '7' || card1[0] == '8' || card1[0] == '9' ||\n             card1[0] == 'T' || card1[0] == 'J' || card1[0] == 'Q' || card1[0] == 'K' || card1[0] == 'A';\n    requires card2[0] == '6' || card2[0] == '7' || card2[0] == '8' || card2[0] == '9' ||\n             card2[0] == 'T' || card2[0] == 'J' || card2[0] == 'Q' || card2[0] == 'K' || card2[0] == 'A';\n    requires card1[1] == 'S' || card1[1] == 'H' || card1[1] == 'D' || card1[1] == 'C';\n    requires card2[1] == 'S' || card2[1] == 'H' || card2[1] == 'D' || card2[1] == 'C';\n    assigns \\nothing;\n    ensures (\\result == 1) <==> beats(trump, card1, card2);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint beats_card(char trump, char card1[2], char card2[2]);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint beats_card(char trump, char card1[2], char card2[2]) {\n    int rank_card1 = (card1[0] == '6') ? 0 :\n                     (card1[0] == '7') ? 1 :\n                     (card1[0] == '8') ? 2 :\n                     (card1[0] == '9') ? 3 :\n                     (card1[0] == 'T') ? 4 :\n                     (card1[0] == 'J') ? 5 :\n                     (card1[0] == 'Q') ? 6 :\n                     (card1[0] == 'K') ? 7 :\n                     (card1[0] == 'A') ? 8 : -1;\n                     \n    int rank_card2 = (card2[0] == '6') ? 0 :\n                     (card2[0] == '7') ? 1 :\n                     (card2[0] == '8') ? 2 :\n                     (card2[0] == '9') ? 3 :\n                     (card2[0] == 'T') ? 4 :\n                     (card2[0] == 'J') ? 5 :\n                     (card2[0] == 'Q') ? 6 :\n                     (card2[0] == 'K') ? 7 :\n                     (card2[0] == 'A') ? 8 : -1;\n    \n    if (card1[1] == card2[1] && rank_card1 > rank_card2) {\n        return 1;\n    }\n    if (card1[1] == trump && card2[1] != trump) {\n        return 1;\n    }\n    return 0;\n}\n```",
+                    "tokens_used": 1529,
+                    "code": "/*There is a card game called \"Durak\", which means \"Fool\" in Russian. The game is quite popular in the countries that used to form USSR. The problem does not state all the game's rules explicitly \u2014 you can find them later yourselves if you want. To play durak you need a pack of 36 cards. Each card has a suit (\" S \", \" H \", \" D \" and \" C \") and a rank (in the increasing order \" 6 \", \" 7 \", \" 8 \", \" 9 \", \" T \", \" J \", \" Q \", \" K \" and \" A \"). At the beginning of the game one suit is arbitrarily chosen as trump. The players move like that: one player puts one or several of his cards on the table and the other one should beat each of them with his cards. A card beats another one if both cards have similar suits and the first card has a higher rank then the second one. Besides, a trump card can beat any non-trump card whatever the cards\u2019 ranks are. In all other cases you can not beat the second card with the first one. You are given the trump suit and two different cards. Determine whether the first one beats the second one or not.\n\n    Input\n    The first input contains the tramp suit. It is \" S \", \" H \", \" D \" or \" C \". The second and third input contains the description of the two different cards. Each card is described by one word consisting of two symbols. The first symbol stands for the rank (\" 6 \", \" 7 \", \" 8 \", \" 9 \", \" T \", \" J \", \" Q \", \" K \" and \" A \"), and the second one stands for the suit (\" S \", \" H \", \" D \" and \" C \").\n\n    Output\n    Return 1 if the first cards beats the second one. Otherwise, return 0.\n*/\n\n/*@\nlogic integer rank_value(char r) =\n        (r == '6') ? 0 :\n        (r == '7') ? 1 :\n        (r == '8') ? 2 :\n        (r == '9') ? 3 :\n        (r == 'T') ? 4 :\n        (r == 'J') ? 5 :\n        (r == 'Q') ? 6 :\n        (r == 'K') ? 7 :\n        (r == 'A') ? 8 : -1;\n\n    logic char rank(char* card) = card[0];\n    logic char suit(char* card) = card[1];\n\n    predicate beats(char trump, char* card1, char* card2) =\n        (suit(card1) == suit(card2) &&\n         rank_value(rank(card1)) > rank_value(rank(card2)))\n      || (suit(card1) == trump && suit(card2) != trump);\n*/\n\n/*@\nrequires \\valid_read(card1 + (0 .. 1));\n    requires \\valid_read(card2 + (0 .. 1));\n    requires trump == 'S' || trump == 'H' || trump == 'D' || trump == 'C';\n    requires card1[0] == '6' || card1[0] == '7' || card1[0] == '8' || card1[0] == '9' ||\n             card1[0] == 'T' || card1[0] == 'J' || card1[0] == 'Q' || card1[0] == 'K' || card1[0] == 'A';\n    requires card2[0] == '6' || card2[0] == '7' || card2[0] == '8' || card2[0] == '9' ||\n             card2[0] == 'T' || card2[0] == 'J' || card2[0] == 'Q' || card2[0] == 'K' || card2[0] == 'A';\n    requires card1[1] == 'S' || card1[1] == 'H' || card1[1] == 'D' || card1[1] == 'C';\n    requires card2[1] == 'S' || card2[1] == 'H' || card2[1] == 'D' || card2[1] == 'C';\n    assigns \\nothing;\n    ensures (\\result == 1) <==> beats(trump, card1, card2);\n*/\n\nint beats_card(char trump, char card1[2], char card2[2]) {\n    int rank_card1 = (card1[0] == '6') ? 0 :\n                     (card1[0] == '7') ? 1 :\n                     (card1[0] == '8') ? 2 :\n                     (card1[0] == '9') ? 3 :\n                     (card1[0] == 'T') ? 4 :\n                     (card1[0] == 'J') ? 5 :\n                     (card1[0] == 'Q') ? 6 :\n                     (card1[0] == 'K') ? 7 :\n                     (card1[0] == 'A') ? 8 : -1;\n                     \n    int rank_card2 = (card2[0] == '6') ? 0 :\n                     (card2[0] == '7') ? 1 :\n                     (card2[0] == '8') ? 2 :\n                     (card2[0] == '9') ? 3 :\n                     (card2[0] == 'T') ? 4 :\n                     (card2[0] == 'J') ? 5 :\n                     (card2[0] == 'Q') ? 6 :\n                     (card2[0] == 'K') ? 7 :\n                     (card2[0] == 'A') ? 8 : -1;\n    \n    if (card1[1] == card2[1] && rank_card1 > rank_card2) {\n        return 1;\n    }\n    if (card1[1] == trump && card2[1] != trump) {\n        return 1;\n    }\n    return 0;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "64 / 64",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "input": {
+                                "trump": "H",
+                                "card1": "QH",
+                                "card2": "9S"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "input": {
+                                "trump": "S",
+                                "card1": "8D",
+                                "card2": "6D"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "input": {
+                                "trump": "C",
+                                "card1": "7H",
+                                "card2": "AS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "input": {
+                                "trump": "C",
+                                "card1": "KC",
+                                "card2": "9C"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "input": {
+                                "trump": "D",
+                                "card1": "7D",
+                                "card2": "KD"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "input": {
+                                "trump": "H",
+                                "card1": "7H",
+                                "card2": "KD"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "input": {
+                                "trump": "D",
+                                "card1": "AS",
+                                "card2": "AH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "input": {
+                                "trump": "H",
+                                "card1": "KH",
+                                "card2": "KS"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "input": {
+                                "trump": "C",
+                                "card1": "9H",
+                                "card2": "6C"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "input": {
+                                "trump": "C",
+                                "card1": "9H",
+                                "card2": "JC"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "input": {
+                                "trump": "D",
+                                "card1": "TD",
+                                "card2": "JD"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "input": {
+                                "trump": "H",
+                                "card1": "6S",
+                                "card2": "7S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "input": {
+                                "trump": "D",
+                                "card1": "7S",
+                                "card2": "8S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "input": {
+                                "trump": "S",
+                                "card1": "8H",
+                                "card2": "9H"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "input": {
+                                "trump": "C",
+                                "card1": "9D",
+                                "card2": "TD"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "input": {
+                                "trump": "H",
+                                "card1": "TC",
+                                "card2": "JC"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "input": {
+                                "trump": "C",
+                                "card1": "JH",
+                                "card2": "QH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "input": {
+                                "trump": "H",
+                                "card1": "QD",
+                                "card2": "KD"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "input": {
+                                "trump": "D",
+                                "card1": "KS",
+                                "card2": "AS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "input": {
+                                "trump": "S",
+                                "card1": "AH",
+                                "card2": "6H"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "input": {
+                                "trump": "H",
+                                "card1": "7D",
+                                "card2": "6D"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "input": {
+                                "trump": "S",
+                                "card1": "8H",
+                                "card2": "7H"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "input": {
+                                "trump": "D",
+                                "card1": "9S",
+                                "card2": "8S"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "input": {
+                                "trump": "S",
+                                "card1": "TC",
+                                "card2": "9C"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "input": {
+                                "trump": "H",
+                                "card1": "JS",
+                                "card2": "TS"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "input": {
+                                "trump": "S",
+                                "card1": "QD",
+                                "card2": "JD"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "input": {
+                                "trump": "D",
+                                "card1": "KH",
+                                "card2": "QH"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "input": {
+                                "trump": "H",
+                                "card1": "AD",
+                                "card2": "KD"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "input": {
+                                "trump": "H",
+                                "card1": "QS",
+                                "card2": "QD"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "input": {
+                                "trump": "C",
+                                "card1": "TS",
+                                "card2": "TH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "input": {
+                                "trump": "C",
+                                "card1": "6C",
+                                "card2": "6D"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "input": {
+                                "trump": "H",
+                                "card1": "8H",
+                                "card2": "8D"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "input": {
+                                "trump": "S",
+                                "card1": "7D",
+                                "card2": "7S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "input": {
+                                "trump": "H",
+                                "card1": "JC",
+                                "card2": "JH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "input": {
+                                "trump": "H",
+                                "card1": "8H",
+                                "card2": "9C"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "input": {
+                                "trump": "D",
+                                "card1": "9D",
+                                "card2": "6S"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "input": {
+                                "trump": "C",
+                                "card1": "JC",
+                                "card2": "AH"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "input": {
+                                "trump": "S",
+                                "card1": "AS",
+                                "card2": "KD"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "input": {
+                                "trump": "S",
+                                "card1": "7S",
+                                "card2": "JS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "input": {
+                                "trump": "H",
+                                "card1": "TH",
+                                "card2": "8H"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "input": {
+                                "trump": "S",
+                                "card1": "7S",
+                                "card2": "QS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "input": {
+                                "trump": "C",
+                                "card1": "KC",
+                                "card2": "QC"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "input": {
+                                "trump": "S",
+                                "card1": "AD",
+                                "card2": "9S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "input": {
+                                "trump": "D",
+                                "card1": "7H",
+                                "card2": "8D"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "input": {
+                                "trump": "H",
+                                "card1": "JC",
+                                "card2": "9H"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "input": {
+                                "trump": "C",
+                                "card1": "7S",
+                                "card2": "AC"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "input": {
+                                "trump": "C",
+                                "card1": "8C",
+                                "card2": "7C"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "input": {
+                                "trump": "H",
+                                "card1": "9D",
+                                "card2": "8S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "input": {
+                                "trump": "D",
+                                "card1": "AC",
+                                "card2": "KS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 50,
+                            "input": {
+                                "trump": "H",
+                                "card1": "8C",
+                                "card2": "QH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "input": {
+                                "trump": "S",
+                                "card1": "7S",
+                                "card2": "TS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "input": {
+                                "trump": "C",
+                                "card1": "AH",
+                                "card2": "6S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "input": {
+                                "trump": "S",
+                                "card1": "KS",
+                                "card2": "QS"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "input": {
+                                "trump": "H",
+                                "card1": "AC",
+                                "card2": "QC"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "input": {
+                                "trump": "S",
+                                "card1": "9H",
+                                "card2": "8D"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "input": {
+                                "trump": "S",
+                                "card1": "TS",
+                                "card2": "JS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "input": {
+                                "trump": "S",
+                                "card1": "8H",
+                                "card2": "7C"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "input": {
+                                "trump": "C",
+                                "card1": "AH",
+                                "card2": "6S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "input": {
+                                "trump": "S",
+                                "card1": "7S",
+                                "card2": "QS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "input": {
+                                "trump": "C",
+                                "card1": "AH",
+                                "card2": "6S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "input": {
+                                "trump": "S",
+                                "card1": "TS",
+                                "card2": "KS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 62,
+                            "input": {
+                                "trump": "C",
+                                "card1": "TH",
+                                "card2": "KH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 63,
+                            "input": {
+                                "trump": "H",
+                                "card1": "9C",
+                                "card2": "6D"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 64,
+                            "input": {
+                                "trump": "H",
+                                "card1": "9C",
+                                "card2": "8D"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 65,
+                            "input": {
+                                "trump": "H",
+                                "card1": "TH",
+                                "card2": "AH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 66,
+                            "input": {
+                                "trump": "H",
+                                "card1": "TH",
+                                "card2": "JH"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 67,
+                            "input": {
+                                "trump": "H",
+                                "card1": "QS",
+                                "card2": "9C"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 68,
+                            "input": {
+                                "trump": "H",
+                                "card1": "KC",
+                                "card2": "AC"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 69,
+                            "input": {
+                                "trump": "H",
+                                "card1": "AH",
+                                "card2": "KH"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 70,
+                            "input": {
+                                "trump": "H",
+                                "card1": "KS",
+                                "card2": "QS"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 71,
+                            "input": {
+                                "trump": "C",
+                                "card1": "AD",
+                                "card2": "KS"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 72,
+                            "input": {
+                                "trump": "H",
+                                "card1": "QS",
+                                "card2": "9C"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 73,
+                            "input": {
+                                "trump": "H",
+                                "card1": "9D",
+                                "card2": "7S"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 74,
+                            "input": {
+                                "trump": "D",
+                                "card1": "6D",
+                                "card2": "9S"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 75,
+                            "input": {
+                                "trump": "H",
+                                "card1": "AH",
+                                "card2": "KH"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 76,
+                            "input": {
+                                "trump": "H",
+                                "card1": "KC",
+                                "card2": "AC"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 77,
+                            "input": {
+                                "trump": "D",
+                                "card1": "8S",
+                                "card2": "6C"
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 78,
+                            "input": {
+                                "trump": "S",
+                                "card1": "AC",
+                                "card2": "KC"
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 78,
+                                "passed": 78,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 8.301905155181885,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint beats_card(char trump, char card1[2], char card2[2]) {\n    int rank_card1 = (card1[0] == '6') ? 0 :\n                     (card1[0] == '7') ? 1 :\n                     (card1[0] == '8') ? 2 :\n                     (card1[0] == '9') ? 3 :\n                     (card1[0] == 'T') ? 4 :\n                     (card1[0] == 'J') ? 5 :\n                     (card1[0] == 'Q') ? 6 :\n                     (card1[0] == 'K') ? 7 :\n                     (card1[0] == 'A') ? 8 : -1;\n                     \n    int rank_card2 = (card2[0] == '6') ? 0 :\n                     (card2[0] == '7') ? 1 :\n                     (card2[0] == '8') ? 2 :\n                     (card2[0] == '9') ? 3 :\n                     (card2[0] == 'T') ? 4 :\n                     (card2[0] == 'J') ? 5 :\n                     (card2[0] == 'Q') ? 6 :\n                     (card2[0] == 'K') ? 7 :\n                     (card2[0] == 'A') ? 8 : -1;\n    \n    if (card1[1] == card2[1] && rank_card1 > rank_card2) {\n        return 1;\n    }\n    if (card1[1] == trump && card2[1] != trump) {\n        return 1;\n    }\n    return 0;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

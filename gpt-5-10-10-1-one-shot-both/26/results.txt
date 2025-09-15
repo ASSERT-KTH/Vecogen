@@ -1,0 +1,932 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 2,
+    "total_tokens_used": 2717,
+    "total_time_taken_verification": 12.541526079177856,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 2717,
+            "verification_time_iteration": 12.541526079177856,
+            "completions_used": 2,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <stddef.h>\n\n#include <limits.h>\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*In a scenario where a series of integers is provided, the goal is to identify the largest integer within that series. The task is to process an array of integers and determine the maximum value it contains.\n\n  Input\n  The input consists of an array of integers, denoted as a, along with a size indicator n. The size n must be a positive integer, ensuring that there is at least one element in the array. The elements of the array can be any integer values.\n\n  Output\n  The output is a single integer representing the maximum value found within the provided array of integers. This value is guaranteed to be one of the elements in the array.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires n > 0;\n  requires \\valid(a + (0 .. n-1));\n  decreases n;\n  assigns \\nothing;\n  ensures \\forall size_t k; 0 <= k < n ==> \\result >= a[k];\n  ensures \\exists size_t k; 0 <= k < n && a[k] == \\result;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint Max(const int *a, size_t n);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-5-2025-08-07",
+                    "gpt_output": "```c\nint Max(const int *a, size_t n)\n{\n    if (n == 1) {\n        return a[0];\n    }\n    int m = Max(a + 1, n - 1);\n    return a[0] >= m ? a[0] : m;\n}\n```",
+                    "tokens_used": 1262,
+                    "code": "#include <stddef.h>\n\n#include <limits.h>\n\n/*In a scenario where a series of integers is provided, the goal is to identify the largest integer within that series. The task is to process an array of integers and determine the maximum value it contains.\n\n  Input\n  The input consists of an array of integers, denoted as a, along with a size indicator n. The size n must be a positive integer, ensuring that there is at least one element in the array. The elements of the array can be any integer values.\n\n  Output\n  The output is a single integer representing the maximum value found within the provided array of integers. This value is guaranteed to be one of the elements in the array.\n*/\n\n/*@\nrequires n > 0;\n  requires \\valid(a + (0 .. n-1));\n  decreases n;\n  assigns \\nothing;\n  ensures \\forall size_t k; 0 <= k < n ==> \\result >= a[k];\n  ensures \\exists size_t k; 0 <= k < n && a[k] == \\result;\n*/\n\nint Max(const int *a, size_t n) {\n    if (n == 1) {\n        return a[0];\n    }\n    int m = Max(a + 1, n - 1);\n    return a[0] >= m ? a[0] : m;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 17.\n The following lines caused the timeouts:\nGoal Post-condition  does not hold:   ensures \\forall size_t k; 0 <= k < n ==> \\result >= a[k];\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "16 / 17",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "array": [
+                                    5
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "array": [
+                                    -3
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": -3,
+                            "received_output": -3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    1
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    0
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "array": [
+                                    2147483647
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "array": [
+                                    -2147483648
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": -2147483648,
+                            "received_output": -2147483648,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "array": [
+                                    3,
+                                    3,
+                                    3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "array": [
+                                    -1,
+                                    -2,
+                                    -3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": -1,
+                            "received_output": -1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "array": [
+                                    -3,
+                                    0,
+                                    3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "array": [
+                                    5,
+                                    4,
+                                    3,
+                                    2,
+                                    1
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "array": [
+                                    -5,
+                                    -4,
+                                    -3,
+                                    -2,
+                                    -1
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": -1,
+                            "received_output": -1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "array": [
+                                    2,
+                                    9,
+                                    7,
+                                    9
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "array": [
+                                    -2147483648,
+                                    2147483647
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "array": [
+                                    100,
+                                    100,
+                                    100
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 100,
+                            "received_output": 100,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    100,
+                                    50,
+                                    99
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 100,
+                            "received_output": 100,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    2,
+                                    2,
+                                    1,
+                                    2
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "array": [
+                                    7
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "array": [
+                                    2147483647,
+                                    0,
+                                    -1
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "array": [
+                                    -2147483648,
+                                    -100,
+                                    -50
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": -50,
+                            "received_output": -50,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "array": [
+                                    123,
+                                    456,
+                                    789
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 789,
+                            "received_output": 789,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "array": [
+                                    789,
+                                    456,
+                                    123
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 789,
+                            "received_output": 789,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "array": [
+                                    5,
+                                    -5,
+                                    5,
+                                    -5
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "array": [
+                                    2147483646,
+                                    2147483647,
+                                    2147483645
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "array": [
+                                    -2147483647,
+                                    -2147483648
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": -2147483647,
+                            "received_output": -2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "array": [
+                                    10,
+                                    20,
+                                    30,
+                                    40,
+                                    30,
+                                    20,
+                                    10
+                                ],
+                                "n": 7
+                            },
+                            "expected_output": 40,
+                            "received_output": 40,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "array": [
+                                    99,
+                                    88,
+                                    77,
+                                    66,
+                                    55
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 99,
+                            "received_output": 99,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "array": [
+                                    -10,
+                                    10,
+                                    -10,
+                                    10
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    -1,
+                                    1
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 10.514609813690186,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9411764705882353
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <stddef.h>\n\n#include <limits.h>\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*In a scenario where a series of integers is provided, the goal is to identify the largest integer within that series. The task is to process an array of integers and determine the maximum value it contains.\n\n  Input\n  The input consists of an array of integers, denoted as a, along with a size indicator n. The size n must be a positive integer, ensuring that there is at least one element in the array. The elements of the array can be any integer values.\n\n  Output\n  The output is a single integer representing the maximum value found within the provided array of integers. This value is guaranteed to be one of the elements in the array.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires n > 0;\n  requires \\valid(a + (0 .. n-1));\n  decreases n;\n  assigns \\nothing;\n  ensures \\forall size_t k; 0 <= k < n ==> \\result >= a[k];\n  ensures \\exists size_t k; 0 <= k < n && a[k] == \\result;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint Max(const int *a, size_t n);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-5-2025-08-07",
+                    "gpt_output": "```c\nint Max(const int *a, size_t n)\n{\n    if (n == 1) {\n        return a[0];\n    }\n    int m = Max(a, n - 1);\n    int last = a[n - 1];\n    return last > m ? last : m;\n}\n```",
+                    "tokens_used": 1455,
+                    "code": "#include <stddef.h>\n\n#include <limits.h>\n\n/*In a scenario where a series of integers is provided, the goal is to identify the largest integer within that series. The task is to process an array of integers and determine the maximum value it contains.\n\n  Input\n  The input consists of an array of integers, denoted as a, along with a size indicator n. The size n must be a positive integer, ensuring that there is at least one element in the array. The elements of the array can be any integer values.\n\n  Output\n  The output is a single integer representing the maximum value found within the provided array of integers. This value is guaranteed to be one of the elements in the array.\n*/\n\n/*@\nrequires n > 0;\n  requires \\valid(a + (0 .. n-1));\n  decreases n;\n  assigns \\nothing;\n  ensures \\forall size_t k; 0 <= k < n ==> \\result >= a[k];\n  ensures \\exists size_t k; 0 <= k < n && a[k] == \\result;\n*/\n\nint Max(const int *a, size_t n) {\n    if (n == 1) {\n        return a[0];\n    }\n    int m = Max(a, n - 1);\n    int last = a[n - 1];\n    return last > m ? last : m;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "16 / 16",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "array": [
+                                    5
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "array": [
+                                    -3
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": -3,
+                            "received_output": -3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    1
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    0
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "array": [
+                                    2147483647
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "array": [
+                                    -2147483648
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": -2147483648,
+                            "received_output": -2147483648,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "array": [
+                                    3,
+                                    3,
+                                    3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "array": [
+                                    -1,
+                                    -2,
+                                    -3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": -1,
+                            "received_output": -1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "array": [
+                                    -3,
+                                    0,
+                                    3
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 3,
+                            "received_output": 3,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "array": [
+                                    5,
+                                    4,
+                                    3,
+                                    2,
+                                    1
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "array": [
+                                    -5,
+                                    -4,
+                                    -3,
+                                    -2,
+                                    -1
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": -1,
+                            "received_output": -1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "array": [
+                                    2,
+                                    9,
+                                    7,
+                                    9
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 9,
+                            "received_output": 9,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "array": [
+                                    -2147483648,
+                                    2147483647
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "array": [
+                                    100,
+                                    100,
+                                    100
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 100,
+                            "received_output": 100,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    100,
+                                    50,
+                                    99
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 100,
+                            "received_output": 100,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "array": [
+                                    1,
+                                    2,
+                                    2,
+                                    1,
+                                    2
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 2,
+                            "received_output": 2,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "array": [
+                                    7
+                                ],
+                                "n": 1
+                            },
+                            "expected_output": 7,
+                            "received_output": 7,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "array": [
+                                    2147483647,
+                                    0,
+                                    -1
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "array": [
+                                    -2147483648,
+                                    -100,
+                                    -50
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": -50,
+                            "received_output": -50,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "array": [
+                                    123,
+                                    456,
+                                    789
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 789,
+                            "received_output": 789,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "array": [
+                                    789,
+                                    456,
+                                    123
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 789,
+                            "received_output": 789,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "array": [
+                                    5,
+                                    -5,
+                                    5,
+                                    -5
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "array": [
+                                    2147483646,
+                                    2147483647,
+                                    2147483645
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 2147483647,
+                            "received_output": 2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "array": [
+                                    -2147483647,
+                                    -2147483648
+                                ],
+                                "n": 2
+                            },
+                            "expected_output": -2147483647,
+                            "received_output": -2147483647,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "array": [
+                                    10,
+                                    20,
+                                    30,
+                                    40,
+                                    30,
+                                    20,
+                                    10
+                                ],
+                                "n": 7
+                            },
+                            "expected_output": 40,
+                            "received_output": 40,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "array": [
+                                    99,
+                                    88,
+                                    77,
+                                    66,
+                                    55
+                                ],
+                                "n": 5
+                            },
+                            "expected_output": 99,
+                            "received_output": 99,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "array": [
+                                    -10,
+                                    10,
+                                    -10,
+                                    10
+                                ],
+                                "n": 4
+                            },
+                            "expected_output": 10,
+                            "received_output": 10,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "array": [
+                                    0,
+                                    -1,
+                                    1
+                                ],
+                                "n": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 2.026916265487671,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-5",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint Max(const int *a, size_t n)\n{\n    if (n == 1) {\n        return a[0];\n    }\n    int m = Max(a, n - 1);\n    int last = a[n - 1];\n    return last > m ? last : m;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

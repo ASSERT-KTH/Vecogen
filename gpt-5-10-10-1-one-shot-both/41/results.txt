@@ -1,0 +1,1096 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 3024,
+    "total_time_taken_verification": 2.516522169113159,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 3024,
+            "verification_time_iteration": 2.516522169113159,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*Petr wants to make a calendar for current month. For this purpose he draws a table in which columns correspond to weeks (a week is seven consequent days from Monday to Sunday), rows correspond to weekdays, and cells contain dates. For example, a calendar for January 2017 should look like on the picture: Petr wants to know how many columns his table should have given the month and the weekday of the first date of that month? Assume that the year is non-leap.\n\n    Input\n    The input contains two integers m and d (1 <= m <= 12, 1 <= d <= 7) \u2014 the number of month (January is the first month, December is the twelfth) and the weekday of the first date of this month (1 is Monday, 7 is Sunday).\n\n    Output\n    Output a single integer: the number of columns the table should have.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n//@ logic integer length_of_month(integer m) = (m == 2) ? 28 : 30 + (m + (m / 8)) % 2;\n\n/*@\npredicate isValidSolution(integer m, integer d, integer out) =\n    \\exists integer full_weeks, remainder_before, remainder_after;\n    remainder_before == (8 - d) &&\n    0 <= remainder_after <= 6 &&\n    length_of_month(m) == remainder_before + 7 * full_weeks + remainder_after &&\n    out == 1 + full_weeks + (remainder_after > 0 ? 1 : 0);\n*/\n\n/*@\npredicate existsLargerSolution(integer m, integer d, integer out) =\n    \\exists integer full_weeks, remainder_before, remainder_after, solution;\n    remainder_before == (8 - d) &&\n    0 <= remainder_after <= 6 &&\n    length_of_month(m) == remainder_before + 7 * full_weeks + remainder_after &&\n    solution == 1 + full_weeks + (remainder_after > 0 ? 1 : 0) &&\n    solution > out;\n*/\n\n/*@\nrequires 1 <= m <= 12;\n    requires 1 <= d <= 7;\n    assigns \\nothing;\n    ensures isValidSolution(m, d, \\result);\n    ensures !existsLargerSolution(m, d, \\result);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint calculateNumberOfCalendarColumns(int m, int d);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-5-2025-08-07",
+                    "gpt_output": "```c\nint calculateNumberOfCalendarColumns(int m, int d)\n{\n    int length = (m == 2) ? 28 : 30 + ((m + (m / 8)) % 2);\n    int remainder_before = 8 - d;\n    int remaining = length - remainder_before;\n    int full_weeks = remaining / 7;\n    int remainder_after = remaining % 7;\n    return 1 + full_weeks + (remainder_after > 0 ? 1 : 0);\n}\n```",
+                    "tokens_used": 3024,
+                    "code": "/*Petr wants to make a calendar for current month. For this purpose he draws a table in which columns correspond to weeks (a week is seven consequent days from Monday to Sunday), rows correspond to weekdays, and cells contain dates. For example, a calendar for January 2017 should look like on the picture: Petr wants to know how many columns his table should have given the month and the weekday of the first date of that month? Assume that the year is non-leap.\n\n    Input\n    The input contains two integers m and d (1 <= m <= 12, 1 <= d <= 7) \u2014 the number of month (January is the first month, December is the twelfth) and the weekday of the first date of this month (1 is Monday, 7 is Sunday).\n\n    Output\n    Output a single integer: the number of columns the table should have.\n*/\n\n//@ logic integer length_of_month(integer m) = (m == 2) ? 28 : 30 + (m + (m / 8)) % 2;\n\n/*@\npredicate isValidSolution(integer m, integer d, integer out) =\n    \\exists integer full_weeks, remainder_before, remainder_after;\n    remainder_before == (8 - d) &&\n    0 <= remainder_after <= 6 &&\n    length_of_month(m) == remainder_before + 7 * full_weeks + remainder_after &&\n    out == 1 + full_weeks + (remainder_after > 0 ? 1 : 0);\n*/\n\n/*@\npredicate existsLargerSolution(integer m, integer d, integer out) =\n    \\exists integer full_weeks, remainder_before, remainder_after, solution;\n    remainder_before == (8 - d) &&\n    0 <= remainder_after <= 6 &&\n    length_of_month(m) == remainder_before + 7 * full_weeks + remainder_after &&\n    solution == 1 + full_weeks + (remainder_after > 0 ? 1 : 0) &&\n    solution > out;\n*/\n\n/*@\nrequires 1 <= m <= 12;\n    requires 1 <= d <= 7;\n    assigns \\nothing;\n    ensures isValidSolution(m, d, \\result);\n    ensures !existsLargerSolution(m, d, \\result);\n*/\n\nint calculateNumberOfCalendarColumns(int m, int d) {\n    int length = (m == 2) ? 28 : 30 + ((m + (m / 8)) % 2);\n    int remainder_before = 8 - d;\n    int remaining = length - remainder_before;\n    int full_weeks = remaining / 7;\n    int remainder_after = remaining % 7;\n    return 1 + full_weeks + (remainder_after > 0 ? 1 : 0);\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "18 / 18",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "m": 1,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "m": 1,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "m": 11,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "m": 2,
+                                "d": 7
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "m": 2,
+                                "d": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "m": 8,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "m": 1,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "m": 1,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "m": 1,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "m": 1,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "m": 1,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "m": 1,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "m": 1,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "m": 2,
+                                "d": 1
+                            },
+                            "expected_output": 4,
+                            "received_output": 4,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "m": 2,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "m": 2,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "m": 2,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "m": 2,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "m": 2,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "m": 2,
+                                "d": 7
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "m": 3,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "m": 3,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "m": 3,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "m": 3,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "m": 3,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "m": 3,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "m": 3,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "m": 4,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "m": 4,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "m": 4,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "inputs": {
+                                "m": 4,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "inputs": {
+                                "m": 4,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "inputs": {
+                                "m": 4,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "inputs": {
+                                "m": 4,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "inputs": {
+                                "m": 5,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "inputs": {
+                                "m": 5,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "inputs": {
+                                "m": 5,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "inputs": {
+                                "m": 5,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "inputs": {
+                                "m": 5,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "inputs": {
+                                "m": 5,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "inputs": {
+                                "m": 5,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "inputs": {
+                                "m": 6,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "inputs": {
+                                "m": 6,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "inputs": {
+                                "m": 6,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "inputs": {
+                                "m": 6,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "inputs": {
+                                "m": 6,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "inputs": {
+                                "m": 6,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "inputs": {
+                                "m": 6,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "inputs": {
+                                "m": 7,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 50,
+                            "inputs": {
+                                "m": 7,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "inputs": {
+                                "m": 7,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "inputs": {
+                                "m": 7,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "inputs": {
+                                "m": 7,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "inputs": {
+                                "m": 7,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "inputs": {
+                                "m": 7,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "inputs": {
+                                "m": 8,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "inputs": {
+                                "m": 8,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "inputs": {
+                                "m": 8,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "inputs": {
+                                "m": 8,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "inputs": {
+                                "m": 8,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "inputs": {
+                                "m": 8,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 62,
+                            "inputs": {
+                                "m": 8,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 63,
+                            "inputs": {
+                                "m": 9,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 64,
+                            "inputs": {
+                                "m": 9,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 65,
+                            "inputs": {
+                                "m": 9,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 66,
+                            "inputs": {
+                                "m": 9,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 67,
+                            "inputs": {
+                                "m": 9,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 68,
+                            "inputs": {
+                                "m": 9,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 69,
+                            "inputs": {
+                                "m": 9,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 70,
+                            "inputs": {
+                                "m": 10,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 71,
+                            "inputs": {
+                                "m": 10,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 72,
+                            "inputs": {
+                                "m": 10,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 73,
+                            "inputs": {
+                                "m": 10,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 74,
+                            "inputs": {
+                                "m": 10,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 75,
+                            "inputs": {
+                                "m": 10,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 76,
+                            "inputs": {
+                                "m": 10,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 77,
+                            "inputs": {
+                                "m": 11,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 78,
+                            "inputs": {
+                                "m": 11,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 79,
+                            "inputs": {
+                                "m": 11,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 80,
+                            "inputs": {
+                                "m": 11,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 81,
+                            "inputs": {
+                                "m": 11,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 82,
+                            "inputs": {
+                                "m": 11,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 83,
+                            "inputs": {
+                                "m": 11,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 84,
+                            "inputs": {
+                                "m": 12,
+                                "d": 1
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 85,
+                            "inputs": {
+                                "m": 12,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 86,
+                            "inputs": {
+                                "m": 12,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 87,
+                            "inputs": {
+                                "m": 12,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 88,
+                            "inputs": {
+                                "m": 12,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 89,
+                            "inputs": {
+                                "m": 12,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 90,
+                            "inputs": {
+                                "m": 12,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 91,
+                            "inputs": {
+                                "m": 1,
+                                "d": 4
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 92,
+                            "inputs": {
+                                "m": 1,
+                                "d": 5
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 93,
+                            "inputs": {
+                                "m": 9,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 94,
+                            "inputs": {
+                                "m": 2,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 95,
+                            "inputs": {
+                                "m": 1,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 96,
+                            "inputs": {
+                                "m": 2,
+                                "d": 2
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 97,
+                            "inputs": {
+                                "m": 4,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 98,
+                            "inputs": {
+                                "m": 12,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 99,
+                            "inputs": {
+                                "m": 12,
+                                "d": 3
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 100,
+                            "inputs": {
+                                "m": 3,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 101,
+                            "inputs": {
+                                "m": 9,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 102,
+                            "inputs": {
+                                "m": 7,
+                                "d": 6
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 103,
+                            "inputs": {
+                                "m": 11,
+                                "d": 7
+                            },
+                            "expected_output": 6,
+                            "received_output": 6,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 104,
+                            "inputs": {
+                                "m": 6,
+                                "d": 6
+                            },
+                            "expected_output": 5,
+                            "received_output": 5,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 104,
+                                "passed": 104,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 2.516522169113159,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-5",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint calculateNumberOfCalendarColumns(int m, int d)\n{\n    int length = (m == 2) ? 28 : 30 + ((m + (m / 8)) % 2);\n    int remainder_before = 8 - d;\n    int remaining = length - remainder_before;\n    int full_weeks = remaining / 7;\n    int remainder_after = remaining % 7;\n    return 1 + full_weeks + (remainder_after > 0 ? 1 : 0);\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

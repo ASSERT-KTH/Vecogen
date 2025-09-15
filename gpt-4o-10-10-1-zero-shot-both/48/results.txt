@@ -1,0 +1,736 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 1,
+    "total_tokens_used": 1077,
+    "total_time_taken_verification": 1.475771427154541,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 1077,
+            "verification_time_iteration": 1.475771427154541,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\n--- CONTEXT (for reference only) ---\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*You are given names of two days of the week. Please, determine whether it is possible that during some non-leap year the first day of some month was equal to the first day of the week you are given, while the first day of the next month was equal to the second day of the week you are given. Both months should belong to one year . In this problem, we consider the Gregorian calendar to be used. The number of months in this calendar is equal to 12. The number of days in months during any non-leap year is: 31 , 28 , 31 , 30 , 31 , 30 , 31 , 31 , 30 , 31 , 30 , 31.\n\n    Input\n    The input consists of two integers, each representing a week day. 0 refers to monday, 1 to tuesday, 2 to wednesday, 3 to thursday, 4 to friday, 5 to saturday and 6 to sunday. The first integer w1 is the first day of the week, the second integer w2 is the second day of the week. \n\n    Output\n    Return 1 if such situation is possible during some non-leap year. Otherwise, return 0.\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nlogic integer month_len(integer i) =\n        (i == 1)  ? 31\n        : (i == 2)  ? 28\n        : (i == 3)  ? 30\n        : (i == 4)  ? 30\n        : (i == 5)  ? 31\n        : (i == 6)  ? 30\n        : (i == 7)  ? 31\n        : (i == 8)  ? 31\n        : (i == 9)  ? 30\n        : (i ==10)  ? 31\n        : (i ==11)  ? 30\n        : (i ==12)  ? 31\n        :              0;\n*/\n\n/*@\nrequires 0 <= w1 <= 6;\n    requires 0 <= w2 <= 6;\n    assigns \\nothing;\n    ensures \\result == (\n        ((w1 + month_len(1)) % 7 == w2) ||\n        ((w1 + month_len(2)) % 7 == w2) ||\n        ((w1 + month_len(3)) % 7 == w2) ||\n        ((w1 + month_len(4)) % 7 == w2) ||\n        ((w1 + month_len(5)) % 7 == w2) ||\n        ((w1 + month_len(6)) % 7 == w2) ||\n        ((w1 + month_len(7)) % 7 == w2) ||\n        ((w1 + month_len(8)) % 7 == w2) ||\n        ((w1 + month_len(9)) % 7 == w2) ||\n        ((w1 + month_len(10)) % 7 == w2) ||\n        ((w1 + month_len(11)) % 7 == w2)\n    ) ? 1 : 0;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint months_transition(int w1, int w2);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint months_transition(int w1, int w2) {\n    return ((w1 + 31) % 7 == w2) ||\n           ((w1 + 28) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ? 1 : 0;\n}\n```",
+                    "tokens_used": 1077,
+                    "code": "/*You are given names of two days of the week. Please, determine whether it is possible that during some non-leap year the first day of some month was equal to the first day of the week you are given, while the first day of the next month was equal to the second day of the week you are given. Both months should belong to one year . In this problem, we consider the Gregorian calendar to be used. The number of months in this calendar is equal to 12. The number of days in months during any non-leap year is: 31 , 28 , 31 , 30 , 31 , 30 , 31 , 31 , 30 , 31 , 30 , 31.\n\n    Input\n    The input consists of two integers, each representing a week day. 0 refers to monday, 1 to tuesday, 2 to wednesday, 3 to thursday, 4 to friday, 5 to saturday and 6 to sunday. The first integer w1 is the first day of the week, the second integer w2 is the second day of the week. \n\n    Output\n    Return 1 if such situation is possible during some non-leap year. Otherwise, return 0.\n*/\n\n/*@\nlogic integer month_len(integer i) =\n        (i == 1)  ? 31\n        : (i == 2)  ? 28\n        : (i == 3)  ? 30\n        : (i == 4)  ? 30\n        : (i == 5)  ? 31\n        : (i == 6)  ? 30\n        : (i == 7)  ? 31\n        : (i == 8)  ? 31\n        : (i == 9)  ? 30\n        : (i ==10)  ? 31\n        : (i ==11)  ? 30\n        : (i ==12)  ? 31\n        :              0;\n*/\n\n/*@\nrequires 0 <= w1 <= 6;\n    requires 0 <= w2 <= 6;\n    assigns \\nothing;\n    ensures \\result == (\n        ((w1 + month_len(1)) % 7 == w2) ||\n        ((w1 + month_len(2)) % 7 == w2) ||\n        ((w1 + month_len(3)) % 7 == w2) ||\n        ((w1 + month_len(4)) % 7 == w2) ||\n        ((w1 + month_len(5)) % 7 == w2) ||\n        ((w1 + month_len(6)) % 7 == w2) ||\n        ((w1 + month_len(7)) % 7 == w2) ||\n        ((w1 + month_len(8)) % 7 == w2) ||\n        ((w1 + month_len(9)) % 7 == w2) ||\n        ((w1 + month_len(10)) % 7 == w2) ||\n        ((w1 + month_len(11)) % 7 == w2)\n    ) ? 1 : 0;\n*/\n\nint months_transition(int w1, int w2) {\n    return ((w1 + 31) % 7 == w2) ||\n           ((w1 + 28) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ? 1 : 0;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "26 / 26",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 6
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 31,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 32,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 6
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 33,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 34,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 35,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 36,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 5
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 37,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 6
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 38,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 39,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 40,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 41,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 42,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 43,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 44,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 45,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 46,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 47,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 3
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 48,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 49,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 50,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 6
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 51,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 52,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 53,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 54,
+                            "inputs": {
+                                "w1": 1,
+                                "w2": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 55,
+                            "inputs": {
+                                "w1": 6,
+                                "w2": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 56,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 57,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 58,
+                            "inputs": {
+                                "w1": 4,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 59,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 60,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 4
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 61,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 62,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 63,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 64,
+                            "inputs": {
+                                "w1": 0,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 65,
+                            "inputs": {
+                                "w1": 2,
+                                "w2": 5
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 66,
+                            "inputs": {
+                                "w1": 3,
+                                "w2": 6
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 67,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 4
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 68,
+                            "inputs": {
+                                "w1": 5,
+                                "w2": 0
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 68,
+                                "passed": 68,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 1.475771427154541,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint months_transition(int w1, int w2) {\n    return ((w1 + 31) % 7 == w2) ||\n           ((w1 + 28) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ||\n           ((w1 + 31) % 7 == w2) ||\n           ((w1 + 30) % 7 == w2) ? 1 : 0;\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}

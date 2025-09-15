@@ -1,0 +1,3962 @@
+{
+    "total_completions_requested": 20,
+    "total_completions_used": 11,
+    "total_tokens_used": 4749,
+    "total_time_taken_verification": 129.34668493270874,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": false,
+            "tokens_used_iteration": 4092,
+            "verification_time_iteration": 117.95924353599548,
+            "completions_used": 10,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long b_square = 1LL * b * b;\n    long long discriminant = b_square - 4LL * a * c;\n    return discriminant < 0;\n}\n```",
+                    "tokens_used": 417,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long b_square = 1LL * b * b;\n    long long discriminant = b_square - 4LL * a * c;\n    return discriminant < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     long long discriminant = b_square - 4LL * a * c;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 12.042343139648438,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    return (1LL*b*b - 4LL*a*c) < 0;\n}\n```",
+                    "tokens_used": 396,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    return (1LL*b*b - 4LL*a*c) < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return (1LL*b*b - 4LL*a*c) < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.741500854492188,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    return (1LL * b * b - 4LL * a * c) < 0;\n}\n```",
+                    "tokens_used": 400,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    return (1LL * b * b - 4LL * a * c) < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return (1LL * b * b - 4LL * a * c) < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.740895986557007,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n```",
+                    "tokens_used": 408,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     long long discriminant = 1LL * b * b - 4LL * a * c;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.690439701080322,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    return (1LL * b * b - 4LL * a * c) < 0;\n}\n```",
+                    "tokens_used": 400,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    return (1LL * b * b - 4LL * a * c) < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return (1LL * b * b - 4LL * a * c) < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.74068808555603,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n```",
+                    "tokens_used": 408,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     long long discriminant = 1LL * b * b - 4LL * a * c;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.740850925445557,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return (b_squared - four_ac) < 0;\n}\n```",
+                    "tokens_used": 419,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return (b_squared - four_ac) < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return (b_squared - four_ac) < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.891266107559204,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n```",
+                    "tokens_used": 408,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long discriminant = 1LL * b * b - 4LL * a * c;\n    return discriminant < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     long long discriminant = 1LL * b * b - 4LL * a * c;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.6904878616333,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long b_sq = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return (b_sq - four_ac) < 0;\n}\n```",
+                    "tokens_used": 419,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long b_sq = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return (b_sq - four_ac) < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return (b_sq - four_ac) < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.891420364379883,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return b_squared - four_ac < 0;\n}\n```",
+                    "tokens_used": 417,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return b_squared - four_ac < 0;\n}\n",
+                    "feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return b_squared - four_ac < 0;\n. Please try to solve the problem.",
+                    "is_verified": false,
+                    "verified_goals_count": "11 / 12",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been improved",
+                    "verification_time": 11.789350509643555,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 0.9166666666666666
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": "The verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return b_squared - four_ac < 0;\n. Please try to solve the problem.",
+            "best_attempt_code": "```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return b_squared - four_ac < 0;\n}\n```",
+            "best_attempt_metric_percentage": 0.9166666666666666
+        }
+    ],
+    "code_improvement_information": [
+        {
+            "iteration_number": 1,
+            "is_verified": true,
+            "tokens_used_iteration": 657,
+            "verification_time_iteration": 11.387441396713257,
+            "completions_used": 1,
+            "completions": [
+                {
+                    "code_completion_number": 1,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n\n#include <limits.h>\n\n/* PREVIOUS ATTEMPT (did not verify) */\nint isPositive(int x, int *out) {\n    *out = x > 0;\n    return 0; /* Irrelevant return value, not constrained by spec */\n}\n\n/* VERIFICATION FEEDBACK:\n   Goal Assertion 'postcondition' does not hold: return value must match ensures.\n   Please fix to adhere to ACSL and avoid UB.\n*/\n\n/* FIXED IMPLEMENTATION */\nint isPositive(int x, int *out) {\n    int v = (x > 0);\n    *out = v;\n    return v;\n}\n\n/*@\n  requires \\valid(out);\n  assigns *out;\n  ensures *out == (x > 0);\n*/\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\n#include <limits.h>\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n```\nFUNCTION SIGNATURE:\n```c\nint check(int a, int b, int c);\n```\n--- END CONTEXT ---\n\n--- PREVIOUS ATTEMPT (did not verify) ---\n```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    return b_squared - four_ac < 0;\n}\n```\n--- VERIFICATION FEEDBACK ---\nThe verification timed out. Timeouts: 1 of 12.\n The following lines caused the timeouts:\nGoal Assertion 'rte,signed_overflow'  does not hold:     return b_squared - four_ac < 0;\n. Please try to solve the problem.\n--- END FEEDBACK ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * Do not repeat the ACSL or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    if (b_squared < four_ac) {\n        return 1;\n    } else {\n        return 0;\n    }\n}\n```",
+                    "tokens_used": 657,
+                    "code": "#include <limits.h>\n\n/*The context of this problem is a mathematical situation involving the computation of the discriminant value in a quadratic equation. The discriminant is the part of the quadratic formula under the square root (b^2 - 4ac) and it determines the number of solutions a quadratic equation has. The code checks if the discriminant is greater than or equal to zero or less than zero. \n\n  The goal of this program is to check the discriminant of a given quadratic equation, and return either 0 or 1 based on the value of the discriminant. If the discriminant is greater than or equal to zero, the program will return 0 indicating that the quadratic equation has real roots. On the other hand, if the discriminant is less than zero, the program will return 1 indicating that the quadratic equation has complex roots.\n\n  Input\n  The input to the function is three integers a, b, and c, representing the coefficients of a quadratic equation of the form ax^2 + bx + c = 0.\n\n  Output\n  The output of the function is an integer. The function returns 0 if the discriminant of the quadratic equation is greater than or equal to zero, and returns 1 if the discriminant is less than zero.\n*/\n\n/*@\nrequires INT_MIN  <= a <= INT_MAX;\n  requires INT_MIN  <= b <= INT_MAX;\n  requires INT_MIN  <= c <= INT_MAX;\n  requires LLONG_MIN <= 1LL*b*b <= LLONG_MAX;\n  requires LLONG_MIN <= 4LL*a*c <= LLONG_MAX;\n  assigns \\nothing;\n  ensures \\result == ((1LL*b*b - 4LL*a*c) < 0);\n*/\n\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    if (b_squared < four_ac) {\n        return 1;\n    } else {\n        return 0;\n    }\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "11 / 11",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "a": 1,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "a": 1,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "a": 0,
+                                "b": 1,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 6
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "a": 1,
+                                "b": 5,
+                                "c": 7
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "a": 2,
+                                "b": 4,
+                                "c": 3
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "a": 2,
+                                "b": 0,
+                                "c": -2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "a": -1,
+                                "b": 2,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "a": -1,
+                                "b": 0,
+                                "c": -1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "a": 100,
+                                "b": 50,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": 100
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "a": 10,
+                                "b": 0,
+                                "c": -100
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46340,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "a": 1,
+                                "b": 46341,
+                                "c": 2
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "a": 1,
+                                "b": 2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "a": 1,
+                                "b": -2,
+                                "c": 2147483647
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 2147483647,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 0,
+                                "c": 1
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "a": 2147483647,
+                                "b": 1000000000,
+                                "c": 1000000000
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 1
+                            },
+                            "expected_output": 0,
+                            "received_output": 0,
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "a": 2,
+                                "b": 3,
+                                "c": 2
+                            },
+                            "expected_output": 1,
+                            "received_output": 1,
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 11.387441396713257,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "best_attempt_index": 1,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nint check(int a, int b, int c) {\n    long long b_squared = 1LL * b * b;\n    long long four_ac = 4LL * a * c;\n    if (b_squared < four_ac) {\n        return 1;\n    } else {\n        return 0;\n    }\n}\n```",
+            "best_attempt_metric_percentage": 1.0
+        }
+    ],
+    "is_verified": true
+}
