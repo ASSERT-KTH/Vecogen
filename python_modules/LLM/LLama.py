@@ -33,7 +33,6 @@ class LLama(LLM):
                 {"role": "user", "content": user_prompt}
             ],
             "temperature": self.args.temperature,
-            "max_tokens": self.args.max_tokens,
             "n": n,
             "stream": False
         }

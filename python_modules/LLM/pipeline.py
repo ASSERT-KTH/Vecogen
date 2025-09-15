@@ -33,9 +33,6 @@ def generate_code_process(args):
 
     verified = initial_code_generation_information.is_verified
 
-    # Print information about the initial code generation
-    print(f"After the initial code generation step:\n Verified: {verified}, proved goals: {initial_code_generation_information.best_attempt_metric_percentage}")
-
     # Create an index for the code improvement iterations
     i = 0
     last_iteration = initial_code_generation_information
@@ -77,31 +74,39 @@ def generate_code_process(args):
 
 # Function that processes the generated code by adding the specification and creating the output file
 def add_specification_and_output_code(args, code):
-    """Function to process the generated code and write it to a file
-    Args:
-        args: The arguments given to the program
-        code: The code that has been generated
-    Returns:
-        None
-    """
+    """Extract C code (fenced or not), inject specs, and write to output."""
+    import os, re
 
-    # Ensure that the code has triple backticks
-    if "```C" not in code and "```c" not in code:
-        raise ValueError(f"Attempting to add the specification to the code. The code does not contain triple backticks. Code: {code}")
+    def _extract_c(src: str) -> str:
+        # Prefer fenced blocks
+        m = re.search(r"```(?:[cC]\b)?\s*\n(.*?)```", src, re.DOTALL) or \
+            re.search(r"```\s*\n(.*?)```", src, re.DOTALL)
+        if m:
+            return m.group(1).strip()
 
-    # Get the code from the output of the LLM
-    if "```C" in code:
-        code = code.split("```C")[1]
-    else:
-        code = code.split("```c")[1]
-    code = code.split("```")[0]
+        # Heuristic: start at first include/typedef/struct/enum/extern/static or signature
+        lines = src.splitlines()
+        sig = re.compile(r'^\s*[_a-zA-Z][\w\s\*\[\]]+\s+[_a-zA-Z]\w*\s*\([^;{]*\)\s*\{?\s*$')
+        start = 0
+        for i, ln in enumerate(lines):
+            s = ln.strip()
+            if s.startswith(('#include','typedef','struct','enum','extern','static')) or sig.match(ln):
+                start = i
+                break
+        return "\n".join(lines[start:]).strip()
 
-    # Remove everything before the first newline, the function signature
-    code = code.split("\n", 1)[1]
+    # --- Extract only; DO NOT trim header here (spec helper will do it once) ---
+    code_body = _extract_c(code)
 
-    # Add the specification
-    code = add_specifications_to_code(args.absolute_formal_specification_path, args.absolute_natural_language_specification_path, args.absolute_function_signature_path, code)
+    # Paths
+    formal = getattr(args, "absolute_formal_specification_path", None)
+    natural = getattr(args, "absolute_natural_language_specification_path", None)
+    signature = getattr(args, "absolute_function_signature_path", None)
+    extra = getattr(args, "absolute_extra_specs_path", None) or getattr(args, "absolute_extra_specs", None)
+    if not formal or not signature:
+        raise ValueError("Missing required spec paths: formal and signature must be set.")
 
+<<<<<<< HEAD
     # Output the code to the specified file
     if args.debug:
         print(f"Writing the code to the file {args.absolute_output_directory}/{args.output_file_name}")
@@ -109,321 +114,360 @@ def add_specification_and_output_code(args, code):
                 encoding="utf-8") as f:
         args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file_name
         f.write(code)
+=======
+    # Inject specs (this call handles removing the model's own header/brace)
+    code_out = add_specifications_to_code(formal, natural, signature, extra, code_body)
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
 
-    if args.debug:
-        print(f"Code generated. Written to {args.absolute_output_directory}/{args.output_file_name}")
+    # Output target
+    out_dir = getattr(args, "absolute_output_directory")
+    out_file = getattr(args, "output_file", None) or getattr(args, "output_file_name", None)
+    if not out_file:
+        out_file = f"output_{getattr(args, 'model_name', 'model')}.c"
+        args.output_file = out_file
+        args.output_file_name = out_file
 
-    return code
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, out_file)
 
-# Function that generates code in a folder
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(code_out)
+    args.absolute_c_path = out_path
+
+    if getattr(args, "debug", False):
+        print(f"Code generated. Written to {out_path}")
+
+    return code_out
+
+
 def generate_code_folder(args):
-    """Function to generate code from a folder with folders
-    Args:
-        args: The arguments given to the program
-    Returns:
-        None
-    Requirements of the arguments:
-    - The output path is absolute"""
+    """Generate code for each subfolder in --input-dir, writing to --output-dir/<subfolder>."""
+    import os
 
-    # Get the folders in the directory
-    folders = list_folders_directory(args.directory)
+    def _first(*names):
+        for n in names:
+            v = getattr(args, n, None)
+            if v:
+                return v
+        return None
 
-    # Get the base directory of the output
-    base_directory = args.absolute_output_directory
+    def _join(*p): return os.path.join(*p)
 
-    # Sort the folders based on the number
-    folders.sort(key=lambda x: int(x.split('-')[0]))
+    # Roots
+    src_root = _first("absolute_directory", "input_dir", "directory")
+    out_root = getattr(args, "absolute_output_directory")
 
-    # Filter the folders if needed
-    #folders = [f for f in folders if int(f.split('-')[0]) == 932]
+    # Folders
+    try:
+        folders = list_folders_directory(src_root)
+    except NameError:
+        folders = [d for d in os.listdir(src_root) if os.path.isdir(_join(src_root, d))]
+    print("Found the following folders in the directory:", set(folders))
 
-    # filter folders based on the number
-    # folders = ["0"]
+    def _numkey(name):
+        head = name.split("-", 1)[0]
+        return (0, int(head), name) if head.isdigit() else (1, name)
+    folders.sort(key=_numkey)
 
-    # Filter the folders based on if it the specific specification file is present
-    folders = list(folders)
+    # Spec filenames expected in each subfolder
+    nl_name  = _first("natural_spec_file", "natural_language_specification")
+    fs_name  = _first("formal_spec_file", "formal_specification_file")
+    sig_name = _first("signature_file", "function_signature")
+    nl_name  = os.path.basename(nl_name)  if nl_name  else None
+    fs_name  = os.path.basename(fs_name)  if fs_name  else None
+    sig_name = os.path.basename(sig_name) if sig_name else None
 
-    # Save the file names of the specifications
-    natural_language_file_name = args.natural_language_specification
-    formal_specification_file_name = args.formal_specification_file
-    function_signature_file_name = args.function_signature
+    # Optional extras (either a global path or a per-folder filename)
+    extra_cfg = getattr(args, "extra_specs", None)
+    extra_global_abs = None
+    extra_name = None
+    if extra_cfg:
+        cand = extra_cfg if os.path.isabs(extra_cfg) else os.path.join(os.getcwd(), extra_cfg)
+        if os.path.isfile(cand):
+            extra_global_abs = cand
+        extra_name = os.path.basename(extra_cfg)
 
-    # filter the folders that have the formalspecification
-    folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + formal_specification_file_name)]
+    # Early checks
+    if not fs_name:
+        print("No formal spec given; set -fsf/--formal-spec-file to a filename (e.g., spec.h).")
+        return
+    if not sig_name:
+        print("No function signature given; set -sig/--signature-file to a filename (e.g., sig.h).")
+        return
+    if getattr(args, "natural_language_included", False) and not nl_name:
+        print("Spec type requires natural language; set -nl/--natural-spec-file to a filename.")
+        return
 
-    # filter the folders that have the function signature
-    folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + function_signature_file_name)]
+    # Filter by presence
+    original = list(folders)
+    folders = [f for f in folders if os.path.exists(_join(src_root, f, fs_name))]
+    if len(set(original) - set(folders)) > 0:
+        print("Removed (no formal spec):", set(original) - set(folders))
 
-    # If natural language is included in the arguments, then filter the folders that have the natural language specification
-    if args.natural_language_specification:
-        folders = [f for f in folders if os.path.exists(args.directory + "/" + f + "/" + natural_language_file_name)]
+    original = list(folders)
+    folders = [f for f in folders if os.path.exists(_join(src_root, f, sig_name))]
 
-    # For each folder in the directory
+    if len(set(original) - set(folders)) > 0:
+        print("Removed (no signature):", set(original) - set(folders))
+
+    if getattr(args, "natural_language_included", False) and nl_name:
+        original = list(folders)
+        folders = [f for f in folders if os.path.exists(_join(src_root, f, nl_name))]
+        print("Removed (no natural spec):", set(original) - set(folders))
+
+    # Only keep folders with an integer of >= 31
+    # folders = [f for f in folders if f.isdigit() and int(f) >= 43]
+    # folders.append('28')
+    print(folders)
+
+    # Per-folder generation
     for folder in folders:
+<<<<<<< HEAD
         # Set the input and output files
         args.natural_language_specification = args.directory + "/" + folder + "/" + natural_language_file_name
         args.formal_specification_file = args.directory + "/" + folder + "/" + formal_specification_file_name
         args.function_signature = args.directory + "/" + folder + "/" + function_signature_file_name
         
         print(f"Starting to generate code for folder {folder}....")
+=======
+        # Point args to files inside this folder
+        if nl_name:
+            args.natural_spec_file = _join(src_root, folder, nl_name)
+            args.natural_language_specification = args.natural_spec_file  # legacy
+        args.formal_spec_file = _join(src_root, folder, fs_name)
+        args.formal_specification_file = args.formal_spec_file            # legacy
+        args.signature_file = _join(src_root, folder, sig_name)
+        args.function_signature = args.signature_file                      # legacy
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
 
-        # Set the output path
-        try:
-            if not args.output_file_name:
-                args.output_file = f"output_{args.model_name}.c"
-        except AttributeError:
-            print("No output file specified, using default output file name")
-        args.absolute_output_directory = base_directory + "/" + folder
+        # Optional extras: global file takes precedence; else look inside folder by name; else unset
+        if extra_global_abs:
+            args.extra_specs = extra_global_abs
+        elif extra_name and os.path.isfile(_join(src_root, folder, extra_name)):
+            args.extra_specs = _join(src_root, folder, extra_name)
+        else:
+            args.extra_specs = None  # avoid stale value from previous folder
 
-        # Verify that the input and output is set correctly
+        # Output location: <out_root>/<folder>
+        args.absolute_output_directory = _join(out_root, folder)
+        os.makedirs(args.absolute_output_directory, exist_ok=True)
+
+        # Default output filename if none provided
+        if not _first("output_file", "output_file_name"):
+            default_c = f"output_{getattr(args, 'model_name', 'model')}.c"
+            args.output_file = default_c
+            args.output_file_name = default_c  # legacy
+
+        # Validate specs (also validates optional extras via require_optional_extra_specs)
         require_problem_specification(args)
 
-        # Create the output directory if it does not exist yet
-        if not os.path.exists(args.absolute_output_directory):
-            os.mkdir(args.absolute_output_directory)
-
-        # Run the code without printing the information
+        # Run generation
         generate_code_process(args)
 
+<<<<<<< HEAD
         # Print the current generated file
         print("\n \n" + "-" * 100 + "\n \n")
         print(f"Generated code for folder {folder}. \n\n")
+=======
+        print("\n" + "-" * 100 + f"\nGenerated code for folder {folder}.\n")
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
 
 # Function that verifies and tests the code that has been generated
 def verify_and_test_code_attempt(args, response_gpt, i):
-    """ 
-    Function to verify and test the code that has been generated
-    Args:
-        args: The arguments given to the program
-        response_gpt: The response from the GPT model
-        i: The iteration number
-    Returns:
-        code: The code that has been generated
-        verified: Boolean that indicates if the code is verified
-        output: The output of the verification process
-        verified_goals: The proportion of goals that have been verified
-        test_information: The information about the tests
-        verification_time_taken: The time taken to verify the code
     """
+    Verify & (optionally) test the generated code.
+    """
+    import os
 
-    # Process the generated code by adding the specification
+    # 1) Write code w/ specs
     try:
         code = add_specification_and_output_code(args, response_gpt)
     except Exception as e:
-        if args.debug:
+        if getattr(args, "debug", False):
             print(f"Error: Could not add the specification to the code, error: {e}")
         return response_gpt, False, "Could not add specification to code", "0 / 0", {
-            "summary": {
-                "passed": 0,
-                "failed": 0,
-                "total": 0,
-                "information": f"Error with GPT response, could not add specification. Error: {e}"
-            }
+            "summary": {"passed": 0, "failed": 0, "total": 0,
+                        "information": f"Error with LLM response: {e}"}
         }, 0
 
-    # If no loops are allowed and the code contains a loop, then automatically fail the verification
-    # Also make sure that it is not part of a word, e.g. "forbidden"
-    if not args.allowloops and contains_loop(code):
-        return code, False, "The code contains a loop, but loops are not allowed", "0 / 0", {
-            "summary": {
-                "passed": 0,
-                "failed": 0,
-                "total": 0,
-                "information": "Loops are not allowed, but the code contains a loop"
-            }
+    # 2) Loop policy
+    if not getattr(args, "allow_loops", False) and contains_loop(code):
+        return code, False, "Code contains a loop, but loops are not allowed", "0 / 0", {
+            "summary": {"passed": 0, "failed": 0, "total": 0,
+                        "information": "Loops are not allowed"}
         }, 0
 
-    # Verify the code
-    verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path,
-        args)
-
-    # If debugging is true, then print the time it took to verify the code
-    if args.debug:
+    print(f"Step 2: Compiling the code...")
+    # 3) Formal verification
+    verified, output, verified_goals, verification_time_taken = check_file(args.absolute_c_path, args)
+    if getattr(args, "debug", False):
         print(f"Verification time taken: {verification_time_taken}")
 
-    # If the compilation failed, then return the information
+    # If compilation failed during verification, bail out before tests
     if not verified and verified_goals is None:
-        test_information = {
-            "summary": {
-                "passed": 0,
-                "failed": 0,
-                "total": 0,
-                "information": "Compilation failed"
-            }
-        }
-
+        test_information = {"summary": {"passed": 0, "failed": 0, "total": 0,
+                                        "information": "Compilation failed"}}
         return code, verified, output, "0 / 0", test_information, verification_time_taken
 
-    # See if the folder of the absolute c path has a tests file
-    files_directory = list_files_directory(os.path.dirname(args.absolute_formal_specification_path))
+    # 4) Locate a test SOURCE file (not a directory!)
+    def _first(*names):
+        for n in names:
+            v = getattr(args, n, None)
+            if v:
+                return v
+        return None
 
-    # Check if the tests file exists
-    if "tests.c" in files_directory:
-        # Get the path to the tests file
-        path_tests = os.path.dirname(args.absolute_formal_specification_path) + "/tests.c"
-        passed_tests, total_tests, test_information =  \
-            test_generated_code(args.absolute_c_path, path_tests,
-                "temp_test_file", args.temp_folder, args.debug)
+    base_dir = os.path.dirname(getattr(args, "absolute_formal_specification_path",
+                          os.path.dirname(args.absolute_c_path)))
+    tests_cfg = _first("tests_path", "tests_file")  # canonical then legacy
+    test_source = None
+
+    def _candidate(p):
+        return p if os.path.isabs(p) else os.path.join(base_dir, p)
+
+    # a) If user provided something, resolve it
+    if tests_cfg:
+        cand = _candidate(tests_cfg)
+        if os.path.isdir(cand):
+            # Try common names inside the dir
+            for name in ("tests.c", "test.c"):
+                if os.path.isfile(os.path.join(cand, name)):
+                    test_source = os.path.join(cand, name)
+                    break
+        elif os.path.isfile(cand):
+            test_source = cand
+
+    # b) If still unset, try defaults next to the specs
+    if not test_source:
+        for name in ("tests.c", "test.c"):
+            cand = os.path.join(base_dir, name)
+            if os.path.isfile(cand):
+                test_source = cand
+                break
+
+    # 5) Run tests if we found a source file
+    print(f"Step 4: Testing the code...")
+    if test_source:
+        temp_dir = _first("temp_dir", "temp_folder") or os.path.join(os.getcwd(), "tmp")
+        passed_tests, total_tests, test_information = test_generated_code(
+            args.absolute_c_path, test_source, "temp_test_file", temp_dir, getattr(args, "debug", False)
+        )
     else:
-        test_information = {
-            "summary": {
-                "passed": 0,
-                "failed": 0,
-                "total": 0,
-                "information": "No tests found in the folder"
-            }
-        }
+        test_information = {"summary": {"passed": 0, "failed": 0, "total": 0,
+                                        "information": "No tests found"}}
         passed_tests, total_tests = 0, 0
+<<<<<<< HEAD
         if args.debug:
             print(f"No tests found, proved goals: {verified_goals}") 
     print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}. Used {verification_time_taken} seconds to verify.")
+=======
+        if getattr(args, "debug", False):
+            print(f"No tests found, proved goals: {verified_goals}")
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
 
+    print(f"Step 5: Testing complete. Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
     return code, verified, output, verified_goals, test_information, verification_time_taken
 
-# Function for initial code generation
+
+# --- helpers used locally ---
+def _initial_examples(args, default=10):
+    return (
+        getattr(args, "initial_examples", None)
+        or getattr(args, "initial_examples_generated", None)
+        or getattr(args, "generated_samples", None)
+        or default
+    )
+
+
 def initial_code_generation_step(args):
-    """Function to generate the initial code based on the arguments
-    Args:
-        args: The arguments given to the program
-    Returns:
-        responses_gpt: The responses from the LLM
-        tokens_used: The amount of tokens used for each response
-        model_used: The model used, no list is used as only one model is used
-    """
+    """Generate candidates one-by-one and stop early if one verifies."""
+    iex = _initial_examples(args)
+    iteration_info = IterationInformation(0, iex, args.model_name)
 
-    # Information related to the iterations
-    iteration_info = IterationInformation(0, args.initial_examples_generated, args.model_name)
-
-    # Get the output path
     prompt = create_prompt(args)
+    print("Generating the code using " + args.model_name)
 
-    # generate the initial attempts by making prompts of at most x each
-    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 9999)
+    generated = 0
+    while generated < iex and not iteration_info.is_verified:
+        # Request exactly one completion
+        responses, tokens_used_call, model_used = args.model.make_request(prompt, 1)
+        resp = responses[0]
 
-    # For each response, check the code. Stop if the code is verified
-    # use enumerate
-    for llm_response_index, response_llm in enumerate(responses_llm):
         print("-" * 50)
-        print(f"Initial code generation, code completion {llm_response_index + 1} of {len(responses_llm)}.")
+        print(f"Initial code generation, code completion {generated + 1} of {iex}.")
         print("-" * 50)
+        print("Step 1: Adding specification and outputting code.")
 
-        # Get the generated code and tokens used
-        response = response_llm.message.content
+        response = resp.message.content
+        ci = process_code_and_get_completion_information(
+            args, response, 0, prompt, tokens_used_call, model_used
+        )
+        iteration_info.add_completion(ci)
 
-        # Process the generated code and get information about the completion
-        completion_information = process_code_and_get_completion_information(args, response, 0, prompt, tokens_used[llm_response_index], models_used)
-
-        # Add the completion to the iteration information
-        iteration_info.add_completion(completion_information)
-
-        # If the code is verified, then stop
-        if completion_information.is_verified:
+        generated += 1
+        if ci.is_verified:
             break
 
     return iteration_info
 
-# Function that performs one iteration of code improvement
+
 def code_improvement_step(args, code_improvement_iteration, code, output):
-    """Function to do one iteration of code improvement based on an existing file and and the verification error
-    Args:
-        args: The arguments given to the program
-    Returns:
-        verified: Boolean that indicates if the code is verified
-        output: The output of the verification process
-        prompt: The prompt as a string
-    """
+    """Improve code one-by-one and stop early if a candidate verifies."""
+    iex = _initial_examples(args)
+    iteration_info = IterationInformation(code_improvement_iteration, iex, args.model_name)
 
-    # Create an iteration object that contains information about the code improvement iteration
-    iteration_info = IterationInformation(code_improvement_iteration, args.initial_examples_generated, args.model_name)
+    prompt = create_prompt(args, code, output, "feedback")
 
-    # Get the output path
-    prompt = create_prompt(args, code, output)
+    generated = 0
+    while generated < iex and not iteration_info.is_verified:
+        # Request exactly one completion
+        responses, tokens_used_call, model_used = args.model.make_request(prompt, 1)
+        resp = responses[0]
 
-    # generate the initial attempts by making prompts of at most x each
-    responses_llm, tokens_used, models_used = prompt_using_max_n_samples(args, prompt, 9999)
-
-    # For each response, check the code. Stop if the code is verified
-    # use enumerate
-    for llm_response_index, response_llm in enumerate(responses_llm):
         print("-" * 50)
-        print(f"Code Improvement Iteration {code_improvement_iteration}, code completion {llm_response_index + 1} of {len(responses_llm)}.")
+        print(f"Code Improvement Iteration {code_improvement_iteration}, "
+              f"code completion {generated + 1} of {iex}.")
         print("-" * 50)
+        print("Step 1: Adding specification and outputting code.")
 
-        # Get the generated code and tokens used
-        response = response_llm.message.content
+        response = resp.message.content
+        ci = process_code_and_get_completion_information(
+            args, response, code_improvement_iteration, prompt, tokens_used_call, model_used
+        )
+        iteration_info.add_completion(ci)
 
-        # Process the generated code and get information about the completion
-        completion_information = process_code_and_get_completion_information(args, response, code_improvement_iteration, prompt, tokens_used[llm_response_index], models_used[llm_response_index])
-
-        # Add the completion to the iteration information
-        iteration_info.add_completion(completion_information)
-
-        # If the code is verified, then stop
-        if completion_information.is_verified:
+        generated += 1
+        if ci.is_verified:
             break
 
     return iteration_info
 
-# Function that uses the LLM to generate code, whilst only asking for N exmaples at a time
-def prompt_using_max_n_samples(args, prompt, n):
-    """Function to generate code using the pipeline and the LLM model
-    Args:
-        args: The arguments given to the program
-        prompt: The prompt to use
-    Returns:
-        responses_LLM: The responses from the LLM
-        tokens_used: The amount of tokens used for each response
-        model_used: The model used, no list is used as only one model is used
+
+def prompt_using_max_n_samples(args, prompt, n_max):
     """
-
-    # generate the initial attempts by making prompts of at most x each
-    responses_llm = []
-    tokens_used = []
-    i_examples_generated = 0
-
-    # Make LLM requests with at most n examples at a time
-    while i_examples_generated < args.initial_examples_generated:
-        # Calculate the amount of examples to generate
-        n = min(n, args.initial_examples_generated - i_examples_generated)
-
-        # Call the function to make the LLM request
-        response_gpt, tokens_used_call, model_used = args.model.make_request(prompt, n)
-
-        # Add the tokens used to the list
-        # Only the first iteration has the tokens used
-        tokens_used_initial_n_examples = [0] * (n - 1)
-        tokens_used_initial_n_examples.insert(0, tokens_used_call)
-
-        # Add the tokens used and the responses to the list
-        tokens_used.extend(tokens_used_initial_n_examples)
-        responses_llm.extend(response_gpt)
-
-        # Increase the counter
-        i_examples_generated += n
-
-    return responses_llm, tokens_used, model_used
-
-# Function that processes the code, and gets iteration information, and verifies the goals
-def process_code_and_get_completion_information(args, response_gpt, i, prompt,
-            tokens_used, model_used, initial_attempt = False, rebooting = False):
-    """Function to process the generated code and get iteration information
-    Args:
-        args: The arguments given to the program
-        response_gpt: The response from the GPT model
-        i: The iteration number
-        prompt: The prompt that has been used
-        tokens_used: The amount of tokens used
-        initial_attempt: Boolean that indicates if this is the initial attempt
-        rebooting: Boolean that indicates if the code has been rebooted
-    Returns:
-        completion_information: The information about the completion
+    Deprecated in practice by the one-by-one loops above, but kept for compatibility.
+    If you still call this somewhere else, it will now just request in chunks of 1
+    without prefetching the full budget at once.
     """
+    responses_llm, tokens_used, models_used = [], [], []
+    total = _initial_examples(args)
+    generated = 0
+    while generated < total:
+        responses, tokens_used_call, model_used = args.model.make_request(prompt, 1)
+        responses_llm.extend(responses)
+        tokens_used.append(tokens_used_call)
+        models_used.append(model_used)
+        generated += 1
+    return responses_llm, tokens_used, models_used
 
-    # Process the generated code
+
+# Process a single candidate and collect completion info
+def process_code_and_get_completion_information(
+    args, response_gpt, i, prompt, tokens_used, model_used, initial_attempt=False, rebooting=False
+):
     code, verified, verification_output, verified_goals, test_information, verification_time_taken = \
         verify_and_test_code_attempt(args, response_gpt, i)
 
-     # Add extra information about the generation attempt
     if initial_attempt:
         information = "Initial code generation attempt"
     elif rebooting:
@@ -433,18 +477,15 @@ def process_code_and_get_completion_information(args, response_gpt, i, prompt,
     else:
         information = "The code has been improved"
 
-    # Create an object that will contain information about the completion
-    completion_information = CompletionInformation(i, prompt, response_gpt,  verified,
-        verified_goals, test_information, args.temperature,information, args.max_tokens,
-        tokens_used, model_used, code, verification_output, verification_time_taken)
-
+    completion_information = CompletionInformation(
+        i, prompt, response_gpt, verified, verified_goals, test_information,
+        args.temperature, information, tokens_used, model_used, code,
+        verification_output, verification_time_taken
+    )
     return completion_information
 
 def contains_loop(code):
-    # Remove single-line comments
+    # Remove comments then check for loops
     code = re.sub(r'//.*', '', code)
-    # Remove multi-line comments
     code = re.sub(r'/\*.*?\*/', '', code, flags=re.DOTALL)
-    # Check for loops
-    loop_pattern = re.compile(r'\b(for|while)\b')
-    return bool(loop_pattern.search(code))
+    return bool(re.compile(r'\b(for|while)\b').search(code))

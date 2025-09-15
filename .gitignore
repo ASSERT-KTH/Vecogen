@@ -14,3 +14,9 @@ python_modules/graphs.ipynb
 Figures/*
 work_in_progress/*
 extra_problems/*
+venv/
+.venv/
+output results/
+__pycache__/
+*.ipynb_checkpoints/
+commands.txt

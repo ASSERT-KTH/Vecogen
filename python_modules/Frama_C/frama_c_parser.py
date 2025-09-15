@@ -40,5 +40,9 @@ def get_line_number_in_parsed_code(c_file_path, line_number):
     line = parsed_code_lines[line_number - 1]
 
     # Return the line number
+<<<<<<< HEAD
     print(f"Could not prove goal with associated line number {line_number}: {line}")
+=======
+    print(f"    Could not prove line number {line_number}: {line}", end='')
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
     return line

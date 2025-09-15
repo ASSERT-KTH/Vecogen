@@ -1,157 +1,276 @@
-""" This module contains functions for creating a prompt that will prompt an LLM for generating formally verified C code"""
+"""Build prompts for generating formally verified C code (Frama-C)."""
 
-def create_prompt(args, previous_attempt: str = "", previous_attempt_feedback: str = ""):
-    # Get the template file
-    template_path = "../prompts/prompt_template.txt"
+import json
+# Hardcoded paths
+ONE_SHOT_PATH_INITIAL = "../prompts/one_shot_example_initial.txt"
+ONE_SHOT_PATH_FEEDBACK = "../prompts/one_shot_example_feedback.txt"
 
-    # Print the template
-    with open(template_path, "r", encoding="utf-8") as template:
-        prompt_template = template.read()
-        
-        # Mapping for the replacement
-        prompt_replacement_mapping = {
-            'INITIAL_MESSAGE' : add_initial_message(args.formal_specification_included, args.natural_language_included),
-            'ONE_SHOT_EXAMPLE' : add_one_shot_example(args.prompt_technique, args.natural_language_included, args.formal_specification_included),
-            'RULES' : rules(args.allowloops),
-            'NATURAL_LANGUAGE_DESCRIPTION' : add_natural_language_specification(args.natural_language_specification, args.natural_language_included),
-            'FORMAL_SPECIFICATION' : add_formal_specification(args.formal_specification_file, args.formal_specification_included),
-            'FUNCTION_SIGNATURE' : add_signature(args.function_signature),    
-            'PREVIOUS_ATTEMPT' : add_previous_attempt_feedback(previous_attempt, args.natural_language_included, args.formal_specification_included, previous_attempt_feedback)
-        }
-        return prompt_template.format(**prompt_replacement_mapping)
 
-# Function that adds the initial message to the prompt
-def add_initial_message(formal_specification_included: bool = False, natural_language_included: bool = False):
-    initial_message = "You are given a specification in"
+def _coerce_to_text(obj) -> str:
+    """Return a readable string for strings, lists/tuples, dicts, etc."""
+    if obj is None:
+        return ""
+    if isinstance(obj, str):
+        return obj
+    if isinstance(obj, (list, tuple)):
+        parts = []
+        for x in obj:
+            if isinstance(x, str):
+                parts.append(x)
+            else:
+                try:
+                    parts.append(json.dumps(x, ensure_ascii=False, indent=2))
+                except Exception:
+                    parts.append(str(x))
+        return "\n".join(parts)
+    try:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    except Exception:
+        return str(obj)
+    
+def create_prompt(
+    args,
+    previous_attempt: str = "",
+    previous_attempt_feedback: str = "",
+    prompt_mode: str = "initial",  # "initial" | "feedback"
+):
+    """Create an LLM prompt for either an initial task or a feedback iteration."""
 
-    if natural_language_included and formal_specification_included:
-        initial_message += " natural language and a formal specification in ACSL"
-    elif natural_language_included:
-        initial_message += " natural language"
-    elif formal_specification_included:
-        initial_message += " formal specification"
- 
-    initial_message += ". You must write a function that adheres to this problem specification, such that the code will be formally verified using Frama-C."
+    # Determine inclusion mode from args.specification_type
+    include_mode = getattr(args, "specification_type", "both")
 
-    # Return the initial message
-    return initial_message
+    # Resolve inclusion based on include_mode (overrides args.*_included)
+    nl_inc, acsl_inc = _resolve_inclusion(
+        include_mode,
+        default_nl=getattr(args, "natural_language_included", False),
+        default_acsl=getattr(args, "formal_specification_included", False),
+    )
 
-# Function that adds the formal specification if enabled
-def add_formal_specification(formal_specification: str, formal_specification_included: bool = False):
-    # If formal specification is not included, return an empty string
-    if not formal_specification_included:
+    header = (
+        "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n"
+        "-----END_ASSISTANT_INFORMATION-----\n"
+    )
+
+    one_shot = add_one_shot_example(
+        prompt_technique=args.prompt_technique,
+        natural_language_included=nl_inc,
+        formal_specification_included=acsl_inc,
+        path=_pick_one_shot_path(prompt_mode),
+    )
+
+    if prompt_mode == "initial":
+        context = build_context_section(args, include_nl=nl_inc, include_acsl=acsl_inc)
+        feedback_block = ""
+    elif prompt_mode == "feedback":
+        context = build_context_section(args, include_nl=nl_inc, include_acsl=acsl_inc)
+        feedback_block = build_feedback_section(previous_attempt, previous_attempt_feedback, args)
+
+    else:
+        raise ValueError("prompt_mode must be 'initial' or 'feedback'.")
+
+    rules_block = rules(
+        allow_loops=args.allow_loops,
+        include_nl=nl_inc,
+        include_acsl=acsl_inc,
+    )
+
+    cta = (
+        "Output only one fenced C code block containing the complete function definition "
+        "(same signature + generated body). Output nothing else."
+    )
+
+    parts = [
+        header,
+        one_shot,
+        context,
+        feedback_block,
+        "\nYOUR TASK:\n",
+        rules_block,
+        "\n",
+        cta,
+    ]
+    return "\n".join(p for p in parts if p and p.strip())
+
+
+# ---------------------------------------------------------------------------
+# Sections
+# ---------------------------------------------------------------------------
+
+def build_context_section(args, include_nl: bool, include_acsl: bool):
+    extra = add_extra_code(getattr(args, "absolute_extra_specs_path", None)).strip()
+    nl = add_natural_language_specification(
+        getattr(args, "absolute_natural_language_specification_path", None),
+        include_nl,
+    ).strip()
+    acsl = add_formal_specification(
+        getattr(args, "absolute_formal_specification_path", None),
+        include_acsl,
+    ).strip()
+    sig = add_signature(getattr(args, "absolute_function_signature_path", None)).strip()
+
+    blocks = ["--- CONTEXT (for reference only) ---"]
+    if extra:
+        blocks += ["EXTRA CODE:", "```c", extra, "```"]
+    if include_nl and nl:
+        blocks += ["NATURAL LANGUAGE DESCRIPTION:", "```c", nl, "```"]
+    if include_acsl and acsl:
+        blocks += ["ACSL FORMAL SPECIFICATION:", "```c", acsl, "```"]
+    if sig:
+        blocks += ["FUNCTION SIGNATURE:", "```c", sig, "```"]
+    blocks.append("--- END CONTEXT ---")
+    return "\n".join(blocks)
+
+def build_feedback_section(
+    previous_attempt: str,
+    previous_attempt_feedback,
+    args,
+):
+    """
+    Show detailed verification feedback only if specification_type is 'formal' or 'both'.
+    For 'natural', hide details to avoid leaking formal-spec info.
+    """
+    prev_attempt_txt = _coerce_to_text(previous_attempt)
+    if not prev_attempt_txt.strip():
         return ""
 
-    # Return the content of the formal specification file
-    with open(formal_specification, "r", encoding="utf-8") as formal_spec:
-        return formal_spec.read()
+    # Determine if we should show details
+    spec_type = getattr(args, "specification_type", getattr(args, "spectype", "both")).lower()
+    show_details = spec_type in ("formal", "both")
 
-# Function to add the signature to the prompt
-def add_signature(signature: str):
-    with open(signature, "r", encoding="utf-8") as signature_file:
-        return signature_file.read()
+    # Fence the previous attempt if needed
+    fenced_prev = (
+        prev_attempt_txt if prev_attempt_txt.strip().startswith("```")
+        else f"```C\n{prev_attempt_txt}\n```"
+    )
 
-# Function that adds the natural language specification if enabled
-def add_natural_language_specification(natural_language_specification: str, natural_language_included: bool = False):
-    # If natural language is not included, return an empty string
-    if not natural_language_included:
+    out = [
+        "\n--- PREVIOUS ATTEMPT (did not verify) ---",
+        fenced_prev,
+    ]
+
+    prev_feedback_txt = _coerce_to_text(previous_attempt_feedback).strip()
+    if show_details and prev_feedback_txt:
+        out += ["--- VERIFICATION FEEDBACK ---", prev_feedback_txt]
+    else:
+        out += [
+            "--- FORMAL VERIFICATION RESULT ---",
+            "The program did not pass formal verification with Frama-C. "
+            "Improve the function to satisfy the specification and avoid undefined behavior. "
+            "Fix it yourself and output only the corrected function definition.",
+        ]
+
+    out.append("--- END FEEDBACK ---")
+    return "\n".join(out)
+
+def add_one_shot_example(
+    prompt_technique: str,
+    natural_language_included: bool = False,
+    formal_specification_included: bool = False,
+    path: str | None = None,
+):
+    if prompt_technique == "zero-shot" or not path:
         return ""
+    with open(path, "r", encoding="utf-8") as fh:
+        content = fh.read()
+    parts = content.split("---END_NATURAL_LANGUAGE---")
+    natural_language = parts[0] if parts else ""
+    rest = parts[1] if len(parts) > 1 else ""
+    parts2 = rest.split("---END_FORMAL_SPECIFICATION---")
+    formal_specification = parts2[0] if parts2 else ""
+    function_example = parts2[1] if len(parts2) > 1 else rest
 
-    # Return the content of the natural language specification file
-    with open(natural_language_specification, "r", encoding="utf-8") as natural_spec:
-        return natural_spec.read()
+    block = ["Here is an example of the task:\n```C\n"]
+    if natural_language_included and natural_language.strip():
+        block.append(natural_language.rstrip("\n"))
+    if formal_specification_included and formal_specification.strip():
+        block.append(formal_specification.rstrip("\n"))
+    block.append(function_example.strip())
+    block.append("\n```")
+    return "".join(block)
 
-# Function for employing one-shotting or zero-shotting
-def add_one_shot_example(prompt_technique: str, natural_language_included: bool = False, formal_specification_included: bool = False):
-    # If zero-shotting is chosen, return an empty string
-    if prompt_technique == "zero-shot":
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _pick_one_shot_path(prompt_mode: str) -> str | None:
+    if prompt_mode == "initial":
+        return ONE_SHOT_PATH_INITIAL
+    if prompt_mode == "feedback":
+        return ONE_SHOT_PATH_FEEDBACK
+    return None
+
+
+def _resolve_inclusion(include_mode: str, default_nl: bool, default_acsl: bool):
+    """Return (include_nl, include_acsl) based on include_mode."""
+    mode = (include_mode or "both").lower()
+    if mode in ("nl", "nl_only", "natural", "natural_only"):
+        return True, False
+    if mode in ("acsl", "acsl_only", "formal", "formal_only"):
+        return False, True
+    if mode in ("none", "no_context"):
+        return False, False
+    # "both" (or unrecognized): fall back to provided defaults
+    return default_nl, default_acsl
+
+
+def _read(path):
+    if not path:
         return ""
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
-    # Read the one-shot example from file
-    one_shot_example_path = "../prompts/one_shot_example.txt"
 
-    # Read file and extract parts into dictionary
-    with open(one_shot_example_path, "r", encoding="utf-8") as one_shot:
-        # Split the one-shot example into three parts
-        natural_language_split = one_shot.read().split("---END_NATURAL_LANGUAGE---")
-        formal_split = natural_language_split[1].split("---END_FORMAL_SPECIFICATION---")
+def add_formal_specification(formal_spec_absolute: str, formal_specification_included: bool = False):
+    return _read(formal_spec_absolute) if formal_specification_included else ""
 
-        # Extract the parts
-        natural_language = natural_language_split[0]
-        formal_specification = formal_split[0]
-        function_example = formal_split[1]
 
-        # build the one-shot information
-        one_shot_information = "```C\n"
+def add_signature(signature_absolute: str):
+    return _read(signature_absolute)
 
-        # If natural language is included
-        if natural_language_included:
-            one_shot_information += natural_language[:-1]
 
-        # If formal specification is included
-        if formal_specification_included:
-            one_shot_information += formal_specification[:-1]
+def add_natural_language_specification(natural_absolute: str, natural_language_included: bool = False):
+    return _read(natural_absolute) if natural_language_included else ""
 
-        # Add the function example
-        one_shot_information += function_example
 
-        # Close the code block
-        one_shot_information += "```"
+def add_extra_code(extra_absolute: str):
+    txt = _read(extra_absolute)
+    return txt if txt.strip() else ""
 
-        # Return the one-shot information, with a pre-pended message talking about the one-shot example
-        return "Here is an example of the task:\n" + one_shot_information
 
-# Function that adds rules to the prompt
-def rules(allow_loops = False):
-    # Define the rules
-    rules_array = []
+def rules(allow_loops=False, include_nl: bool = True, include_acsl: bool = True):
+    """Rules text adapts to which context is present."""
+    rules_array = ["You must adhere to the following rules:"]
+    rules_array.append("Keep the function signature exactly as provided.")
 
-    # Add the rules to the array
-    rules_array.append("You must adhere to the following rules:")
-    rules_array.append("Do not add an explanation to the code")
-    rules_array.append("Only give the output function, do not repeat the specification")
+    if include_acsl:
+        rules_array.append("Respect all ACSL pre- and postconditions.")
+    if include_nl and include_acsl:
+        rules_array.append("If the natural language description and ACSL conflict, follow the ACSL.")
+    elif include_nl and not include_acsl:
+        rules_array.append("Follow the natural language description precisely.")
 
-    # If loops are not allowed
+    # Build dynamic "do not repeat" line based on what is present
+    comps = []
+    if include_nl:
+        comps.append("the natural language description")
+    if include_acsl:
+        comps.append("the ACSL")
+    comps.append("the extra code")
+    if len(comps) == 1:
+        dont_repeat = f"Do not repeat {comps[0]}."
+    elif len(comps) == 2:
+        dont_repeat = f"Do not repeat {comps[0]} or {comps[1]}."
+    else:
+        dont_repeat = f"Do not repeat {', '.join(comps[:-1])}, or {comps[-1]}."
+    rules_array.append(dont_repeat)
+
+    rules_array.append("Do not add explanations or comments.")
+
     if not allow_loops:
-        rules_array.append("Do not make use of any type of loops. That is, no for, while, do-while or recursive loops")
-
-    # Return the rules
+        rules_array.append("Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.")
     return "\n * ".join(rules_array)
 
-# Function to add the previous attempt to the prompt along with some information about it
-def add_previous_attempt_feedback(previous_attempt: str, natural_language_included: bool = False, formal_specification_included: bool = False, previous_attempt_feedback: str = ""):
-    # If no previous attempt is given, return an empty string
-    if previous_attempt == "":
-        return ""
-
-    # If only natural language is included then give a message that the previous attempt did not verify, but no formal specification was given
-    if natural_language_included and not formal_specification_included:
-        return "The previous code attempt did not verify: \n" + previous_attempt + "Improve the code such that it formally verifies."
-
-    # If a formal specification is included, then give a message that the previous attempt did not verify
-    if formal_specification_included:
-        return "The previous code attempt did not verify: \n```C" + previous_attempt + "``` The following feedback was given: \n" + previous_attempt_feedback + "\nPlease improve the code such that it formally verifies."
-
-def replace_loops(use_loops):
-    """ Function that returns a string based on the use_loops boolean
-    Args:
-        use_loops: Boolean that indicates if the code should use loops
-    Returns:
-        A string that indicates if the code should use loops or not"""
-
-    if use_loops:
-        return "* Add loop invariants and assertions for loops if these \
-                    improve the verification process"
-    else:
-        return "* Do not make use of any type of loop. That is, no for, while, do-while or recursive loops"
 
 def seperate_prompt(prompt):
-    """Function to seperate the user and assistant prompt
-    Args:
-        prompt: The prompt to seperate
-    Returns:
-        A list with two elements, the first is the user prompt and the second is 
-        the assistant prompt"""
-
-    # Split the prompt into the user and assistant prompt
     return prompt.split("-----END_ASSISTANT_INFORMATION-----")

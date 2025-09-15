@@ -1,7 +1,7 @@
 # Class for completion information
 class CompletionInformation:
     """Class that contains information about an iteration"""
-    def __init__(self, completion_count, prompt, gpt_output, verified, verified_goals, test_information, temperature, info, max_tokens, tokens_used, model, code, feedback, verification_time_taken):
+    def __init__(self, completion_count, prompt, gpt_output, verified, verified_goals, test_information, temperature, info, tokens_used, model, code, feedback, verification_time_taken):
 
         # Information about the completion
         self.code_completion_number = completion_count
@@ -9,7 +9,6 @@ class CompletionInformation:
         # Information about the input
         self.temperature_used = temperature
         self.prompt_used = prompt
-        self.max_tokens_used = max_tokens
 
         # Information about the output
         self.model_used = model
@@ -56,7 +55,6 @@ class CompletionInformation:
             "code_completion_number": self.code_completion_number,
             "temperature_used": self.temperature_used,
             "prompt_used": self.prompt_used,
-            "max_tokens_used": self.max_tokens_used,
             "model_used": self.model_used,
             "gpt_output": self.gpt_output,
             "tokens_used": self.tokens_used,

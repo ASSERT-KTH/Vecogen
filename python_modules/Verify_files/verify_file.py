@@ -23,7 +23,7 @@ def verify_file(args):
     start_time = time.time()
 
     # Create the prompt that is used for frama c
-    prompt = f"frama-c  -wp '{args.absolute_c_path}'  -wp-prover {args.solver} -wp-steps {args.wp_steps} -wp-timeout {args.wp_timeout} -wp-rte {'-wp-smoke-tests' if args.smoke_detector else ''} -wp-status"
+    prompt = f"frama-c  -wp -wp-rte '{args.absolute_c_path}'  -wp-prover {args.solver}  -wp-timeout {args.wp_timeout} {'-wp-smoke-tests' if args.smoke_detector else ''} -wp-status {'-wp-model ' + args.wp_model if args.wp_model else ''}" 
 
     # Call a subroutine to use Frama-C to verify the C file
     result = subprocess.Popen(prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -41,6 +41,11 @@ def verify_file(args):
 
     # Calculate the elapsed time
     elapsed_time = end_time - start_time
+<<<<<<< HEAD
+=======
+    if args.debug:
+        print(f"Elapsed verification time: {round(elapsed_time, 2)} seconds")
+>>>>>>> 09cadd7 (Update code, ignore untracked files)
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()

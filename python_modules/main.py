@@ -5,28 +5,30 @@ import sys
 import os
 import argparse
 from dotenv import load_dotenv
-from helper_files.list_files import list_files_directory
 from helper_files.verify_input import require_directory_exists, require_c_file, require_solver, check_output_path_set, ensure_integers,require_model, require_problem_specification, require_output_path
 from helper_files.debug import clear_debug
 from Verify_files.check_file import check_file
-from LLM.pipeline import add_specification_and_output_code, code_improvement_step, generate_code_process, generate_code_folder
+from LLM.pipeline import code_improvement_step, generate_code_process, generate_code_folder
 from LLM.create_prompt import create_prompt
 
-def list_files(args):
-    """List the files in a directory"""
-    require_directory_exists(args)
-    print(list_files_directory(args.absolute_directory))
 
-def verify(args):
-    """Verify a C file and a formal specification file"""
-    # Make sure the formal specification and C file are given in the arguments 
-    require_problem_specification(args)
-    require_solver(args)
-    check_output_path_set(args)
+def _normalize_args(a):
+    """Unify legacy names expected by helpers; set absolute paths."""
+    # map canonical → legacy
+    a.output_path = getattr(a, "output_dir", getattr(a, "output_path", None))
+    a.output_file_name = getattr(a, "output_file", getattr(a, "output_file_name", None))
+    a.temp_folder = getattr(a, "temp_dir", getattr(a, "temp_folder", None))
+    a.tests_path = getattr(a, "tests_file", getattr(a, "tests_file", None))
+    a.directory = getattr(a, "input_dir", getattr(a, "directory", None))
 
-    add_specification_and_output_code(args, "```C\nvoid aaa(){\n    return 1;\n}```")
-
-    print(check_file(args.absolute_c_path, args))
+    # derive absolutes commonly used by helpers
+    if getattr(a, "output_dir", None):
+        a.absolute_output_directory = os.path.abspath(a.output_dir)
+    if getattr(a, "c_file", None):
+        a.absolute_c_path = os.path.abspath(a.c_file)
+    if getattr(a, "input_dir", None):
+        a.absolute_directory = os.path.abspath(a.input_dir)
+    return a
 
 def generate_initial_prompt(args):
     """ Generate the initial prompt for the code generation"""
@@ -91,75 +93,121 @@ def clear(args):
     check_output_path_set(args)
     clear_debug(args, args.output_path)
 
+import argparse, os
+
+# Nice help: show defaults + keep raw newlines in examples
+class _Fmt(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
+    pass
+
 def parse_arguments(functions_list):
-    """Parse the arguments given to the tool"""
-    # Create argument parser
-    parser = argparse.ArgumentParser()
+    """Parse CLI arguments for the ACSL-based code-gen & verification tool (VeCoGen-style)."""
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate C code from specifications and formally verify it.\n"
+            "Uses LLMs for code proposals and Frama-C WP/Why3 for proof feedback."
+        ),
+        formatter_class=_Fmt,
+        epilog=(
+            "Examples:\n"
+            "  # Batch-generate per problem folder, include both specs in the prompt\n"
+            "  python3 main.py generate_code_folder \\\n"
+            "    --input-dir ../problems --initial-examples 2 --iterations 3 --wp-timeout 5 \\\n"
+            "    --output-dir ../out/gpt-4o --output-file generated.c \\\n"
+            "    --formal-spec-file formal.h --natural-spec-file natural.h --signature-file sig.h \\\n"
+            "    --prompt-technique one-shot --specification-type both --model gpt-4o-mini \\\n"
+            "    --tests-file solution.c/\n\n"
+            "  # Verify an existing C file against ACSL\n"
+            "  python3 main.py verify --c-file foo.c --solver z3 --wp-timeout 10"
+        ),
+    )
 
-    # Positional mandatory arguments
-    parser.add_argument("function", help="The function to call", type=str,
-                        choices=functions_list)
+    # Positional
+    parser.add_argument(
+        "function", metavar="FUNCTION",
+        help="Which subcommand/function to run",
+        type=str, choices=functions_list,
+    )
 
-    # Arguments related to I/O
-    parser.add_argument("-d", "--directory", help="The directory to use for verification of the files.", type=str)
-    parser.add_argument("-c", "--c_file", help="The C file to use", type=str)
-    parser.add_argument("-fsf", "--formal_specification_file", help="The formal specification file to use for verification purposes.", type=str)
-    parser.add_argument('-o', '--output_path', help="The output path to use for the code \
-                        generation", type=str)
-    parser.add_argument('-output-file', '--output_file_name', help="The output file to use for the \
-                        code generation", type=str)
-    parser.add_argument("-tmp", "--temp_folder", help="The folder where temporary files are stored", default= os.path.join(os.getcwd(), "..", "tmp"), type=str)
-    parser.add_argument("-fs", "--formal_specification", help="A boolean whether a formal specification is included in the generation. Note that the tool needs a formal specification to verify the code, but you can choose not to include it in other parts of the generation process.", default=True, action=argparse.BooleanOptionalAction, type=bool)
-    parser.add_argument("-nl", "--natural_language_specification", help="The natural language specification to use for the code generation.", type=str)
-    parser.add_argument("-sig", "--function_signature", help="The function signature to use for the code generation", type=str)
-    parser.add_argument("-spectype", "--specification_type", help="The type of specification to use for the code generation", type=str, choices=["natural", "formal", "both"], default="both")
+        # Inputs & specifications
+    specs = parser.add_argument_group("Inputs & specifications")
+    specs.add_argument("-fsf", "--formal-spec-file", type=str, dest="formal_spec_file",
+                       help="Path to ACSL formal specification file ...")
+    specs.add_argument("-nl", "--natural-spec-file", type=str, dest="natural_spec_file",
+                       help="Path to natural-language specification file ...")
+    specs.add_argument("-sig", "--signature-file", type=str, dest="signature_file",
+                       help="Path to function signature file ...")
+    specs.add_argument("-tc", "--tests-file", type=str, dest="tests_file",
+                       help="Path to test cases (file). Used to validate/filter candidates.")
+    specs.add_argument("-spectype", "--specification-type",
+                       choices=["natural", "formal", "both"], default="both",
+                       help="Which specs to include in the LLM prompt")
+    specs.add_argument("-extra", "--extra-specs",
+                       type=str, dest="extra_specs",
+                       help="Additional header file to include in the prompt and generated code (e.g., for structs, imports, etc.)")
 
-    # Arguments for Debugging
-    parser.add_argument('-debug', '--debug', help="The debug mode, outputs more information \
-                        to the console", type=bool, action=argparse.BooleanOptionalAction, \
-                        default=False)
-    parser.add_argument('-clear', '--clear', help="Clears the debugging folders",
-                        default=False, action=argparse.BooleanOptionalAction, type=bool)
+    # Project I/O paths
+    io = parser.add_argument_group("Project I/O paths")
+    io.add_argument("-d", "--input-dir", type=str, dest="input_dir",
+                    help="Root directory for batch runs (each subfolder = one problem)")
+    io.add_argument("-o", "--output-dir", type=str, dest="output_dir",
+                    help="Directory where generated artifacts are written")
+    io.add_argument("--output-file", "--output-file-name", "-of", type=str, dest="output_file",
+                    help="Filename for the generated C file inside --output-dir")
+    io.add_argument("-tmp", "--temp-dir", type=str, dest="temp_dir",
+                    default=os.path.join(os.getcwd(), "..", "tmp"),
+                    help="Directory for temporary files")
 
-    # Verification arguments
-    parser.add_argument("-wpt", "--wp_timeout", help="The timeout to use for the wp-prover",
-                        type=int, default=2)
-    parser.add_argument("-wps", "--wp_steps", help="The steps to use for the wp-prover",
-                        type=int, default=1500000)
-    parser.add_argument("-s", "--solver", help="The solver to use for the formal verification",
-                        type=str)
-    parser.add_argument("-sd", "--smoke_detector", help="The smoke detector to use for the \
-                        formal verification", type=bool, action=argparse.BooleanOptionalAction,
-                        default=True)
+    # ── Generation options ───────────────────────────────────────────────────────
+    gen = parser.add_argument_group("Generation")
+    gen.add_argument("-iter", "--iterations", help="Max generation-improvement cycles", type=int, default=10)
+    gen.add_argument("-temp", "--temperature", help="LLM sampling temperature", type=float, default=1.0)
+    gen.add_argument("-model", "--model-name", help="LLM model name", type=str, default="gpt-3.5-turbo")
+    gen.add_argument("-reboot", "--reboot", help="Hard reset after this many iterations", type=int, default=999999)
+    gen.add_argument(
+        "-al", "--allow-loops",
+        help="Permit loops in generated code (may hinder WP proofs)",
+        action=argparse.BooleanOptionalAction, default=False, dest="allow_loops"
+    )
+    gen.add_argument(
+        "-samples", "--generated-samples",
+        help="Number of candidate programs to sample per problem per iteration",
+        type=int, default=10, dest="initial_examples"
+    )
+    gen.add_argument(
+        "-pt", "--prompt-technique",
+        help="Prompting strategy",
+        choices=["zero-shot", "one-shot"], default="one-shot"
+    )
 
-    # Tool arguments
-    parser.add_argument("-iter", "--iterations", help="The number of iterations to use for \
-                        the code generation", type=int, default=10)
-    parser.add_argument('-temp', '--temperature', help="The temperature to use for the code \
-                        generation", type=float, default=1)
-    parser.add_argument('-mt', '--max_tokens', help="The maximum tokens to use for the code \
-                        generation", type=int, default=4096)
-    parser.add_argument('-model', '--model_name', help="The model name to use for the \
-                        code generation", type=str, default="gpt-3.5-turbo")
-    parser.add_argument('-reboot', '--reboot', help="Set the amount of iterations before a \
-                        reboot occurs", default= 999999, type=int)
-    parser.add_argument("-al", "--allowloops", help="Allow loops in the generated code",
-                        default=False, action=argparse.BooleanOptionalAction, type=bool)
-    parser.add_argument("-ieg", "--initial_examples_generated", help="The amount of initial examples that are generated for each problem", default=10, type=int)
-    parser.add_argument("-pt", "--prompt_technique", help="Define the prompt technique used. Currently zero-shot and one-shot are supported.", default="one-shot", type=str, choices=["zero-shot", "one-shot"])
+    # ── Verification options ────────────────────────────────────────────────────
+    ver = parser.add_argument_group("Verification")
+    ver.add_argument("-s", "--solver", help="Why3 solver to use (e.g., z3, cvc5, alt-ergo)", type=str)
+    ver.add_argument("-wpt", "--wp-timeout", help="Timeout in seconds for Frama-C WP", type=int, default=2)
+    ver.add_argument("-wpm", "--wp-model", help="Model/logic profile for WP backend", type=str, default="")
+    ver.add_argument(
+        "-sd", "--smoke-detector",
+        help="Detect inconsistencies in specification and/or implementations. I.e. dead code will not verify",
+        action=argparse.BooleanOptionalAction, default=False
+    )
 
-    # Print the version of the tool
-    parser.add_argument("--version", action="version", version='%(prog)s - Version 1.1')
+    # ── Debugging & housekeeping ────────────────────────────────────────────────
+    dbg = parser.add_argument_group("Debugging")
+    dbg.add_argument("-debug", "--debug",
+                     help="Verbose logging (prints prompts, verifier output, and diffs)",
+                     action=argparse.BooleanOptionalAction, default=False)
+    dbg.add_argument("-clear", "--clear",
+                     help="Clear temp/output subfolders before running",
+                     action=argparse.BooleanOptionalAction, default=False)
 
-    # Parse arguments
+    # Version
+    parser.add_argument("--version", action="version", version="%(prog)s - Version 1.2")
+
     return parser.parse_args()
 
 # Main function
 if __name__ == "__main__":
     # Dictionary that maps the function to the function to call
     switcher = {
-        "list_files": list_files,
-        "verify": verify,
         "generate_prompt": generate_initial_prompt,
         "generate_code": generate_code,
         "improve_code_step": improve_code_step,
@@ -168,16 +216,13 @@ if __name__ == "__main__":
 
     # Load the environment variables
     load_dotenv()
-
-    # Get a list of the functions
     arguments = parse_arguments(list(switcher.keys()))
+    arguments = _normalize_args(arguments)
 
     # Ensure that the integers are valid
     ensure_integers(arguments)
-
-    # Clear the debugging folders if the clear argument is given
     if arguments.clear:
         clear(arguments)
 
     # Get the function from switcher dictionary
-    switcher.get(arguments.function, lambda: "Invalid function")(arguments)
+    switcher.get(arguments.function, lambda *_: print("Invalid function"))(arguments)

@@ -24,7 +24,6 @@ class Groq_LLM(LLM):
         message=[{"role": "system", "content": assistant_prompt},
                 {"role": "user", "content": user_prompt}]
         temperature=self.args.temperature
-        max_tokens=self.args.max_tokens
         frequency_penalty=0.0
 
         # Make the request
@@ -32,7 +31,6 @@ class Groq_LLM(LLM):
             model= self.args.model_name,
             messages = message,
             temperature=temperature,
-            max_tokens=max_tokens,
             frequency_penalty=frequency_penalty,
             n = n
         )

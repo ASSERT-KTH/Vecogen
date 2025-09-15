@@ -1,5 +1,15 @@
 python-dotenv
 openai
 tiktoken
+<<<<<<< HEAD
 llamaapi
 groq
+=======
+groq
+torchaudio
+accelerate
+LlamaAPI
+gspread
+oauth2client
+google-api-python-client
+>>>>>>> 09cadd7 (Update code, ignore untracked files)

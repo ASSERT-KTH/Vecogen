@@ -19,5 +19,6 @@ def check_file(absolute_path_to_c_file, args):
     elif args.debug:
         print("File compiled successfully")
 
+    print("Step 3. Verifying the code...")
     # Verify the file and return it
     return verify_file(args)
