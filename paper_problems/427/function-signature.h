@@ -1,1 +1,0 @@
-void calculateNumberOfCalendarColumns(int m, int d, int *out);

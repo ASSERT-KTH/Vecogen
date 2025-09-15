@@ -1,1 +1,0 @@
-int calculateMinimumElephantSteps(int x);

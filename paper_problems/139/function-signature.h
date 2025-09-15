@@ -1,1 +1,0 @@
-void calculateMinimumTimeToHouse(int n, int a, int *out);

@@ -1,1 +1,0 @@
-void findLastDigitOfPower(int n, int *out);

@@ -1,1 +1,0 @@
-#include <limits.h>  /* for completeness, though not strictly needed here */

@@ -1,1 +1,0 @@
-int calculateMinimumBrainsForStrategy(int N);

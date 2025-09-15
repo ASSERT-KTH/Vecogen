@@ -1,1 +1,0 @@
-int TetrahedralNumber(int n);

@@ -1,1 +1,0 @@
-void calculateMinimumExamsToResitForGivenSum(int n, int k, int *out);
