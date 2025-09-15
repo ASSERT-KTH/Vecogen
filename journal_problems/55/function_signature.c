@@ -1,0 +1,1 @@
+int calculateLastTwoDigitsOfPowerOfFive(long n);

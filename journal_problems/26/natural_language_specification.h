@@ -1,0 +1,10 @@
+
+/*In a scenario where a series of integers is provided, the goal is to identify the largest integer within that series. The task is to process an array of integers and determine the maximum value it contains.
+
+  Input
+  The input consists of an array of integers, denoted as a, along with a size indicator n. The size n must be a positive integer, ensuring that there is at least one element in the array. The elements of the array can be any integer values.
+
+  Output
+  The output is a single integer representing the maximum value found within the provided array of integers. This value is guaranteed to be one of the elements in the array.
+*/
+

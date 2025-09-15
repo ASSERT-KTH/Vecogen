@@ -1,0 +1,1 @@
+int NthOctagonalNumber(int n);

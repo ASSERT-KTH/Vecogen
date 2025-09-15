@@ -1,0 +1,38 @@
+/*
+  Description:
+    Improve a previous implementation so it satisfies the ACSL postcondition:
+    set *out to whether x > 0 and return the same value.
+
+  Input:
+    x (int), out (int*; valid pointer)
+
+  Output:
+    *out == (x > 0) and the function returns that value.
+*/
+---END_NATURAL_LANGUAGE---
+#include <limits.h>
+
+/* PREVIOUS ATTEMPT (did not verify) */
+int isPositive(int x, int *out) {
+    *out = x > 0;
+    return 0; /* Irrelevant return value, not constrained by spec */
+}
+
+/* VERIFICATION FEEDBACK:
+   Goal Assertion 'postcondition' does not hold: return value must match ensures.
+   Please fix to adhere to ACSL and avoid UB.
+*/
+
+/* FIXED IMPLEMENTATION */
+int isPositive(int x, int *out) {
+    int v = (x > 0);
+    *out = v;
+    return v;
+}
+
+/*@
+  requires \valid(out);
+  assigns *out;
+  ensures *out == (x > 0);
+*/
+---END_FORMAL_SPECIFICATION---

@@ -1,0 +1,1 @@
+int findLastDigitOfPower(int n);

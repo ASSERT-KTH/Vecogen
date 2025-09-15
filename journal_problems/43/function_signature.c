@@ -1,0 +1,1 @@
+fibonacci_triple divideFibonacciNumberByThreeFibonacciNumbers(int n);

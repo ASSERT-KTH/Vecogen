@@ -1,0 +1,1 @@
+int NthHexagonalNumber(int n);

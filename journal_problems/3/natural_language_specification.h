@@ -1,0 +1,12 @@
+
+/*The function calculates the greatest common divisors (GCD). The greatest common divisor of two or more integers is the largest positive integer that divides each of the integers without leaving a remainder. The GCD is calculated using a recursive implementation of the Euclidean algorithm, a well-known method for finding the GCD of two numbers.
+
+   The goal of this task is to compute the greatest common divisor (GCD) of two given numbers, 'a' and 'b'. The function 'gcd_rec' receives two non-negative integers and returns their greatest common divisor. The function must ensure that the result is indeed the GCD of the input numbers, following the mathematical definition that a number 'd' is the GCD of 'a' and 'b' if it divides both 'a' and 'b' and no larger number has this property.
+
+   Input
+   The input to the function 'gcd_rec' are two non-negative integers 'a' and 'b'. 
+
+   Output
+   The output of the function 'gcd_rec' is a single integer which is the greatest common divisor of the input numbers 'a' and 'b'. The function ensures that the returned result is indeed the GCD of 'a' and 'b' by adhering to the mathematical definition of GCD.
+*/
+
