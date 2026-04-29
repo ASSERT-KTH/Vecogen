@@ -1,230 +1,275 @@
-Formally verified code generation using Large Language Models (LLMs)
+# Formally Verified Code Generation using Large Language Models (LLMs)
 
-A tool that uses formal specification and natural language specifications to generate formally verified C code automatically. The tool uses Large Language Models (LLMs) to generate code based on the given specifications. The generated code is then verified using Frama-c and Why3 to ensure that it satisfies the given formal specification. The tool can also improve existing code by generating code snippets that satisfy the given formal specification. 
+A tool that uses formal specification and natural language specifications to generate formally verified C code automatically. The tool uses Large Language Models (LLMs) to generate code based on the given specifications. The generated code is then verified using Frama-C and Why3 to ensure that it satisfies the given formal specification. The tool can also improve existing code by generating code snippets that satisfy the given formal specification.
 
 ## Pre-requisites
 
 - Python 3.6 or higher
-- Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
-- Frama-c (https://frama-c.com/)
+- Python dependencies listed in requirements.txt (`python3 -m pip install -r requirements.txt`)
+- Frama-C (https://frama-c.com/)
 - Why3 (https://why3.lri.fr/)
 - Provers in the Why3 platform, i.e. Alt-Ergo, CVC4, and Z3
-- .env file in the root directory with a API keys for the used services of OPENAI and GROQ, OPENAI_API_KEY = "..." and GROQ_API_KEY = "..."
+- `.env` file in the root directory with API keys for OPENAI and GROQ:
+  ```
+  OPENAI_API_KEY=...
+  GROQ_API_KEY=...
+  ```
 
-# Provers
+## Provers
 
-- alt-ergo 2.4.3 (https://alt-ergo.lri.fr/)
+- Alt-Ergo 2.4.3 (https://alt-ergo.lri.fr/)
 - CVC4 1.7 (https://cvc4.github.io/)
 - Z3 4.8.6
 
 ## Installation
 
 1. Clone the repository
-2. Install the required python packages using the following command:
+2. Install the required Python packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Install Frama-c and Why3 using the links provided above.
+3. Install Frama-C and Why3 using the links above
 
 ## Usage
 
-1. Run the following command to generate the code:
+Run:
 
 ```bash
 python main.py function
 ```
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
-# Currently implemented functions
+## Currently Implemented Functions
 
-- 'improve_code_step': Only executes one code improvement step on the given formal specification and program candidate
-- 'generate_prompt' : Generates a prompt for the user to given an .h file
-- 'generate_code' : Generates the code for the given .h file using Large Language models. Requires the API key to be set.
-- 'generate_code_folder: Recursively generate code for each subfolder in a given directory
+- `improve_code_step`: Executes one code improvement step on a given formal specification and program candidate
+- `generate_prompt`: Generates a prompt from an `.h` file
+- `generate_code`: Generates code using LLMs (requires API keys)
+- `generate_code_folder`: Recursively generates code for each subfolder in a directory
 
-# Input
-The input to the tool are three seperate files that are used to generate the code:
-- Formal specification file (-fsf): A file that contains the formal specification of the code that needs to be generated.
-- Natural language specification file (-nl): A file that contains the natural language specification of the code that needs to be generated. 
-- Function signature file (-sig): A file that contains the function signature of the code that needs to be generated.
+## Input
 
-<<<<<<< HEAD
-VeCoGen combines the specifications in the prompt. The tool allows for deciding whether to include the formal specification, natural language specification, or both in the prompt. The user can specify this using the -spectype flag. The possible values are 'formal', 'natural', and 'both'.
+The tool expects three separate files:
 
-Note that the generate_code_folder function generates code for each folder in a directory. For each of the problems in the subfolders, the tool generates code based on the formal specification, natural language specification, and function signature.
+- Formal specification file (`-fsf`): contains the formal specification
+- Natural language specification file (`-nl`): contains the natural language description
+- Function signature file (`-sig`): contains the function signature
 
-# Example of usage. Make sure you are in the python_modules directory
-python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-3.5-turbo -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-3.5-turbo
+VeCoGen combines these specifications in the prompt. The `-spectype` flag controls which specifications are used:
 
-This generates code for all problems in a folders
+- `formal`
+- `natural`
+- `both`
 
-# Running the tool
-## Running the tool using Docker
-1. Clone the docker image
+`generate_code_folder` processes each subfolder and generates code based on all three inputs.
+
+## Example Usage
+
+Make sure you are in the `python_modules` directory:
+
+```bash
+python3 main.py generate_code_folder \
+  -d ../paper_problems/ \
+  -ieg 2 \
+  -iter 2 \
+  -temp 1 \
+  -wpt 5 \
+  -o ../output/gpt-3.5-turbo \
+  -output-file generated_code.c \
+  -fsf formal-specification.h \
+  -nl natural-language-specification.h \
+  -sig function-signature.h \
+  -pt one-shot \
+  -spectype both \
+  -model gpt-3.5-turbo
 ```
+
+This generates code for all problems in a folder.
+
+## Running the Tool
+
+### Docker
+
+1. Pull the image:
+
+```bash
 docker pull merlijnsevenhuijsen/vecogen
 ```
 
-2. Create the .env file with the API keys for the services used
+2. Create `.env`:
+
 ```
 OPENAI_API_KEY=XXX
 GROQ_API_KEY=XXX
 ```
 
-3. Run the docker image using the env file
-```
+3. Run:
+
+```bash
 docker run --env-file .env -it merlijnsevenhuijsen/vecogen
 ```
 
-4. Go to the python_modules directory
-```
+4. Go to:
+
+```bash
 cd python_modules
 ```
 
-5. Run the code generation process
+5. Run generation:
+
+```bash
+python3 main.py generate_code_folder \
+  -d ../paper_problems/ \
+  -ieg 2 \
+  -iter 2 \
+  -temp 1 \
+  -wpt 5 \
+  -o ../output/gpt-3.5-turbo \
+  -output-file generated_code.c \
+  -fsf formal-specification.h \
+  -nl natural-language-specification.h \
+  -sig function-signature.h \
+  -pt one-shot \
+  -spectype both \
+  -model gpt-3.5-turbo
 ```
-python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-3.5-turbo -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-3.5-turbo
-```
-## Running the tool manually
-### Prerequisites
-- Python 3.6 or higher
-- Python dependencies listed in requirements.txt (python3 -m pip install -r requirements.txt)
-- Frama-c (https://frama-c.com/)
-- Why3 (https://why3.lri.fr/)
-- Provers in the Why3 platform, i.e. Alt-Ergo, CVC4, and Z3
 
+### Manual
 
-### Provers 
-- alt-ergo 2.4.3 (https://alt-ergo.lri.fr/)
-- CVC4 1.7 (https://cvc4.github.io/)
-- Z3 4.8.6  
+#### Prerequisites
 
-### Manual Installation
-1. Clone the repository
-2. Install the required python packages using the following command:
+- Python 3.6+
+- requirements.txt
+- Frama-C
+- Why3
+- Alt-Ergo, CVC4, Z3
+
+#### Installation
+
 ```bash
 pip install -r requirements.txt
 ```
-3. Create an .env file with the API keys for the services used
+
+Create `.env`:
+
 ```
 OPENAI_API_KEY=XXX
 GROQ_API_KEY=XXX
 ```
-4. Go to the python_modules directory
-```
+
+Run:
+
+```bash
 cd python_modules
 ```
 
-5. Run the code generation process
+```bash
+python3 main.py generate_code_folder \
+  -d ../paper_problems/ \
+  -ieg 2 \
+  -iter 2 \
+  -temp 1 \
+  -wpt 5 \
+  -o ../output/gpt-3.5-turbo \
+  -output-file generated_code.c \
+  -fsf formal-specification.h \
+  -nl natural-language-specification.h \
+  -sig function-signature.h \
+  -pt one-shot \
+  -spectype both \
+  -model gpt-3.5-turbo
 ```
-python3 main.py generate_code_folder -d ../paper_problems/ -ieg 2 -iter 2 -temp 1 -wpt 5 -o ../output/gpt-3.5-turbo -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both -model gpt-3.5-turbo
-```
-=======
+
 ## General Flags
 
 ### `--function`
-
-- **Description**: Specifies the function to execute (e.g., `list_files`, `verify`).
-- **Type**: `str`
-- **Default**: Required
+- Specifies the function to execute
+- Type: `str`
 
 ### `--debug`
-
-- **Description**: Enables debug mode, providing verbose logging.
-- **Type**: `bool`
-- **Default**: `False`
+- Enables verbose logging
+- Type: `bool`
+- Default: `False`
 
 ### `--clear`
-
-- **Description**: Clears debug files in the specified output path.
-- **Type**: `bool`
-- **Default**: `False`
+- Clears debug files
+- Type: `bool`
+- Default: `False`
 
 ## Input/Output Flags
 
 ### `--directory`
-
-- **Description**: Path to the directory for file operations.
-- **Type**: `str`
-- **Default**: `None`
+- Directory for file operations
 
 ### `--c_file`
-
-- **Description**: Path to the C file to be verified or improved.
-- **Type**: `str`
-- **Default**: `None`
+- C file to verify or improve
 
 ### `--formal_specification_file`
-
-- **Description**: Path to the formal specification file for verification.
-- **Type**: `str`
-- **Default**: `None`
+- Formal specification file
 
 ### `--output_path`
-
-- **Description**: Path to save output files, such as generated code or verification results.
-- **Type**: `str`
-- **Default**: `None`
+- Output directory
 
 ### `--output_file_name`
-
-- **Description**: Name of the output file for generated code.
-- **Type**: `str`
-- **Default**: `None`
+- Output file name
 
 ## Code Generation Flags
 
 ### `--natural_language_specification`
-
-- **Description**: Natural language description of the task for code generation.
-- **Type**: `str`
-- **Default**: `None`
+- Natural language specification
 
 ### `--function_signature`
-
-- **Description**: Function signature for the code to be generated.
-- **Type**: `str`
-- **Default**: `None`
+- Function signature
 
 ### `--specification_type`
-
-- **Description**: Specifies the type of specification for code generation (`natural`, `formal`, or `both`).
-- **Type**: `str`
-- **Default**: `both`
+- `natural`, `formal`, or `both`
 
 ### `--model_name`
-
-- **Description**: Name of the LLM model to use for code generation (e.g., `gpt-3.5-turbo`).
-- **Type**: `str`
-- **Default**: `gpt-3.5-turbo`
+- LLM model
 
 ### `--temperature`
-
-- **Description**: Sampling temperature for the LLM; higher values generate more diverse outputs.
-- **Type**: `float`
-- **Default**: `1.0`
+- Sampling temperature
 
 ### `--allowloops`
-
-- **Description**: Enables or disables loops in the generated code.
-- **Type**: `bool`
-- **Default**: `False`
+- Allow loops in generated code
 
 ### `--iterations`
+- Number of iterations
 
-- **Description**: Number of iterations to use for code generation or improvement.
-- **Type**: `int`
-- **Default**: `10`
+## Example Commands
 
-## Verification Flags
+```bash
+python3 main.py generate_code_folder \
+  -d ../paper_problems/ \
+  -ieg 10 \
+  -iter 10 \
+  -temp 1 \
+  -wpt 5 \
+  -o ../output/llama3.1-8b-10-10-1-one-shot-both \
+  -output-file generated_code.c \
+  -fsf formal-specification.h \
+  -nl natural-language-specification.h \
+  -sig function-signature.h \
+  -pt one-shot \
+  -spectype both
+```
 
-# Example of usage. Make sure you are in the python_modules directory
-
-python3 main.py generate_code_folder -d ../paper_problems/ -ieg 10 -iter 10 -temp 1 -wpt 5 -o ../output/llama3.1-8b-10-10-1-one-shot-both -output-file generated_code.c -fsf formal-specification.h -nl natural-language-specification.h -sig function-signature.h -pt one-shot -spectype both
-
-This generates code for all problems in a folders
-
-python3 main.py generate_code_folder -d ../journal_problems/ -samples 1 -iter 1 -temp 1 -wpt 10 -o ../output/test-gpt-5-nano -of generated-code.c -fsf formal_specification.h -nl natural_language_specification.h -pt zero-shot -spectype both -model gpt-5-nano -wpm real -sig function_signature.c -tc solution_test.c -extra extras.c
->>>>>>> 09cadd7 (Update code, ignore untracked files)
+```bash
+python3 main.py generate_code_folder \
+  -d ../journal_problems/ \
+  -samples 1 \
+  -iter 1 \
+  -temp 1 \
+  -wpt 10 \
+  -o ../output/test-gpt-5-nano \
+  -of generated-code.c \
+  -fsf formal_specification.h \
+  -nl natural_language_specification.h \
+  -pt zero-shot \
+  -spectype both \
+  -model gpt-5-nano \
+  -wpm real \
+  -sig function_signature.c \
+  -tc solution_test.c \
+  -extra extras.c
+```
