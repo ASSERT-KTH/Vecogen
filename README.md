@@ -1,9 +1,6 @@
 Formally verified code generation using Large Language Models (LLMs)
 
-<<<<<<< HEAD
 A tool that uses formal specification and natural language specifications to generate formally verified C code automatically. The tool uses Large Language Models (LLMs) to generate code based on the given specifications. The generated code is then verified using Frama-c and Why3 to ensure that it satisfies the given formal specification. The tool can also improve existing code by generating code snippets that satisfy the given formal specification. 
-=======
-A project that uses LLMs to generate formally verified code. The input are formal specifications, it then uses LLMs to generate the code that will be used. The code is then verified using formal methods to ensure that it meets the specifications. The project is still in its early stages and is not yet functional.
 
 ## Pre-requisites
 
