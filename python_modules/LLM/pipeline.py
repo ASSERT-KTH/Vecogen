@@ -106,7 +106,6 @@ def add_specification_and_output_code(args, code):
     if not formal or not signature:
         raise ValueError("Missing required spec paths: formal and signature must be set.")
 
-<<<<<<< HEAD
     # Output the code to the specified file
     if args.debug:
         print(f"Writing the code to the file {args.absolute_output_directory}/{args.output_file_name}")
@@ -114,10 +113,8 @@ def add_specification_and_output_code(args, code):
                 encoding="utf-8") as f:
         args.absolute_c_path = args.absolute_output_directory + "/" + args.output_file_name
         f.write(code)
-=======
     # Inject specs (this call handles removing the model's own header/brace)
     code_out = add_specifications_to_code(formal, natural, signature, extra, code_body)
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
     # Output target
     out_dir = getattr(args, "absolute_output_directory")
@@ -222,14 +219,18 @@ def generate_code_folder(args):
 
     # Per-folder generation
     for folder in folders:
-<<<<<<< HEAD
         # Set the input and output files
-        args.natural_language_specification = args.directory + "/" + folder + "/" + natural_language_file_name
-        args.formal_specification_file = args.directory + "/" + folder + "/" + formal_specification_file_name
-        args.function_signature = args.directory + "/" + folder + "/" + function_signature_file_name
+        args.natural_language_specification = (
+            args.directory + "/" + folder + "/" + nl_name
+        )
+        args.formal_specification_file = (
+            args.directory + "/" + folder + "/" + fs_name
+        )
+        args.function_signature = (
+            args.directory + "/" + folder + "/" + sig_name
+        )
         
         print(f"Starting to generate code for folder {folder}....")
-=======
         # Point args to files inside this folder
         if nl_name:
             args.natural_spec_file = _join(src_root, folder, nl_name)
@@ -238,7 +239,6 @@ def generate_code_folder(args):
         args.formal_specification_file = args.formal_spec_file            # legacy
         args.signature_file = _join(src_root, folder, sig_name)
         args.function_signature = args.signature_file                      # legacy
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
         # Optional extras: global file takes precedence; else look inside folder by name; else unset
         if extra_global_abs:
@@ -264,13 +264,10 @@ def generate_code_folder(args):
         # Run generation
         generate_code_process(args)
 
-<<<<<<< HEAD
         # Print the current generated file
         print("\n \n" + "-" * 100 + "\n \n")
         print(f"Generated code for folder {folder}. \n\n")
-=======
         print("\n" + "-" * 100 + f"\nGenerated code for folder {folder}.\n")
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
 # Function that verifies and tests the code that has been generated
 def verify_and_test_code_attempt(args, response_gpt, i):
@@ -356,14 +353,11 @@ def verify_and_test_code_attempt(args, response_gpt, i):
         test_information = {"summary": {"passed": 0, "failed": 0, "total": 0,
                                         "information": "No tests found"}}
         passed_tests, total_tests = 0, 0
-<<<<<<< HEAD
         if args.debug:
             print(f"No tests found, proved goals: {verified_goals}") 
-    print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}. Used {verification_time_taken} seconds to verify.")
-=======
+        print(f"Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}. Used {verification_time_taken} seconds to verify.")
         if getattr(args, "debug", False):
             print(f"No tests found, proved goals: {verified_goals}")
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
     print(f"Step 5: Testing complete. Verified goals: {verified_goals}, tests: {passed_tests} / {total_tests}")
     return code, verified, output, verified_goals, test_information, verification_time_taken

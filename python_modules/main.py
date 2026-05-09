@@ -169,7 +169,7 @@ def parse_arguments(functions_list):
         action=argparse.BooleanOptionalAction, default=False, dest="allow_loops"
     )
     gen.add_argument(
-        "-samples", "--generated-samples",
+        "-ieg", "--generated-samples",
         help="Number of candidate programs to sample per problem per iteration",
         type=int, default=10, dest="initial_examples"
     )

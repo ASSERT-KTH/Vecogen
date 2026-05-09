@@ -41,11 +41,8 @@ def verify_file(args):
 
     # Calculate the elapsed time
     elapsed_time = end_time - start_time
-<<<<<<< HEAD
-=======
     if args.debug:
         print(f"Elapsed verification time: {round(elapsed_time, 2)} seconds")
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
     # Capture the command prompt output
     stdout, stderr = result.communicate()
