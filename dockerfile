@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM debian:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -58,7 +58,7 @@ RUN CVC5_URL="https://github.com/cvc5/cvc5/releases/download/cvc5-1.3.3/cvc5-Lin
     rm -rf cvc5-Linux-x86_64-static cvc5.zip
 
 RUN Z3_URL="https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-x64-glibc-2.39.zip" && \
-    wget "$Z3_URL" -O z3.zip && \
+    curl -L "$Z3_URL" -o z3.zip && \
     unzip z3.zip && \
     cp z3-4.15.3-x64-glibc-2.39/bin/z3 /usr/local/bin/z3 && \
     chmod +x /usr/local/bin/z3 && \

@@ -213,7 +213,6 @@ def generate_code_folder(args):
     # Per-folder generation
     for folder in folders:
         print(f"Starting to generate code for folder {folder}....")
-
         # Point args to files inside this folder
         if nl_name:
             args.natural_spec_file = _join(src_root, folder, nl_name)
@@ -246,7 +245,6 @@ def generate_code_folder(args):
 
         # Run generation
         generate_code_process(args)
-
         print("\n" + "-" * 100 + f"\nGenerated code for folder {folder}.\n")
 
 # Function that verifies and tests the code that has been generated
