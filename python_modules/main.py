@@ -130,15 +130,15 @@ def parse_arguments(functions_list):
 
         # Inputs & specifications
     specs = parser.add_argument_group("Inputs & specifications")
-    specs.add_argument("-fsf", "--formal-spec-file", type=str, dest="formal_spec_file",
+    specs.add_argument("-fsf", "--formal-spec-file", "--formal_specification_file", type=str, dest="formal_spec_file",
                        help="Path to ACSL formal specification file ...")
-    specs.add_argument("-nl", "--natural-spec-file", type=str, dest="natural_spec_file",
+    specs.add_argument("-nl", "--natural-spec-file", "--natural_language_specification", type=str, dest="natural_spec_file",
                        help="Path to natural-language specification file ...")
-    specs.add_argument("-sig", "--signature-file", type=str, dest="signature_file",
+    specs.add_argument("-sig", "--signature-file", "--function_signature", type=str, dest="signature_file",
                        help="Path to function signature file ...")
     specs.add_argument("-tc", "--tests-file", type=str, dest="tests_file",
                        help="Path to test cases (file). Used to validate/filter candidates.")
-    specs.add_argument("-spectype", "--specification-type",
+    specs.add_argument("-spectype", "--specification-type", "--specification_type",
                        choices=["natural", "formal", "both"], default="both",
                        help="Which specs to include in the LLM prompt")
     specs.add_argument("-extra", "--extra-specs",
@@ -147,9 +147,9 @@ def parse_arguments(functions_list):
 
     # Project I/O paths
     io = parser.add_argument_group("Project I/O paths")
-    io.add_argument("-d", "--input-dir", type=str, dest="input_dir",
+    io.add_argument("-d", "--input-dir", "--directory", type=str, dest="input_dir",
                     help="Root directory for batch runs (each subfolder = one problem)")
-    io.add_argument("-o", "--output-dir", type=str, dest="output_dir",
+    io.add_argument("-o", "--output-dir", "--output_path", type=str, dest="output_dir",
                     help="Directory where generated artifacts are written")
     io.add_argument("--output-file", "--output-file-name", "-of", type=str, dest="output_file",
                     help="Filename for the generated C file inside --output-dir")
@@ -161,15 +161,15 @@ def parse_arguments(functions_list):
     gen = parser.add_argument_group("Generation")
     gen.add_argument("-iter", "--iterations", help="Max generation-improvement cycles", type=int, default=10)
     gen.add_argument("-temp", "--temperature", help="LLM sampling temperature", type=float, default=1.0)
-    gen.add_argument("-model", "--model-name", help="LLM model name", type=str, default="gpt-3.5-turbo")
+    gen.add_argument("-model", "--model-name", "--model_name", help="LLM model name", type=str, default="gpt-3.5-turbo")
     gen.add_argument("-reboot", "--reboot", help="Hard reset after this many iterations", type=int, default=999999)
     gen.add_argument(
-        "-al", "--allow-loops",
+        "-al", "--allow-loops", "--allowloops",
         help="Permit loops in generated code (may hinder WP proofs)",
         action=argparse.BooleanOptionalAction, default=False, dest="allow_loops"
     )
     gen.add_argument(
-        "-samples", "--generated-samples",
+        "-samples", "-ieg", "--generated-samples",
         help="Number of candidate programs to sample per problem per iteration",
         type=int, default=10, dest="initial_examples"
     )

@@ -279,33 +279,12 @@ def require_model(args):
 
     provider_hint = (_get(args, "provider", "api_provider", "llm_provider") or "").lower()
 
-<<<<<<< HEAD
-    # Put the model in the args, and create an instance
-    if args.model_name in ['gpt-3.5-turbo', 'gpt-3.5', 'gpt-4', 'gpt-4o']:
-        # If the api key is not set, then give an error
-        if os.getenv("OPENAI_API_KEY") is None:
-            print("Please set the OPENAI_API_KEY environment variable")
-            sys.exit()
-        args.model = GPT(args, os.getenv("OPENAI_API_KEY"))
-    elif args.model_name in ['llama3.1-70b', 'llama3.1-8b', 'llama3.1-405b']:
-        # If the api key is not set, then give an error
-        if os.getenv("LLAMA_API_KEY") is None:
-            print("Please set the LLAMA_API_KEY environment variable")
-            sys.exit()
-        args.model = LLama(args, os.getenv("LLAMA_API_KEY"))
-    else:
-        if os.getenv("GROQ_API_KEY") is None:
-            print("Please set the GROQ_API_KEY environment variable")
-            sys.exit()
-        args.model = Groq_LLM(args, os.getenv("GROQ_API_KEY"))
-=======
     # Known sets for quick routing (extend as needed)
     groq_models = {
         "llama3-8b-8192", "llama3-70b-8192", "llama-3.1-8b-instant", "llama-3.1-70b-versatile",
         "mixtral-8x7b-32768", "gemma-7b-it", "gemma2-9b-it"
     }
     llama_api_models = {"llama3.1-70b", "llama3.1-8b", "llama3.1-405b"}
->>>>>>> 09cadd7 (Update code, ignore untracked files)
 
     # Heuristic: OpenRouter if explicitly requested OR model has a vendor prefix like "vendor/model"
     is_openrouter = (provider_hint == "openrouter") or ("/" in m)
