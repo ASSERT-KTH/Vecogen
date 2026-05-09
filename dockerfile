@@ -1,17 +1,24 @@
-# Use the official Debian image as a base
-FROM debian:latest
+FROM debian:bookworm
 
-# Update the package list and install dependencies
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
     opam \
     m4 \
     bubblewrap \
     wget \
+    curl \
+    ca-certificates \
+    git \
+    rsync \
+    patch \
+    bzip2 \
     gcc \
     libc-dev \
     make \
     unzip \
     graphviz \
+    mccs \
     libcairo2-dev \
     libexpat1-dev \
     libgmp-dev \
@@ -21,50 +28,63 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     python3 \
     python3-venv \
-    python3-pip
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
 WORKDIR /Vecogen
 
-# Copy the requirements file to avoid issues with automatic mounts
 COPY requirements.txt /Vecogen/requirements.txt
 
-# Initialize OPAM (OCaml Package Manager) and install OCaml
 RUN opam init -y --disable-sandboxing && \
     opam update && \
-    opam switch create 4.14.1 && \
-    opam switch 4.14.1 && \
+    opam switch create 4.14.2 ocaml-base-compiler.4.14.2 && \
+    eval $(opam env --switch=4.14.2) && \
     opam install -y opam-depext && \
-    opam depext --install -y frama-c && \
-    python3 -m venv venv && \
-    . venv/bin/activate && \
-    venv/bin/pip install --upgrade pip && \
-    venv/bin/pip install -r requirements.txt && \
-    CVC5_URL="https://github.com/cvc5/cvc5/releases/download/cvc5-1.2.0/cvc5-Linux-x86_64-static.zip" && \
-    wget $CVC5_URL -O cvc5.zip && \
+    opam depext --install -y frama-c.32.0 && \
+    opam install -y frama-c.32.0 && \
+    frama-c -version && \
+    opam env --switch=4.14.2 >> /etc/bash.bashrc
+
+RUN python3 -m venv /Vecogen/venv && \
+    /Vecogen/venv/bin/pip install --upgrade pip && \
+    /Vecogen/venv/bin/pip install -r /Vecogen/requirements.txt
+
+RUN CVC5_URL="https://github.com/cvc5/cvc5/releases/download/cvc5-1.3.3/cvc5-Linux-x86_64-static.zip" && \
+    wget "$CVC5_URL" -O cvc5.zip && \
     unzip cvc5.zip && \
-    cp cvc5-Linux-x86_64-static/bin/cvc5 /usr/local/bin && \
+    cp cvc5-Linux-x86_64-static/bin/cvc5 /usr/local/bin/cvc5 && \
     chmod +x /usr/local/bin/cvc5 && \
     cvc5 --version && \
-    rm -rf cvc5-Linux-x86_64-static cvc5.zip && \
-    Z3_URL="https://github.com/Z3Prover/z3/releases/download/z3-4.8.6/z3-4.8.6-x64-ubuntu-16.04.zip" && \
-    wget $Z3_URL -O z3.zip && \
-    unzip z3.zip && \
-    cp z3-4.8.6-x64-ubuntu-16.04/bin/z3 /usr/local/bin && \
-    chmod +x /usr/local/bin/z3 && \
-    z3 -version && \
-    rm -rf z3-4.8.6-x64-ubuntu-16.04 z3.zip && \
-    eval $(opam env) && \
-    ldconfig && \
-    opam env >> /etc/bash.bashrc
+    rm -rf cvc5-Linux-x86_64-static cvc5.zip
 
-# Copy the remaining application files
+RUN Z3_URL="https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-x64-glibc-2.39.zip" && \
+    wget "$Z3_URL" -O z3.zip && \
+    unzip z3.zip && \
+    cp z3-4.15.3-x64-glibc-2.39/bin/z3 /usr/local/bin/z3 && \
+    chmod +x /usr/local/bin/z3 && \
+    z3 --version && \
+    rm -rf z3-4.15.3-x64-glibc-2.39 z3.zip
+
+RUN YICES_VERSION="2.7.0" && \
+    YICES_URL="https://github.com/SRI-CSL/yices2/releases/download/yices-${YICES_VERSION}/yices-${YICES_VERSION}-x86_64-pc-linux-gnu-static-gmp.tar.gz" && \
+    wget "$YICES_URL" -O yices.tar.gz && \
+    tar -xzf yices.tar.gz && \
+    cp yices-${YICES_VERSION}/bin/yices* /usr/local/bin/ && \
+    chmod +x /usr/local/bin/yices* && \
+    yices-smt2 --version && \
+    rm -rf yices-${YICES_VERSION} yices.tar.gz
+
+RUN eval $(opam env --switch=4.14.2) && \
+    why3 config detect && \
+    why3 config list-provers
+
+RUN yices-smt2 --version && \
+    z3 --version && \
+    cvc5 --version
+
 COPY . /Vecogen
 
-# Ensure that the container can run in read-only mode
-# by creating necessary writable directories under /run and /tmp
 VOLUME /run
 VOLUME /tmp
 
-# Run the bash file (consider changing this if you need a specific entrypoint)
 CMD ["bash"]
