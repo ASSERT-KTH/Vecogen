@@ -267,10 +267,10 @@ def require_model(args):
     """Validate model name and instantiate the correct LLM wrapper.
 
     Provider selection rules:
-      1) Explicit hint via args.provider / args.api_provider / args.llm_provider
+      1) Explicit provider via args.provider / args.api_provider / args.llm_provider
       2) Heuristic: if model_name contains a slash (e.g., 'anthropic/claude-3.5-sonnet'),
          assume OpenRouter.
-      3) Fallbacks: known Groq / Llama lists, else default to OpenAI.
+      3) Fallback: OpenAI.
     """
     m = _get(args, "model_name")
     if not m:
@@ -278,18 +278,20 @@ def require_model(args):
         sys.exit()
 
     provider_hint = (_get(args, "provider", "api_provider", "llm_provider") or "").lower()
-
-    # Known sets for quick routing (extend as needed)
-    groq_models = {
-        "llama3-8b-8192", "llama3-70b-8192", "llama-3.1-8b-instant", "llama-3.1-70b-versatile",
-        "mixtral-8x7b-32768", "gemma-7b-it", "gemma2-9b-it"
+    provider_aliases = {
+        "openai": "openai",
+        "groq": "groq",
+        "llama": "llama",
+        "meta": "llama",
+        "openrouter": "openrouter",
     }
-    llama_api_models = {"llama3.1-70b", "llama3.1-8b", "llama3.1-405b"}
+    provider = provider_aliases.get(provider_hint) if provider_hint else None
 
-    # Heuristic: OpenRouter if explicitly requested OR model has a vendor prefix like "vendor/model"
-    is_openrouter = (provider_hint == "openrouter") or ("/" in m)
+    # Allow OpenRouter model slugs like "vendor/model" without also requiring --provider.
+    if provider is None and "/" in m:
+        provider = "openrouter"
 
-    if is_openrouter:
+    if provider == "openrouter":
         key = os.getenv("OPENROUTER_API_KEY")
         if not key:
             print("Please set the OPENROUTER_API_KEY environment variable")
@@ -300,7 +302,7 @@ def require_model(args):
         args.model = OpenRouterGPT(args, key, site_url=site_url, app_name=app_name)
         return
 
-    if provider_hint == "groq" or m in groq_models:
+    if provider == "groq":
         key = os.getenv("GROQ_API_KEY")
         if not key:
             print("Please set the GROQ_API_KEY environment variable")
@@ -308,7 +310,7 @@ def require_model(args):
         args.model = Groq_LLM(args, key)
         return
 
-    if provider_hint in ("llama", "meta") or m in llama_api_models:
+    if provider == "llama":
         key = os.getenv("LLAMA_API_KEY")
         if not key:
             print("Please set the LLAMA_API_KEY environment variable")

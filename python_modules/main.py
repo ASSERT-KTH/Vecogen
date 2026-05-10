@@ -162,6 +162,22 @@ def parse_arguments(functions_list):
     gen.add_argument("-iter", "--iterations", help="Max generation-improvement cycles", type=int, default=10)
     gen.add_argument("-temp", "--temperature", help="LLM sampling temperature", type=float, default=1.0)
     gen.add_argument("-model", "--model-name", "--model_name", help="LLM model name", type=str, default="gpt-3.5-turbo")
+    gen.add_argument(
+        "-provider", "--provider", "--api-provider", "--llm-provider",
+        dest="provider",
+        choices=["openai", "groq", "llama", "openrouter"],
+        help="LLM provider to use. Required for non-OpenAI models unless using an OpenRouter vendor/model name."
+    )
+    gen.add_argument(
+        "--openrouter-site-url",
+        dest="openrouter_site_url",
+        help="Optional OpenRouter site URL for request attribution"
+    )
+    gen.add_argument(
+        "--openrouter-app-name",
+        dest="openrouter_app_name",
+        help="Optional OpenRouter app name for request attribution"
+    )
     gen.add_argument("-reboot", "--reboot", help="Hard reset after this many iterations", type=int, default=999999)
     gen.add_argument(
         "-al", "--allow-loops", "--allowloops",

@@ -81,6 +81,7 @@ python3 main.py generate_code_folder \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
+  -provider openai \
   -model gpt-3.5-turbo
 ```
 
@@ -131,6 +132,7 @@ python3 main.py generate_code_folder \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
+  -provider openai \
   -model gpt-3.5-turbo
 ```
 
@@ -177,6 +179,7 @@ python3 main.py generate_code_folder \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
+  -provider openai \
   -model gpt-3.5-turbo
 ```
 
@@ -227,6 +230,9 @@ python3 main.py generate_code_folder \
 ### `--model_name`
 - LLM model
 
+### `--provider`
+- LLM provider: `openai`, `groq`, `llama`, or `openrouter`
+
 ### `--temperature`
 - Sampling temperature
 
@@ -251,7 +257,9 @@ python3 main.py generate_code_folder \
   -nl natural-language-specification.h \
   -sig function-signature.h \
   -pt one-shot \
-  -spectype both
+  -spectype both \
+  -provider llama \
+  -model llama3.1-8b
 ```
 
 ```bash
@@ -267,6 +275,7 @@ python3 main.py generate_code_folder \
   -nl natural_language_specification.h \
   -pt zero-shot \
   -spectype both \
+  -provider openai \
   -model gpt-5-nano \
   -wpm real \
   -sig function_signature.c \
