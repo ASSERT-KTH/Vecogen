@@ -74,15 +74,15 @@ python3 main.py generate_code_folder \
   -iter 2 \
   -temp 1 \
   -wpt 5 \
-  -o ../output/gpt-3.5-turbo \
-  -output-file generated_code.c \
+  -o ../output/gpt-4o \
+  --output-file generated_code.c \
   -fsf formal-specification.h \
   -nl natural-language-specification.h \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
   -provider openai \
-  -model gpt-3.5-turbo
+  -model gpt-4o
 ```
 
 This generates code for all problems in a folder.
@@ -125,15 +125,15 @@ python3 main.py generate_code_folder \
   -iter 2 \
   -temp 1 \
   -wpt 5 \
-  -o ../output/gpt-3.5-turbo \
-  -output-file generated_code.c \
+  -o ../output/gpt-4o \
+  --output-file generated_code.c \
   -fsf formal-specification.h \
   -nl natural-language-specification.h \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
   -provider openai \
-  -model gpt-3.5-turbo
+  -model gpt-4o
 ```
 
 ### Manual
@@ -172,15 +172,15 @@ python3 main.py generate_code_folder \
   -iter 2 \
   -temp 1 \
   -wpt 5 \
-  -o ../output/gpt-3.5-turbo \
-  -output-file generated_code.c \
+  -o ../output/gpt-4o \
+  --output-file generated_code.c \
   -fsf formal-specification.h \
   -nl natural-language-specification.h \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
   -provider openai \
-  -model gpt-3.5-turbo
+  -model gpt-4o
 ```
 
 ## General Flags
@@ -252,7 +252,7 @@ python3 main.py generate_code_folder \
   -temp 1 \
   -wpt 5 \
   -o ../output/llama3.1-8b-10-10-1-one-shot-both \
-  -output-file generated_code.c \
+  --output-file generated_code.c \
   -fsf formal-specification.h \
   -nl natural-language-specification.h \
   -sig function-signature.h \
