@@ -1,3 +1,40 @@
+import random
+
+
+def _parse_goal_ratio(verified_goals):
+    if not verified_goals:
+        return 0
+    try:
+        verified, total = [part.strip() for part in verified_goals.split("/")]
+        verified = int(verified)
+        total = int(total)
+        return 0 if total == 0 else verified / total
+    except (ValueError, AttributeError, IndexError):
+        return 0
+
+
+def _parse_test_ratio(test_information):
+    if not test_information:
+        return 0
+
+    try:
+        if isinstance(test_information, list):
+            summary = test_information[-1]["summary"]
+        elif isinstance(test_information, dict):
+            summary = test_information.get("summary", {})
+        else:
+            return 0
+
+        if "pass_rate" in summary:
+            return summary["pass_rate"]
+
+        passed = int(summary.get("passed", 0))
+        total = int(summary.get("total", 0))
+        return 0 if total == 0 else passed / total
+    except (ValueError, TypeError, IndexError, KeyError):
+        return 0
+
+
 # Class for completion information
 class CompletionInformation:
     """Class that contains information about an iteration"""
@@ -25,29 +62,8 @@ class CompletionInformation:
         self.verification_time = verification_time_taken
 
         # Add the information about the passed percentage of the tests and goals
-        try:
-            if test_information is not None:
-                self.passed_tests_percentage = test_information[-1]["summary"]["pass_rate"]
-            else:
-                self.passed_tests_percentage = 0
-        except:
-            print(f"Error: Could not get the percentage of passed tests or verified goals" +
-                f"Test information: {test_information}, verified goals: {verified_goals})")
-            self.passed_tests_percentage = 0
-
-        try:
-            if verified_goals is not None:
-                total_goals = verified_goals.split("/")[1]
-                verified_goals = verified_goals.split("/")[0]
-                if int(total_goals) == 0:
-                    self.passed_goals_percentage = 0
-                else:
-                    self.passed_goals_percentage = int(verified_goals) / int(total_goals)
-            else:
-                self.passed_goals_percentage = 0
-        except:
-            self.passed_goals_percentage = 0
-            print(f"Error: Could not get the percentage of passed tests or verified goals.  Test information: {test_information}, verified goals: {verified_goals})")
+        self.passed_tests_percentage = _parse_test_ratio(test_information)
+        self.passed_goals_percentage = _parse_goal_ratio(verified_goals)
 
     def to_dict(self):
         """ Function that converts the completion information to a dictionary"""
@@ -72,7 +88,7 @@ class CompletionInformation:
 # Class for iteration information
 class IterationInformation:
     """Class that contains information about the iteration"""
-    def __init__(self, iteration, max_completions_used, model):
+    def __init__(self, iteration, max_completions_used, model, ranking_method="proof-obligations"):
         self.iteration_number = iteration
         self.is_verified = False
         self.tokens_used_iteration = 0
@@ -85,6 +101,14 @@ class IterationInformation:
         self.best_attempt_feedback = None
         self.best_attempt_code = None
         self.best_attempt_metric_percentage = None
+        self.ranking_method = ranking_method
+
+    def _metric_for(self, completion_information):
+        if self.ranking_method == "test-cases":
+            return completion_information.passed_tests_percentage
+        if self.ranking_method == "proof-obligations":
+            return completion_information.passed_goals_percentage
+        return 0
 
     # Function that adds a completion to the iteration information
     def add_completion(self, completion_information):
@@ -105,19 +129,23 @@ class IterationInformation:
         if completion_information.is_verified:
             self.is_verified = True
 
-        # Get the metric percentage. Priority to tests, then goals
-        if completion_information.passed_tests_percentage is not None:
-            metric_percentage = completion_information.passed_tests_percentage
-        elif completion_information.passed_goals_percentage is not None:
-            metric_percentage = completion_information.passed_goals_percentage
-        else:
-            metric_percentage = 0
+        metric_percentage = self._metric_for(completion_information)
 
-        # If the new completion than the best attempt, then update the best attempt
+        # Random ranking uses reservoir sampling so every non-verified completion
+        # seen in this iteration is equally likely to become the next seed.
+        if self.ranking_method == "random":
+            if self.best_attempt_index is None or random.randint(1, self.completions_used) == 1:
+                self.best_attempt_index = completion_information.code_completion_number
+                self.best_attempt_feedback = completion_information.feedback
+                self.best_attempt_metric_percentage = None
+                self.best_attempt_code = completion_information.gpt_output
+            return
+
+        # If the new completion is better than the best attempt, then update the best attempt
         if self.best_attempt_index is None or metric_percentage > self.best_attempt_metric_percentage:
             self.best_attempt_index = completion_information.code_completion_number
             self.best_attempt_feedback = completion_information.feedback
-            self.best_attempt_metric_percentage = completion_information.passed_goals_percentage
+            self.best_attempt_metric_percentage = metric_percentage
             self.best_attempt_code = completion_information.gpt_output
 
     def to_dict(self):
@@ -131,6 +159,7 @@ class IterationInformation:
             "completions": [completion.to_dict() for completion in self.completions],
             "max_completions_used": self.max_completions_used,
             "model_used": self.model_used,
+            "ranking_method": self.ranking_method,
             "best_attempt_index": self.best_attempt_index,
             "best_attempt_feedback": self.best_attempt_feedback,
             "best_attempt_code": self.best_attempt_code,

@@ -242,6 +242,9 @@ python3 main.py generate_code_folder \
 ### `--iterations`
 - Number of iterations
 
+### `--ranking-method`
+- Candidate ranking strategy: `random`, `proof-obligations`, or `test-cases`
+
 ## Example Commands
 
 ```bash
@@ -258,6 +261,7 @@ python3 main.py generate_code_folder \
   -sig function-signature.h \
   -pt one-shot \
   -spectype both \
+  -rank proof-obligations \
   -provider llama \
   -model llama3.1-8b
 ```
@@ -275,6 +279,7 @@ python3 main.py generate_code_folder \
   -nl natural_language_specification.h \
   -pt zero-shot \
   -spectype both \
+  -rank test-cases \
   -provider openai \
   -model gpt-5-nano \
   -wpm real \

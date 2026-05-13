@@ -348,10 +348,14 @@ def _initial_examples(args, default=10):
     )
 
 
+def _ranking_method(args):
+    return getattr(args, "ranking_method", None) or "test-cases"
+
+
 def initial_code_generation_step(args):
     """Generate candidates one-by-one and stop early if one verifies."""
     iex = _initial_examples(args)
-    iteration_info = IterationInformation(0, iex, args.model_name)
+    iteration_info = IterationInformation(0, iex, args.model_name, _ranking_method(args))
 
     prompt = create_prompt(args)
     print("Generating the code using " + args.model_name)
@@ -383,7 +387,7 @@ def initial_code_generation_step(args):
 def code_improvement_step(args, code_improvement_iteration, code, output):
     """Improve code one-by-one and stop early if a candidate verifies."""
     iex = _initial_examples(args)
-    iteration_info = IterationInformation(code_improvement_iteration, iex, args.model_name)
+    iteration_info = IterationInformation(code_improvement_iteration, iex, args.model_name, _ranking_method(args))
 
     prompt = create_prompt(args, code, output, "feedback")
 

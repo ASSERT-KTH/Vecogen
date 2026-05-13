@@ -111,13 +111,14 @@ def parse_arguments(functions_list):
             "Examples:\n"
             "  # Batch-generate per problem folder, include both specs in the prompt\n"
             "  python3 main.py generate_code_folder \\\n"
-            "    --input-dir ../problems --initial-examples 2 --iterations 3 --wp-timeout 5 \\\n"
+            "    --input-dir ../problems -samples 2 --iterations 3 --wp-timeout 5 \\\n"
             "    --output-dir ../out/gpt-4o --output-file generated.c \\\n"
             "    --formal-spec-file formal.h --natural-spec-file natural.h --signature-file sig.h \\\n"
-            "    --prompt-technique one-shot --specification-type both --model gpt-4o-mini \\\n"
+            "    --prompt-technique one-shot --specification-type both --provider openai --model gpt-4o \\\n"
             "    --tests-file solution.c/\n\n"
-            "  # Verify an existing C file against ACSL\n"
-            "  python3 main.py verify --c-file foo.c --solver z3 --wp-timeout 10"
+            "  # Try a different ranking strategy for iterative improvement\n"
+            "  python3 main.py generate_code_folder --input-dir ../problems -samples 10 --iterations 10 \\\n"
+            "    --ranking-method test-cases --provider openai --model gpt-4o"
         ),
     )
 
@@ -193,6 +194,13 @@ def parse_arguments(functions_list):
         "-pt", "--prompt-technique",
         help="Prompting strategy",
         choices=["zero-shot", "one-shot"], default="one-shot"
+    )
+    gen.add_argument(
+        "-rank", "--ranking-method",
+        dest="ranking_method",
+        choices=["random", "proof-obligations", "test-cases"],
+        default="test-cases",
+        help="How to rank candidates between iterations"
     )
 
     # ── Verification options ────────────────────────────────────────────────────
