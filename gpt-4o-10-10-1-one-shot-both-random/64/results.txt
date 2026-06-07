@@ -1,0 +1,1012 @@
+{
+    "total_completions_requested": 10,
+    "total_completions_used": 2,
+    "total_tokens_used": 6210,
+    "total_time_taken_verification": 250.49641871452332,
+    "max_code_improvement_iterations": 10,
+    "initial_code_generation_information": [
+        {
+            "iteration_number": 0,
+            "is_verified": true,
+            "tokens_used_iteration": 6210,
+            "verification_time_iteration": 250.49641871452332,
+            "completions_used": 2,
+            "completions": [
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\ntypedef unsigned char      tB;\ntypedef unsigned char      tU08;\ntypedef signed char        tS08;\ntypedef unsigned short int tU16;\ntypedef signed short int   tS16;\ntypedef unsigned long int  tU32;\ntypedef signed long int    tS32;\ntypedef unsigned long long tU64;\ntypedef signed   long long tS64;\ntypedef float              tF32;\ntypedef double             tF64;\ntypedef unsigned char      ss_U08;\n\ntypedef struct {\n    tU08 val_U08;\n    tU08 ss_U08;\n} tU08S;\n\ntypedef struct {\n    tB   val_B;\n    tU08 ss_U08;\n} tBS;\n\ntypedef struct {\n    tF32 val_F32;\n    tU08 ss_U08;\n} tF32S;\n\ntypedef struct {\n    tS08 val_S08;\n    tU08 ss_U08;\n} tS08S;\n\n#define MOTOROVERSPEEDLIMIT_F32     ((tF32) 6000)\n#define GEARRATIO_F32               ((tF32) 3.320)\n#define WAITTIMESET_U08             ((tU08) 2000)\n#define FLAWLESS_B(ss_U08)          ((((ss_U08) & (0xFF)) == (0xFF) ) ? (TRUE) : (FALSE))\n#define SAMPLETIME_U16              ((tU16) 10)\n#define TRUE (1)\n#define FALSE (0)\n\n/* local state */\ntB          lowMagneticValue_B;\ntB          highMagneticValue_B;\ntU08        lowMagneticValueMeasurement_U08;\ntU08        highMagneticValueMeasurement_U08;\ntS08S       currentGear_S08s;\ntF32S       electricMotorMeasuredSpeed_F32s;\ntF32S       intermediateShaftSpeed_F32s;\n\n\n/* Reading from */\ntS08S rtdb_current_gear;\ntF32S rtdb_intermediate_shaft_speed;\ntF32S rtdb_electric_motor_measured_speed;\ntU08S rtdb_low_magnetic_value_measurement;\ntU08S rtdb_high_magnetic_value_measurement;\n\n/* Writing to */\ntB rtdb_low_magnetic_value;\ntB rtdb_high_magnetic_value;\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*This module handles a safe activation of the magnetic valves\n\n    The following is a list of requirements the code should adhere to.\n\n    Req. 1:\n    If the signal of rtdb_low_magnetic_value_measurement is not FLAWLESS,\n        or the signal of rtdb_high_magnetic_value_measurement is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 2:  \n    If the signal of rtdb_current_gear is not FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 3:\n    If the signal of rtdb_electric_motor_measured_speed is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 4:\n    If the signal of rtdb_low_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_high_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is FLAWLESS \n        and the signal of rtdb_electric_motor_measured_speed is FLAWLESS \n        and either the value of rtdb_electric_motor_measured_speed > MOTOROVERSPEEDLIMIT_F32 RPM\n            or the calculated input shaft speed rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32 RPM\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 5:\n    If the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n        and the signal of rtdb_current_gear is FLAWLESS\n        and the value of rtdb_current_gear is not 0\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value_measurement to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value_measurement to FALSE.\n\n    Utility req. 1:\n    A variable of type tU08, tBS, tF32 or tS08 is called a signal.\n\n    Utility req. 2:\n    The signal status for a signal S is a struct field named ss_U08.\n\n    Utility req. 3:\n    A signal S has FLAWLESS signal status whenever the macro FLAWLESS_B(S.ss_U08) evaluates to true.\n*/\n\n\n/*local state\n*/\n\n\n/*Reading from\n*/\n\n\n/*Writing to\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline rtdbInput()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckMvFbSs()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckEmOverSpeed()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline ChckSsInterShftAndCurrGear()\n     *-----------------------------------------------------------\n*/\n\n\n/*Intermediate shaft is flawless\n*/\n\n\n/*Intermediate shaft not flawless; check current gear\n*/\n\n\n/*-----------------------------------------------------------\n     * Replicate the logic of the final if-else from sgmm_10ms,\n     * inlining blockBoth() and noBlock().\n     *-----------------------------------------------------------\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*noBlock() inlined\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\npredicate SignalFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tF32S signal_E) =  FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalNotFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tF32S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowBlocked = \n    rtdb_low_magnetic_value == FALSE && rtdb_high_magnetic_value == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowNotBlocked = \n    rtdb_low_magnetic_value == TRUE && rtdb_high_magnetic_value == TRUE;\n@\n*/\n\n/*@\nassigns lowMagneticValue_B;\n    assigns highMagneticValue_B;\n    assigns lowMagneticValueMeasurement_U08;\n    assigns highMagneticValueMeasurement_U08;\n    assigns currentGear_S08s;\n    assigns electricMotorMeasuredSpeed_F32s;\n    assigns intermediateShaftSpeed_F32s;\n    assigns rtdb_low_magnetic_value, rtdb_high_magnetic_value;\n\n    // ----------------------------- Main requirements -----------------------------------\n\n    ensures RQ1:\n    (   SignalNotFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    ||  SignalNotFlawless{Old}(rtdb_high_magnetic_value_measurement))\n        ==> HighAndLowBlocked;\n\n    ensures RQ2:\n    (   SignalNotFlawless{Old}(rtdb_current_gear)\n    &&  SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ3: \n    (   SignalNotFlawless{Old}(rtdb_electric_motor_measured_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ4: \n    (   SignalFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_high_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_electric_motor_measured_speed)\n    &&  (   \\old(rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32)\n        ||  \\old(rtdb_intermediate_shaft_speed.val_F32) * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32))\n        ==> HighAndLowBlocked;\n\n    ensures RQ5: \n    (   SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_current_gear)\n    &&  \\old(rtdb_current_gear.val_S08 != 0))\n        ==> HighAndLowBlocked;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nvoid sgmm_10ms_single_function(void);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nvoid sgmm_10ms_single_function(void) {\n    // Requirement 1\n    if (SignalNotFlawless(rtdb_low_magnetic_value_measurement) || \n        SignalNotFlawless(rtdb_high_magnetic_value_measurement)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 2\n    if (SignalNotFlawless(rtdb_current_gear) && \n        SignalNotFlawless(rtdb_intermediate_shaft_speed)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 3\n    if (SignalNotFlawless(rtdb_electric_motor_measured_speed)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 4\n    if (SignalFlawless(rtdb_low_magnetic_value_measurement) &&\n        SignalFlawless(rtdb_high_magnetic_value_measurement) &&\n        SignalFlawless(rtdb_intermediate_shaft_speed) &&\n        SignalFlawless(rtdb_electric_motor_measured_speed) &&\n        (rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32 ||\n            rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 5\n    if (SignalNotFlawless(rtdb_intermediate_shaft_speed) &&\n        SignalFlawless(rtdb_current_gear) &&\n        rtdb_current_gear.val_S08 != 0) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // If none of the conditions block, we set both to true\n    rtdb_low_magnetic_value = TRUE;\n    rtdb_high_magnetic_value = TRUE;\n}\n```",
+                    "tokens_used": 3114,
+                    "code": "typedef unsigned char      tB;\ntypedef unsigned char      tU08;\ntypedef signed char        tS08;\ntypedef unsigned short int tU16;\ntypedef signed short int   tS16;\ntypedef unsigned long int  tU32;\ntypedef signed long int    tS32;\ntypedef unsigned long long tU64;\ntypedef signed   long long tS64;\ntypedef float              tF32;\ntypedef double             tF64;\ntypedef unsigned char      ss_U08;\n\ntypedef struct {\n    tU08 val_U08;\n    tU08 ss_U08;\n} tU08S;\n\ntypedef struct {\n    tB   val_B;\n    tU08 ss_U08;\n} tBS;\n\ntypedef struct {\n    tF32 val_F32;\n    tU08 ss_U08;\n} tF32S;\n\ntypedef struct {\n    tS08 val_S08;\n    tU08 ss_U08;\n} tS08S;\n\n#define MOTOROVERSPEEDLIMIT_F32     ((tF32) 6000)\n#define GEARRATIO_F32               ((tF32) 3.320)\n#define WAITTIMESET_U08             ((tU08) 2000)\n#define FLAWLESS_B(ss_U08)          ((((ss_U08) & (0xFF)) == (0xFF) ) ? (TRUE) : (FALSE))\n#define SAMPLETIME_U16              ((tU16) 10)\n#define TRUE (1)\n#define FALSE (0)\n\n/* local state */\ntB          lowMagneticValue_B;\ntB          highMagneticValue_B;\ntU08        lowMagneticValueMeasurement_U08;\ntU08        highMagneticValueMeasurement_U08;\ntS08S       currentGear_S08s;\ntF32S       electricMotorMeasuredSpeed_F32s;\ntF32S       intermediateShaftSpeed_F32s;\n\n\n/* Reading from */\ntS08S rtdb_current_gear;\ntF32S rtdb_intermediate_shaft_speed;\ntF32S rtdb_electric_motor_measured_speed;\ntU08S rtdb_low_magnetic_value_measurement;\ntU08S rtdb_high_magnetic_value_measurement;\n\n/* Writing to */\ntB rtdb_low_magnetic_value;\ntB rtdb_high_magnetic_value;\n\n/*This module handles a safe activation of the magnetic valves\n\n    The following is a list of requirements the code should adhere to.\n\n    Req. 1:\n    If the signal of rtdb_low_magnetic_value_measurement is not FLAWLESS,\n        or the signal of rtdb_high_magnetic_value_measurement is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 2:  \n    If the signal of rtdb_current_gear is not FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 3:\n    If the signal of rtdb_electric_motor_measured_speed is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 4:\n    If the signal of rtdb_low_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_high_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is FLAWLESS \n        and the signal of rtdb_electric_motor_measured_speed is FLAWLESS \n        and either the value of rtdb_electric_motor_measured_speed > MOTOROVERSPEEDLIMIT_F32 RPM\n            or the calculated input shaft speed rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32 RPM\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 5:\n    If the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n        and the signal of rtdb_current_gear is FLAWLESS\n        and the value of rtdb_current_gear is not 0\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value_measurement to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value_measurement to FALSE.\n\n    Utility req. 1:\n    A variable of type tU08, tBS, tF32 or tS08 is called a signal.\n\n    Utility req. 2:\n    The signal status for a signal S is a struct field named ss_U08.\n\n    Utility req. 3:\n    A signal S has FLAWLESS signal status whenever the macro FLAWLESS_B(S.ss_U08) evaluates to true.\n*/\n\n\n/*local state\n*/\n\n\n/*Reading from\n*/\n\n\n/*Writing to\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline rtdbInput()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckMvFbSs()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckEmOverSpeed()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline ChckSsInterShftAndCurrGear()\n     *-----------------------------------------------------------\n*/\n\n\n/*Intermediate shaft is flawless\n*/\n\n\n/*Intermediate shaft not flawless; check current gear\n*/\n\n\n/*-----------------------------------------------------------\n     * Replicate the logic of the final if-else from sgmm_10ms,\n     * inlining blockBoth() and noBlock().\n     *-----------------------------------------------------------\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*noBlock() inlined\n*/\n\n/*@\npredicate SignalFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tF32S signal_E) =  FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalNotFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tF32S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowBlocked = \n    rtdb_low_magnetic_value == FALSE && rtdb_high_magnetic_value == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowNotBlocked = \n    rtdb_low_magnetic_value == TRUE && rtdb_high_magnetic_value == TRUE;\n@\n*/\n\n/*@\nassigns lowMagneticValue_B;\n    assigns highMagneticValue_B;\n    assigns lowMagneticValueMeasurement_U08;\n    assigns highMagneticValueMeasurement_U08;\n    assigns currentGear_S08s;\n    assigns electricMotorMeasuredSpeed_F32s;\n    assigns intermediateShaftSpeed_F32s;\n    assigns rtdb_low_magnetic_value, rtdb_high_magnetic_value;\n\n    // ----------------------------- Main requirements -----------------------------------\n\n    ensures RQ1:\n    (   SignalNotFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    ||  SignalNotFlawless{Old}(rtdb_high_magnetic_value_measurement))\n        ==> HighAndLowBlocked;\n\n    ensures RQ2:\n    (   SignalNotFlawless{Old}(rtdb_current_gear)\n    &&  SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ3: \n    (   SignalNotFlawless{Old}(rtdb_electric_motor_measured_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ4: \n    (   SignalFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_high_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_electric_motor_measured_speed)\n    &&  (   \\old(rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32)\n        ||  \\old(rtdb_intermediate_shaft_speed.val_F32) * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32))\n        ==> HighAndLowBlocked;\n\n    ensures RQ5: \n    (   SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_current_gear)\n    &&  \\old(rtdb_current_gear.val_S08 != 0))\n        ==> HighAndLowBlocked;\n*/\n\nvoid sgmm_10ms_single_function(void) {\n    // Requirement 1\n    if (SignalNotFlawless(rtdb_low_magnetic_value_measurement) || \n        SignalNotFlawless(rtdb_high_magnetic_value_measurement)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 2\n    if (SignalNotFlawless(rtdb_current_gear) && \n        SignalNotFlawless(rtdb_intermediate_shaft_speed)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 3\n    if (SignalNotFlawless(rtdb_electric_motor_measured_speed)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 4\n    if (SignalFlawless(rtdb_low_magnetic_value_measurement) &&\n        SignalFlawless(rtdb_high_magnetic_value_measurement) &&\n        SignalFlawless(rtdb_intermediate_shaft_speed) &&\n        SignalFlawless(rtdb_electric_motor_measured_speed) &&\n        (rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32 ||\n            rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // Requirement 5\n    if (SignalNotFlawless(rtdb_intermediate_shaft_speed) &&\n        SignalFlawless(rtdb_current_gear) &&\n        rtdb_current_gear.val_S08 != 0) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    // If none of the conditions block, we set both to true\n    rtdb_low_magnetic_value = TRUE;\n    rtdb_high_magnetic_value = TRUE;\n}\n",
+                    "feedback": "/workspace/python_modules/../output/gpt-4o-random-rerun-all-65-final/64/generated_code.c: In function \u2018sgmm_10ms_single_function\u2019:\n/workspace/python_modules/../output/gpt-4o-random-rerun-all-65-final/64/generated_code.c:250:9: error: implicit declaration of function \u2018SignalNotFlawless\u2019 [-Wimplicit-function-declaration]\n  250 |     if (SignalNotFlawless(rtdb_low_magnetic_value_measurement) ||\n      |         ^~~~~~~~~~~~~~~~~\n/workspace/python_modules/../output/gpt-4o-random-rerun-all-65-final/64/generated_code.c:273:9: error: implicit declaration of function \u2018SignalFlawless\u2019 [-Wimplicit-function-declaration]\n  273 |     if (SignalFlawless(rtdb_low_magnetic_value_measurement) &&\n      |         ^~~~~~~~~~~~~~\n",
+                    "is_verified": false,
+                    "verified_goals_count": "0 / 0",
+                    "test_information": {
+                        "summary": {
+                            "passed": 0,
+                            "failed": 0,
+                            "total": 0,
+                            "information": "Compilation failed",
+                            "frama_c_command": null
+                        }
+                    },
+                    "completion_information": "The code has been improved",
+                    "verification_time": 0,
+                    "passed_tests_percentage": 0,
+                    "passed_goals_percentage": 0
+                },
+                {
+                    "code_completion_number": 0,
+                    "temperature_used": 1.0,
+                    "prompt_used": "You are an expert C software engineer specializing in safety-critical code verified with Frama-C.\n\n-----END_ASSISTANT_INFORMATION-----\n\nHere is an example of the task:\n```C\n/*\n    Check if an integer x is within the inclusive range [low, high] and divisible by div.\n    \n    input:\n        Four integers x, low, high, and div. \n        x is the value to check. \n        low and high define the inclusive bounds of the range. \n        div is the divisor to check divisibility.\n\n    output:\n        Returns 1 if x is within [low, high] and divisible by div; otherwise returns 0.\n*/\n/*@\n    requires div != 0;\n    ensures \\result == (x >= low && x <= high && x % div == 0);\n*/int checkConstraints(int x, int low, int high, int div)\n{\n    return (x >= low && x <= high && x % div == 0);\n}\n```\n--- CONTEXT (for reference only) ---\nEXTRA CODE:\n```c\ntypedef unsigned char      tB;\ntypedef unsigned char      tU08;\ntypedef signed char        tS08;\ntypedef unsigned short int tU16;\ntypedef signed short int   tS16;\ntypedef unsigned long int  tU32;\ntypedef signed long int    tS32;\ntypedef unsigned long long tU64;\ntypedef signed   long long tS64;\ntypedef float              tF32;\ntypedef double             tF64;\ntypedef unsigned char      ss_U08;\n\ntypedef struct {\n    tU08 val_U08;\n    tU08 ss_U08;\n} tU08S;\n\ntypedef struct {\n    tB   val_B;\n    tU08 ss_U08;\n} tBS;\n\ntypedef struct {\n    tF32 val_F32;\n    tU08 ss_U08;\n} tF32S;\n\ntypedef struct {\n    tS08 val_S08;\n    tU08 ss_U08;\n} tS08S;\n\n#define MOTOROVERSPEEDLIMIT_F32     ((tF32) 6000)\n#define GEARRATIO_F32               ((tF32) 3.320)\n#define WAITTIMESET_U08             ((tU08) 2000)\n#define FLAWLESS_B(ss_U08)          ((((ss_U08) & (0xFF)) == (0xFF) ) ? (TRUE) : (FALSE))\n#define SAMPLETIME_U16              ((tU16) 10)\n#define TRUE (1)\n#define FALSE (0)\n\n/* local state */\ntB          lowMagneticValue_B;\ntB          highMagneticValue_B;\ntU08        lowMagneticValueMeasurement_U08;\ntU08        highMagneticValueMeasurement_U08;\ntS08S       currentGear_S08s;\ntF32S       electricMotorMeasuredSpeed_F32s;\ntF32S       intermediateShaftSpeed_F32s;\n\n\n/* Reading from */\ntS08S rtdb_current_gear;\ntF32S rtdb_intermediate_shaft_speed;\ntF32S rtdb_electric_motor_measured_speed;\ntU08S rtdb_low_magnetic_value_measurement;\ntU08S rtdb_high_magnetic_value_measurement;\n\n/* Writing to */\ntB rtdb_low_magnetic_value;\ntB rtdb_high_magnetic_value;\n```\nNATURAL LANGUAGE DESCRIPTION:\n```c\n/*This module handles a safe activation of the magnetic valves\n\n    The following is a list of requirements the code should adhere to.\n\n    Req. 1:\n    If the signal of rtdb_low_magnetic_value_measurement is not FLAWLESS,\n        or the signal of rtdb_high_magnetic_value_measurement is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 2:  \n    If the signal of rtdb_current_gear is not FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 3:\n    If the signal of rtdb_electric_motor_measured_speed is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 4:\n    If the signal of rtdb_low_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_high_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is FLAWLESS \n        and the signal of rtdb_electric_motor_measured_speed is FLAWLESS \n        and either the value of rtdb_electric_motor_measured_speed > MOTOROVERSPEEDLIMIT_F32 RPM\n            or the calculated input shaft speed rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32 RPM\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 5:\n    If the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n        and the signal of rtdb_current_gear is FLAWLESS\n        and the value of rtdb_current_gear is not 0\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value_measurement to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value_measurement to FALSE.\n\n    Utility req. 1:\n    A variable of type tU08, tBS, tF32 or tS08 is called a signal.\n\n    Utility req. 2:\n    The signal status for a signal S is a struct field named ss_U08.\n\n    Utility req. 3:\n    A signal S has FLAWLESS signal status whenever the macro FLAWLESS_B(S.ss_U08) evaluates to true.\n*/\n\n\n/*local state\n*/\n\n\n/*Reading from\n*/\n\n\n/*Writing to\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline rtdbInput()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckMvFbSs()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckEmOverSpeed()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline ChckSsInterShftAndCurrGear()\n     *-----------------------------------------------------------\n*/\n\n\n/*Intermediate shaft is flawless\n*/\n\n\n/*Intermediate shaft not flawless; check current gear\n*/\n\n\n/*-----------------------------------------------------------\n     * Replicate the logic of the final if-else from sgmm_10ms,\n     * inlining blockBoth() and noBlock().\n     *-----------------------------------------------------------\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*noBlock() inlined\n*/\n```\nACSL FORMAL SPECIFICATION:\n```c\n/*@\npredicate SignalFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tF32S signal_E) =  FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalNotFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tF32S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowBlocked = \n    rtdb_low_magnetic_value == FALSE && rtdb_high_magnetic_value == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowNotBlocked = \n    rtdb_low_magnetic_value == TRUE && rtdb_high_magnetic_value == TRUE;\n@\n*/\n\n/*@\nassigns lowMagneticValue_B;\n    assigns highMagneticValue_B;\n    assigns lowMagneticValueMeasurement_U08;\n    assigns highMagneticValueMeasurement_U08;\n    assigns currentGear_S08s;\n    assigns electricMotorMeasuredSpeed_F32s;\n    assigns intermediateShaftSpeed_F32s;\n    assigns rtdb_low_magnetic_value, rtdb_high_magnetic_value;\n\n    // ----------------------------- Main requirements -----------------------------------\n\n    ensures RQ1:\n    (   SignalNotFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    ||  SignalNotFlawless{Old}(rtdb_high_magnetic_value_measurement))\n        ==> HighAndLowBlocked;\n\n    ensures RQ2:\n    (   SignalNotFlawless{Old}(rtdb_current_gear)\n    &&  SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ3: \n    (   SignalNotFlawless{Old}(rtdb_electric_motor_measured_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ4: \n    (   SignalFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_high_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_electric_motor_measured_speed)\n    &&  (   \\old(rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32)\n        ||  \\old(rtdb_intermediate_shaft_speed.val_F32) * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32))\n        ==> HighAndLowBlocked;\n\n    ensures RQ5: \n    (   SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_current_gear)\n    &&  \\old(rtdb_current_gear.val_S08 != 0))\n        ==> HighAndLowBlocked;\n*/\n```\nFUNCTION SIGNATURE:\n```c\nvoid sgmm_10ms_single_function(void);\n```\n--- END CONTEXT ---\n\nYOUR TASK:\n\nYou must adhere to the following rules:\n * Keep the function signature exactly as provided.\n * Respect all ACSL pre- and postconditions.\n * If the natural language description and ACSL conflict, follow the ACSL.\n * Do not repeat the natural language description, the ACSL, or the extra code.\n * Do not add explanations or comments.\n * Do not use any type of loops (for, while, do-while). Recursion is allowed if needed.\nOutput only one fenced C code block containing the complete function definition (same signature + generated body). Output nothing else.",
+                    "model_used": "gpt-4o-2024-08-06",
+                    "gpt_output": "```c\nvoid sgmm_10ms_single_function(void) {\n    if (!FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) ||\n        !FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        !FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08) &&\n        (rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32 ||\n         rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        rtdb_current_gear.val_S08 != 0) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    rtdb_low_magnetic_value = TRUE;\n    rtdb_high_magnetic_value = TRUE;\n}\n```",
+                    "tokens_used": 3096,
+                    "code": "typedef unsigned char      tB;\ntypedef unsigned char      tU08;\ntypedef signed char        tS08;\ntypedef unsigned short int tU16;\ntypedef signed short int   tS16;\ntypedef unsigned long int  tU32;\ntypedef signed long int    tS32;\ntypedef unsigned long long tU64;\ntypedef signed   long long tS64;\ntypedef float              tF32;\ntypedef double             tF64;\ntypedef unsigned char      ss_U08;\n\ntypedef struct {\n    tU08 val_U08;\n    tU08 ss_U08;\n} tU08S;\n\ntypedef struct {\n    tB   val_B;\n    tU08 ss_U08;\n} tBS;\n\ntypedef struct {\n    tF32 val_F32;\n    tU08 ss_U08;\n} tF32S;\n\ntypedef struct {\n    tS08 val_S08;\n    tU08 ss_U08;\n} tS08S;\n\n#define MOTOROVERSPEEDLIMIT_F32     ((tF32) 6000)\n#define GEARRATIO_F32               ((tF32) 3.320)\n#define WAITTIMESET_U08             ((tU08) 2000)\n#define FLAWLESS_B(ss_U08)          ((((ss_U08) & (0xFF)) == (0xFF) ) ? (TRUE) : (FALSE))\n#define SAMPLETIME_U16              ((tU16) 10)\n#define TRUE (1)\n#define FALSE (0)\n\n/* local state */\ntB          lowMagneticValue_B;\ntB          highMagneticValue_B;\ntU08        lowMagneticValueMeasurement_U08;\ntU08        highMagneticValueMeasurement_U08;\ntS08S       currentGear_S08s;\ntF32S       electricMotorMeasuredSpeed_F32s;\ntF32S       intermediateShaftSpeed_F32s;\n\n\n/* Reading from */\ntS08S rtdb_current_gear;\ntF32S rtdb_intermediate_shaft_speed;\ntF32S rtdb_electric_motor_measured_speed;\ntU08S rtdb_low_magnetic_value_measurement;\ntU08S rtdb_high_magnetic_value_measurement;\n\n/* Writing to */\ntB rtdb_low_magnetic_value;\ntB rtdb_high_magnetic_value;\n\n/*This module handles a safe activation of the magnetic valves\n\n    The following is a list of requirements the code should adhere to.\n\n    Req. 1:\n    If the signal of rtdb_low_magnetic_value_measurement is not FLAWLESS,\n        or the signal of rtdb_high_magnetic_value_measurement is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 2:  \n    If the signal of rtdb_current_gear is not FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 3:\n    If the signal of rtdb_electric_motor_measured_speed is not FLAWLESS,\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 4:\n    If the signal of rtdb_low_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_high_magnetic_value_measurement is FLAWLESS\n        and the signal of rtdb_intermediate_shaft_speed is FLAWLESS \n        and the signal of rtdb_electric_motor_measured_speed is FLAWLESS \n        and either the value of rtdb_electric_motor_measured_speed > MOTOROVERSPEEDLIMIT_F32 RPM\n            or the calculated input shaft speed rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32 RPM\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value to FALSE.\n\n    Req. 5:\n    If the signal of rtdb_intermediate_shaft_speed is not FLAWLESS\n        and the signal of rtdb_current_gear is FLAWLESS\n        and the value of rtdb_current_gear is not 0\n    then the low side magnetic valve activation shall be blocked by setting rtdb_low_magnetic_value_measurement to FALSE\n        and the high side magnetic valve activation shall be blocked by setting rtdb_high_magnetic_value_measurement to FALSE.\n\n    Utility req. 1:\n    A variable of type tU08, tBS, tF32 or tS08 is called a signal.\n\n    Utility req. 2:\n    The signal status for a signal S is a struct field named ss_U08.\n\n    Utility req. 3:\n    A signal S has FLAWLESS signal status whenever the macro FLAWLESS_B(S.ss_U08) evaluates to true.\n*/\n\n\n/*local state\n*/\n\n\n/*Reading from\n*/\n\n\n/*Writing to\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline rtdbInput()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckMvFbSs()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline chckEmOverSpeed()\n     *-----------------------------------------------------------\n*/\n\n\n/*-----------------------------------------------------------\n     * Inline ChckSsInterShftAndCurrGear()\n     *-----------------------------------------------------------\n*/\n\n\n/*Intermediate shaft is flawless\n*/\n\n\n/*Intermediate shaft not flawless; check current gear\n*/\n\n\n/*-----------------------------------------------------------\n     * Replicate the logic of the final if-else from sgmm_10ms,\n     * inlining blockBoth() and noBlock().\n     *-----------------------------------------------------------\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*blockBoth() inlined\n*/\n\n\n/*noBlock() inlined\n*/\n\n/*@\npredicate SignalFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tF32S signal_E) =  FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == TRUE;\n    predicate SignalFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == TRUE;\n    predicate SignalNotFlawless{L}(tBS signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tF32S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08S signal_E) = FLAWLESS_B(\\at(signal_E.ss_U08, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tS08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n    predicate SignalNotFlawless{L}(tU08 signal_E) = FLAWLESS_B(\\at(signal_E, L)) == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowBlocked = \n    rtdb_low_magnetic_value == FALSE && rtdb_high_magnetic_value == FALSE;\n@\n*/\n\n/*@\npredicate HighAndLowNotBlocked = \n    rtdb_low_magnetic_value == TRUE && rtdb_high_magnetic_value == TRUE;\n@\n*/\n\n/*@\nassigns lowMagneticValue_B;\n    assigns highMagneticValue_B;\n    assigns lowMagneticValueMeasurement_U08;\n    assigns highMagneticValueMeasurement_U08;\n    assigns currentGear_S08s;\n    assigns electricMotorMeasuredSpeed_F32s;\n    assigns intermediateShaftSpeed_F32s;\n    assigns rtdb_low_magnetic_value, rtdb_high_magnetic_value;\n\n    // ----------------------------- Main requirements -----------------------------------\n\n    ensures RQ1:\n    (   SignalNotFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    ||  SignalNotFlawless{Old}(rtdb_high_magnetic_value_measurement))\n        ==> HighAndLowBlocked;\n\n    ensures RQ2:\n    (   SignalNotFlawless{Old}(rtdb_current_gear)\n    &&  SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ3: \n    (   SignalNotFlawless{Old}(rtdb_electric_motor_measured_speed))\n        ==> HighAndLowBlocked;\n\n    ensures RQ4: \n    (   SignalFlawless{Old}(rtdb_low_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_high_magnetic_value_measurement)\n    &&  SignalFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_electric_motor_measured_speed)\n    &&  (   \\old(rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32)\n        ||  \\old(rtdb_intermediate_shaft_speed.val_F32) * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32))\n        ==> HighAndLowBlocked;\n\n    ensures RQ5: \n    (   SignalNotFlawless{Old}(rtdb_intermediate_shaft_speed)\n    &&  SignalFlawless{Old}(rtdb_current_gear)\n    &&  \\old(rtdb_current_gear.val_S08 != 0))\n        ==> HighAndLowBlocked;\n*/\n\nvoid sgmm_10ms_single_function(void) {\n    if (!FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) ||\n        !FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        !FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08) &&\n        (rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32 ||\n         rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        rtdb_current_gear.val_S08 != 0) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    rtdb_low_magnetic_value = TRUE;\n    rtdb_high_magnetic_value = TRUE;\n}\n",
+                    "feedback": [
+                        "The file is valid"
+                    ],
+                    "is_verified": true,
+                    "verified_goals_count": "32 / 32",
+                    "test_information": [
+                        {
+                            "test_case": 1,
+                            "inputs": {
+                                "lowMeas_ss": 0,
+                                "highMeas_ss": 255,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": true,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 2,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 0,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": true,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 3,
+                            "inputs": {
+                                "lowMeas_ss": 0,
+                                "highMeas_ss": 0,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": true,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 4,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 123.0,
+                                "emSpeed_ss": 0,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": true,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 5,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 0,
+                                "intShaft_val": 1000.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": true,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 6,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 500.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": true
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 7,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": -3,
+                                "currGear_ss": 255,
+                                "intShaft_val": 500.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": true
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 8,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 500.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 9,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1000.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 7000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": true,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 10,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1000.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": -7000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 11,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 3,
+                                "currGear_ss": 255,
+                                "intShaft_val": 2001.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": true,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 12,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1000.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 6000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 13,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1807.22888,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 14,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1807.09998,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 15,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 1807.40002,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 1000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": true,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 16,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 9,
+                                "currGear_ss": 0,
+                                "intShaft_val": 100.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 500.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 17,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 9,
+                                "currGear_ss": 255,
+                                "intShaft_val": 100.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 500.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": true
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 18,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 500.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 500.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 19,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 2,
+                                "currGear_ss": 255,
+                                "intShaft_val": 500.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 500.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 20,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 21,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 0,
+                                "currGear_val": 0,
+                                "currGear_ss": 0,
+                                "intShaft_val": 0.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": true,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 22,
+                            "inputs": {
+                                "lowMeas_ss": 0,
+                                "highMeas_ss": 255,
+                                "currGear_val": 7,
+                                "currGear_ss": 0,
+                                "intShaft_val": 50.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 50.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": true,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 23,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 7,
+                                "currGear_ss": 255,
+                                "intShaft_val": 50.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 50.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": true
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 24,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 0,
+                                "currGear_ss": 255,
+                                "intShaft_val": 50.0,
+                                "intShaft_ss": 0,
+                                "emSpeed_val": 50.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 25,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 5,
+                                "currGear_ss": 255,
+                                "intShaft_val": 400.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 0,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": true,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 26,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 5,
+                                "currGear_ss": 255,
+                                "intShaft_val": 400.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 0.0,
+                                "emSpeed_ss": 0,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": true,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 27,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 100.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 9000.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": true,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 28,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 2500.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 100.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "received_output": {
+                                "low": 0,
+                                "high": 0
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": true,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 29,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": 1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 100.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 5900.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 0,
+                                "prev_high": 1
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "test_case": 30,
+                            "inputs": {
+                                "lowMeas_ss": 255,
+                                "highMeas_ss": 255,
+                                "currGear_val": -1,
+                                "currGear_ss": 255,
+                                "intShaft_val": 100.0,
+                                "intShaft_ss": 255,
+                                "emSpeed_val": 5900.0,
+                                "emSpeed_ss": 255,
+                                "prev_low": 1,
+                                "prev_high": 0
+                            },
+                            "expected_output": {
+                                "low": -1,
+                                "high": -1
+                            },
+                            "received_output": {
+                                "low": 1,
+                                "high": 1
+                            },
+                            "forced_by": {
+                                "RQ1": false,
+                                "RQ2": false,
+                                "RQ3": false,
+                                "RQ4": false,
+                                "RQ5": false
+                            },
+                            "passed": true
+                        },
+                        {
+                            "summary": {
+                                "total": 30,
+                                "passed": 30,
+                                "failed": 0,
+                                "pass_rate": 1.0
+                            }
+                        }
+                    ],
+                    "completion_information": "The code has been verified",
+                    "verification_time": 250.49641871452332,
+                    "passed_tests_percentage": 1.0,
+                    "passed_goals_percentage": 1.0
+                }
+            ],
+            "max_completions_used": 10,
+            "model_used": "gpt-4o",
+            "ranking_method": "random",
+            "best_attempt_index": 0,
+            "best_attempt_feedback": [
+                "The file is valid"
+            ],
+            "best_attempt_code": "```c\nvoid sgmm_10ms_single_function(void) {\n    if (!FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) ||\n        !FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        !FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (FLAWLESS_B(rtdb_low_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_high_magnetic_value_measurement.ss_U08) &&\n        FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_electric_motor_measured_speed.ss_U08) &&\n        (rtdb_electric_motor_measured_speed.val_F32 > MOTOROVERSPEEDLIMIT_F32 ||\n         rtdb_intermediate_shaft_speed.val_F32 * GEARRATIO_F32 > MOTOROVERSPEEDLIMIT_F32)) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    if (!FLAWLESS_B(rtdb_intermediate_shaft_speed.ss_U08) &&\n        FLAWLESS_B(rtdb_current_gear.ss_U08) &&\n        rtdb_current_gear.val_S08 != 0) {\n        rtdb_low_magnetic_value = FALSE;\n        rtdb_high_magnetic_value = FALSE;\n        return;\n    }\n\n    rtdb_low_magnetic_value = TRUE;\n    rtdb_high_magnetic_value = TRUE;\n}\n```",
+            "best_attempt_metric_percentage": null
+        }
+    ],
+    "code_improvement_information": [],
+    "is_verified": true
+}
